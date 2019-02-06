@@ -7,6 +7,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include "../Engine/UI/MainMenu.h"
 #include "../Engine/UI/OptionsMenu.h"
+#include "ParallaxingBackground.h"
 
 class Game1 : public GameInterface
 {
@@ -23,6 +24,8 @@ public:
 private:
 	ParticleSystem* particleFountain;
 
+	//! Background stuff:
+	ParallaxingBackground* pB;
 	//UI stuff
 	UIManager* UI;
 	Window* window;

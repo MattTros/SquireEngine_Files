@@ -25,6 +25,11 @@ bool Game1::Initialize()
 	Model* apple = new Model("Apple.obj", "Apple.mtl", BASE_SHADER);
 	Model* dice = new Model("Dice.obj", "Dice.mtl", BASE_SHADER);
 
+	//! Create background images:
+	pB = new ParallaxingBackground();
+	pB->Initialize();
+
+
 	//SceneGraph::GetInstance()->AddModel(apple);
 	//
 	//SceneGraph::GetInstance()->AddGameObject(new GameObject(apple), "apple1");
@@ -36,10 +41,10 @@ bool Game1::Initialize()
 	particleFountain->SetRotationSpeed(5.0f);
 	particleFountain->StartSystem();
 
-	UI = new MainMenu();
+	/*UI = new MainMenu();
 	window = Engine::GetInstance()->Engine::GetWindow();
 	UI->Initialize(window->GetWindow(), window->GetContext());
-	uiState = UI->state;
+	uiState = UI->state;*/
 
 	return true;
 }
@@ -70,7 +75,7 @@ void Game1::Update(const float deltaTime_)
 		AudioManager::GetInstance()->PlaySoundFX("laserFX");
 	}
 
-	
+	pB->Update(deltaTime_);
 
 	SceneGraph::GetInstance()->Update(deltaTime_);
 	UpdateUI(deltaTime_);
