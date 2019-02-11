@@ -19,7 +19,7 @@ struct Particle
 	{
 	    particle = new GameObject(model_);
 		particle->SetScale(scale_);
-		particle->SetRoatation(rotation_);
+		particle->SetRotation(rotation_);
 	}
 };
 
