@@ -62,6 +62,12 @@ void ParticleSystem::SetRotationSpeed(float rotSpeed_)
 	rotationSpeed = rotSpeed_;
 }
 
+void ParticleSystem::SetMinMaxVelocity(glm::vec3 minVel_, glm::vec3 maxVel_)
+{
+	minVelocity = minVel_;
+	maxVelocity = maxVel_;
+}
+
 void ParticleSystem::StartSystem()
 {
 	isPlaying = true;
@@ -104,12 +110,12 @@ void ParticleSystem::Update(const float deltaTime_)
 				particles[i]->lifetime = Randomize(minLifetime, maxLifetime);
 				particles[i]->particle->SetPosition(glm::vec3(Randomize(origin.x - 0.1, origin.x + 0.1), Randomize(origin.y - 0.1, origin.y + 0.1), Randomize(origin.z - 0.1, origin.z + 0.1)));
 			}
-			particles[i]->particle->SetPosition(particles[i]->particle->GetPosition() + ((particles[i]->velocity * deltaTime_ + (0.5f * acceleration * deltaTime_* deltaTime_))));
+			particles[i]->velocity.y += (particles[i]->velocity.y * deltaTime_) + (0.5 * acceleration.y * (deltaTime_ * deltaTime_));
+			particles[i]->particle->SetPosition(particles[i]->particle->GetPosition() + particles[i]->velocity * deltaTime_);
 			particles[i]->particle->SetAngle(particles[i]->particle->GetAngle() + (deltaTime_ * Randomize(0.0f, rotationSpeed)));
 			particles[i]->currentLife += deltaTime_;
 			if (particles[i]->currentLife >= particles[i]->lifetime)
 			{
-				particles[i]->particle->SetPosition(glm::vec3(Randomize(origin.x - 0.1f, origin.x + 0.1f), Randomize(origin.y - 0.1f, origin.y + 0.1f), Randomize(origin.z - 0.1f, origin.z + 0.1f)));
 				particles[i]->currentLife = 0.0f;
 			}
 		}
