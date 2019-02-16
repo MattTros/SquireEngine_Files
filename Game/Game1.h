@@ -5,9 +5,12 @@
 
 #include "../Engine/Core/Engine.h"
 #include <glm/gtx/string_cast.hpp>
-#include "../Engine/UI/MainMenu.h"
-#include "../Engine/UI/OptionsMenu.h"
 #include "ParallaxingBackground.h"
+#include "GameObjects/Platform.h"
+#include "GameObjects/MovingPlatform.h"
+#include "Scenes/SceneManager.h"
+#include "Scenes/UIScene.h"
+#include "Scenes/Scene1.h"
 
 class Game1 : public GameInterface
 {
@@ -19,19 +22,12 @@ public:
 	virtual void Update(const float deltaTime_);
 	virtual void Render();
 
-	//UI state machine and update
-	void UpdateUI(const float deltaTime_);
-private:
-	ParticleSystem* particleFountain;
+	void SetScene(SceneManager* newScene_);
 
-	//! Background stuff:
-	ParallaxingBackground* pB;
-	//UI stuff
-	UIManager* UI;
-	Window* window;
-	//This varible is to compare against the state variable in the UIManager class.
-	//I compare states so I'm not recreating the UIManager object when I don't need to. (JakeCunningham)
-	int uiState;
+private:
+	//Scene stuff
+	SceneManager* scene;
+
 };
 
 #endif // !GAME1_H
