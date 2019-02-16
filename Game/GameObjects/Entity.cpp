@@ -35,7 +35,7 @@ void Entity::SetHealth(bool health_) {
 	health = health_;
 }
 
-bool Entity::GetHealth() {
+int Entity::GetHealth() {
 	return health;
 }
 
@@ -43,7 +43,7 @@ void Entity::SetStamina(bool stamina_) {
 	stamina = stamina_;
 }
 
-bool Entity::GetStamina() {
+int Entity::GetStamina() {
 	return stamina;
 }
 
@@ -51,6 +51,6 @@ void Entity::SetSpeed(bool speed_) {
 	speed = speed_;
 }
 
-bool Entity::GetSpeed() {
+float Entity::GetSpeed() {
 	return speed;
 }
