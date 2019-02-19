@@ -46,9 +46,9 @@ void Platform::Update(const float deltaTime_)
 	}
 }
 
-void Platform::onCollision(GameObject* other) {
+void Platform::onCollision(GameObject* other_) {
 	//Collision detection
-	if (GetBoundingBox().Intersects(&other->GetBoundingBox())) {
+	if (GetBoundingBox().Intersects(&other_->GetBoundingBox())) {
 		//Collision response
 		isGravity = false;
 	}
