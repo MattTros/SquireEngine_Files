@@ -14,7 +14,7 @@ public:
 	~Platform();
 
 	//Platform Specific methods
-	void onCollision(GameObject* other);
+	void onCollision(GameObject* other_);
 	void Update(const float deltaTime_);
 
 private:
