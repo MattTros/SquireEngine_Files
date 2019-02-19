@@ -4,7 +4,6 @@
 //Class by Jake G. Cunningham
 
 #include "../../Engine/Rendering/3D/GameObject.h"
-#include <iostream>
 
 class Entity : public GameObject {
 public:
@@ -12,21 +11,27 @@ public:
 	Entity(Model* model_, glm::vec3 position_, bool isGravity_);
 	~Entity();
 
-	//Platform Specific methods
+	//Entity Specific methods
 	virtual void Update(const float deltaTime_) = 0;
 
 	//getters and setters
 	void SetGravity(bool isGravity_);
 	bool GetGravity();
 
-	void SetHealth(bool health);
+	void SetHealth(bool health_);
 	int GetHealth();
 
-	void SetStamina(bool stamina);
+	void SetStamina(bool stamina_);
 	int GetStamina();
 
-	void SetSpeed(bool speed);
+	void SetSpeed(bool speed_);
 	float GetSpeed();
+
+	void setVelocity(glm::vec3 velocity_);
+	glm::vec3 getVelocity();
+
+	void setAcceleration(glm::vec3 accleration_);
+	glm::vec3 getAcceleration();
 
 private:
 	//boolian to turn gravity on and off
@@ -40,7 +45,6 @@ private:
 	//Physics variables
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
-	glm::vec3 position;
 
 };
 

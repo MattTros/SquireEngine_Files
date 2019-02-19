@@ -10,7 +10,6 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 	stamina = 0;
 	speed = 0;
 	velocity = glm::vec3(0);
-	position = glm::vec3(0);
 	acceleration = glm::vec3(0.0f, -9.8f, 0.0f);
 	//properly rotate the brick obj
 	SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -53,4 +52,20 @@ void Entity::SetSpeed(bool speed_) {
 
 float Entity::GetSpeed() {
 	return speed;
+}
+
+void Entity::setVelocity(glm::vec3 velocity_) {
+	velocity = velocity_;
+}
+
+glm::vec3 Entity::getVelocity() {
+	return velocity;
+}
+
+void Entity::setAcceleration(glm::vec3 accleration_) {
+	acceleration = accleration_;
+}
+
+glm::vec3 Entity::getAcceleration() {
+	return acceleration;
 }
