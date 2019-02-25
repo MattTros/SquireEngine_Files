@@ -39,7 +39,7 @@ public:
 	glm::vec3 GetAcceleration();
 
 private:
-	//boolian to turn gravity on and off
+	//boolean to turn gravity on and off
 	bool isGravity;
 
 	WaitForSeconds* spikeWFS;
