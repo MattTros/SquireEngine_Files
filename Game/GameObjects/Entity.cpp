@@ -8,7 +8,6 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 	isGravity = isGravity_;
 	spikeWFS = new WaitForSeconds();
 	spikeWFS->active = false;
-	SBeenPressed = false;
 	health = 0;
 	stamina = 0;
 	speed = 0;
