@@ -4,7 +4,6 @@
 //Class by Jake G. Cunningham
 
 #include "../../Engine/Rendering/3D/GameObject.h"
-#include "MovingPlatform.h"
 #include "../../Engine/Events/KeyboardInputManager.h"
 #include "../../Engine/Core/Timer.h"
 
