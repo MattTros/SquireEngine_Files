@@ -4,6 +4,9 @@
 //Class by Jake G. Cunningham
 
 #include "../../Engine/Rendering/3D/GameObject.h"
+#include "MovingPlatform.h"
+#include "../../Engine/Events/KeyboardInputManager.h"
+#include "../../Engine/Core/Timer.h"
 
 class Entity : public GameObject {
 public:
@@ -13,6 +16,9 @@ public:
 
 	//Entity Specific methods
 	virtual void Update(const float deltaTime_) = 0;
+
+	//Default collision method, will not be complete for enemies or players, but will streamline that process
+	void DefaultCollision(GameObject* other_, const float deltaTime_);
 
 	//getters and setters
 	void SetGravity(bool isGravity_);
@@ -27,15 +33,17 @@ public:
 	void SetSpeed(bool speed_);
 	float GetSpeed();
 
-	void setVelocity(glm::vec3 velocity_);
-	glm::vec3 getVelocity();
+	void SetVelocity(glm::vec3 velocity_);
+	glm::vec3 GetVelocity();
 
-	void setAcceleration(glm::vec3 accleration_);
-	glm::vec3 getAcceleration();
+	void SetAcceleration(glm::vec3 accleration_);
+	glm::vec3 GetAcceleration();
 
 private:
 	//boolian to turn gravity on and off
 	bool isGravity;
+
+	WaitForSeconds* spikeWFS;
 
 	//private variables that will belong to all entities
 	int health;

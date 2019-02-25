@@ -6,6 +6,9 @@
 Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject(model_, position_) {
 	//default things
 	isGravity = isGravity_;
+	spikeWFS = new WaitForSeconds();
+	spikeWFS->active = false;
+	SBeenPressed = false;
 	health = 0;
 	stamina = 0;
 	speed = 0;
@@ -20,6 +23,35 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 
 Entity::~Entity() {
 
+}
+
+void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
+	//check if there is any bounding box intersection
+	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
+		//determine which object is being collided with
+		if (other_->GetTag() == "Platform") {
+			//Collision with specific object respone
+			isGravity = false;
+		}
+
+		if (other_->GetTag() == "MovingPlatform") {
+			//Collision with specific object respone
+			//TODO
+		}
+
+		if (other_->GetTag() == "Spike") {
+			//deal 10 damage, wait 2 seconds, and deal 10 damage again
+			if (!spikeWFS->active) {
+				health -= 10;
+				spikeWFS->active = true;
+			}
+			spikeWFS->waitTime = 2.0f;
+			spikeWFS->seconds += deltaTime_;
+			if (spikeWFS->seconds > spikeWFS->waitTime) {
+				spikeWFS->seconds = 0.0f;
+			}
+		}
+	}
 }
 
 void Entity::SetGravity(bool isGravity_) {
@@ -54,18 +86,18 @@ float Entity::GetSpeed() {
 	return speed;
 }
 
-void Entity::setVelocity(glm::vec3 velocity_) {
+void Entity::SetVelocity(glm::vec3 velocity_) {
 	velocity = velocity_;
 }
 
-glm::vec3 Entity::getVelocity() {
+glm::vec3 Entity::GetVelocity() {
 	return velocity;
 }
 
-void Entity::setAcceleration(glm::vec3 accleration_) {
+void Entity::SetAcceleration(glm::vec3 accleration_) {
 	acceleration = accleration_;
 }
 
-glm::vec3 Entity::getAcceleration() {
+glm::vec3 Entity::GetAcceleration() {
 	return acceleration;
 }
