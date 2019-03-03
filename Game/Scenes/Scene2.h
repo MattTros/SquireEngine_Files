@@ -1,5 +1,5 @@
-#ifndef SCENE1_H
-#define SCENE1_H
+#ifndef SCENE2_H
+#define SCENE2_H
 
 #define BASE_SHADER Shader::GetInstance()->GetShader("baseShader")
 
@@ -8,15 +8,11 @@
 #include "../ParallaxingBackground.h"
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
-#include "../GameObjects/Entity.h"
-#include "../Enemies/Ooze.h"
-#include "../GameObjects/Wall.h"
-#include "../GameObjects/Player.h"
 
-class Scene1 : public SceneManager {
+class Scene2 : public SceneManager {
 public:
-	Scene1();
-	~Scene1();
+	Scene2();
+	~Scene2();
 
 	bool Initialize();
 	void Update(const float deltaTime_);
@@ -31,13 +27,8 @@ private:
 	ParallaxingBackground* pB;
 
 	//Platform stuff
-	Platform* platforms[5];
-
-	//Player stuff
-	Player* player;
-
-	//Enemy Stuff
-	Ooze* ooze;
+	Platform* p;
+	Platform* p2;
 };
 
-#endif // !SCENE1_H
+#endif // !SCENE2_H
