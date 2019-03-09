@@ -17,11 +17,20 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 	SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	SetAngle(NINETY_DEGREES);
 	//set the tag of this object
-	SetTag("Platform");
+	SetTag("");
+	position;
 }
 
 Entity::~Entity() {
 
+}
+
+void Entity::Update(const float deltaTime_) {
+	if (GetGravity() == true) {
+		velocity += (velocity * deltaTime_) + (0.5f * acceleration * (deltaTime_ * deltaTime_));
+		position += velocity * deltaTime_;
+		SetPosition(position);
+	}
 }
 
 void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
@@ -77,7 +86,7 @@ int Entity::GetStamina() {
 	return stamina;
 }
 
-void Entity::SetSpeed(bool speed_) {
+void Entity::SetSpeed(float speed_) {
 	speed = speed_;
 }
 
