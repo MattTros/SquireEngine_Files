@@ -9,17 +9,20 @@
 class Player : public Entity
 {
 public:
-	Player(Model* model_, glm::vec3 position_);
+	Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_);
 	~Player();
 
 	void Movement(float deltaTime_);
-	void Jump(float deltaTime_);
+	void Jump();
 	void Dash();
 
 	void Combat(float deltaTime_);
 	void LightAttack();
 	void HeavyAttack();
 	void Shoot();
+
+	bool GetIFrames();
+	void SetIFrames(bool iFrames_);
 
 	void GroundCollision(GameObject* ground_, float deltaTime_);
 	void Update(float deltaTime_);
@@ -31,9 +34,14 @@ private:
 	GameObject* sword;
 	GameObject* arrow;
 
+	//Rigidbody rb;
+
 	bool isDashing = false;
-	glm::vec3 jumpForce;
-	float dashForce = 10.0f;
+	bool isFacingRight = true;
+	bool iFrames = false;
+	float jumpForce;
+	float dashForce = 5.0f;
+	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;
 };
