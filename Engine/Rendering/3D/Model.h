@@ -18,6 +18,7 @@ public:
 
 	BoundingBox GetBoundingBox();
 	GLuint GetShader();
+	Mesh* GetMesh(GLuint shaderProg_);
 private:
 	std::vector<Mesh*> subMeshes;
 	GLuint shaderProgram;

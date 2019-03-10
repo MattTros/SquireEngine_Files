@@ -42,6 +42,11 @@ void Model::AddMesh(Mesh* mesh_)
 	subMeshes.push_back(mesh_);
 }
 
+Mesh* Model::GetMesh(GLuint shaderProg_)
+{
+	return subMeshes.at(shaderProg_);
+}
+
 GLuint Model::CreateInstance(glm::vec3 position_, float angle_, glm::vec3 roatation_, glm::vec3 scale_)
 {
 	modelInstances.push_back(GetTransform(position_, angle_, roatation_, scale_));
