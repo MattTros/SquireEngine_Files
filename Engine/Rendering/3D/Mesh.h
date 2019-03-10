@@ -29,6 +29,9 @@ public:
 	Mesh(SubMesh subMesh_, GLuint shaderProgram_);
 	~Mesh();
 	void Render(std::vector<glm::mat4> instances_, Camera* camera_);
+
+	float time = 0.0f;
+	bool iFramesBool = false;
 private:
 	GLuint VAO, VBO;
 	GLuint shaderProgram;
@@ -50,6 +53,9 @@ private:
 	GLuint lightDiffuseLocation;
 	GLuint lightColorLocation;
 	SubMesh subMesh;
+
+	GLuint iFramesID;
+	GLuint timerID;
 
 	void GenerateBuffers();
 };

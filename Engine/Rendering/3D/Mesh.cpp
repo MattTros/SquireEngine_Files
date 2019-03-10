@@ -60,6 +60,9 @@ void Mesh::GenerateBuffers()
 	lightAmbientLocation = glGetUniformLocation(shaderProgram, "light.ambient");
 	lightDiffuseLocation = glGetUniformLocation(shaderProgram, "light.diffuse");
 	lightColorLocation = glGetUniformLocation(shaderProgram, "light.lightColor");
+
+	iFramesID = glGetUniformLocation(shaderProgram, "iFrames");
+	timerID = glGetUniformLocation(shaderProgram, "time");
 }
 
 void Mesh::Render(std::vector<glm::mat4> instances_, Camera* camera_)
@@ -82,6 +85,9 @@ void Mesh::Render(std::vector<glm::mat4> instances_, Camera* camera_)
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(camera_->GetView()));
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(camera_->GetPerspective()));
 	glBindVertexArray(VAO);
+
+	glUniform1f(iFramesID, iFramesBool);
+	glUniform1f(timerID, time);
 
 	for (int i = 0; i < instances_.size(); i++)
 	{
