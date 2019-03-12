@@ -86,7 +86,7 @@ glm::vec3 GameObject::GetRotation() const
 	return rotation;
 }
 
-void GameObject::SetRoatation(glm::vec3 rotation_)
+void GameObject::SetRotation(glm::vec3 rotation_)
 {
 	rotation = rotation_;
 	if (model)
