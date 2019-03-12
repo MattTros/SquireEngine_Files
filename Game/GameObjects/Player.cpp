@@ -42,12 +42,13 @@ Player::~Player()
 void Player::Movement(float deltaTime_)
 {
 	fountain->SetOrigin(this->GetPosition());
+	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
 	{
 		if (!GetGravity())
 			SetSpeed(-1.0f);
 		else
-			SetSpeed(-0.25f);
+			SetSpeed(GetSpeed());
 		if(!isDashing)
 			SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
 		if (isFacingRight)
@@ -61,7 +62,7 @@ void Player::Movement(float deltaTime_)
 		if (!GetGravity())
 			SetSpeed(1.0f);
 		else
-			SetSpeed(0.25f);
+			SetSpeed(GetSpeed());
 		if (!isDashing)
 			SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
 		if (!isFacingRight)

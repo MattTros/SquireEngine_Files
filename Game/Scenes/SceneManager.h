@@ -1,18 +1,39 @@
-#ifndef SCENE_MANAGER_H
-#define SCENE_MANAGER_H
+#ifndef SCENEMANAGER_H
+#define SCENEMANAGER_H
 
-#include "../../Engine/Core/Engine.h"
+#include <memory>
+#include "SceneInterface.h"
 
-class SceneManager {
-
+class SceneManager
+{
 public:
-	SceneManager() {}
-	~SceneManager() {}
+	SceneManager(const SceneManager&) = delete;
+	SceneManager(SceneManager&&) = delete;
+	SceneManager& operator = (const SceneManager&) = delete;
+	SceneManager& operator = (SceneManager&&) = delete;
 
-	virtual bool Initialize() = 0;
-	virtual void Update(const float deltaTime_) = 0;
-	virtual void Render() = 0;
+	static SceneManager* GetInstance();
 
+	bool Initialize();
+	void Update(const float deltaTime_);
+	void Render();
+
+	void SetScene(SceneInterface* newScene_);
+
+	void Pause();
+	void Unpause();
+private:
+	SceneManager();
+	~SceneManager();
+
+	static std::unique_ptr<SceneManager> sceneManagerInstance;
+	friend std::default_delete<SceneManager>;
+
+	SceneInterface* currentScene;
+	bool paused = false;
 };
 
-#endif // !SCENE_MANAGER_H
+#endif // !SCENEMANAGER_H
+
+
+

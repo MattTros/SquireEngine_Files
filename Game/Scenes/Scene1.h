@@ -12,8 +12,11 @@
 #include "../Enemies/Ooze.h"
 #include "../GameObjects/Wall.h"
 #include "../GameObjects/Player.h"
+#include "Scene2.h"
 
-class Scene1 : public SceneManager {
+class SceneManager;
+
+class Scene1 : public SceneInterface {
 public:
 	Scene1();
 	~Scene1();
@@ -31,13 +34,15 @@ private:
 	ParallaxingBackground* pB;
 
 	//Platform stuff
-	Platform* platforms[5];
+	Platform* platforms[38];
 
 	//Player stuff
 	Player* player;
 
 	//Enemy Stuff
 	Ooze* ooze;
+
+	GameObject* go;
 };
 
 #endif // !SCENE1_H

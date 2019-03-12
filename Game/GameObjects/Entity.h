@@ -7,6 +7,38 @@
 #include "../../Engine/Events/KeyboardInputManager.h"
 #include "../../Engine/Core/Timer.h"
 
+//struct Rigidbody
+//{
+//	float gravityScale;
+//	float mass;
+//	float friction;
+//	glm::vec3 velocity;
+//	Entity* entity;
+//
+//	inline Rigidbody() 
+//	{
+//		entity = nullptr;
+//		gravityScale = 1.0f;
+//		mass = 1.0f;
+//		friction = 0.0f;
+//		velocity = glm::vec3(0.0f);
+//	}
+//
+//	inline Rigidbody(Entity* entity_)
+//	{
+//		entity = entity_; 
+//		gravityScale = 1.0f;
+//		mass = 1.0f;
+//		friction = 0.0f;
+//		velocity = glm::vec3(0.0f);
+//	}
+//
+//	inline void AddForce(glm::vec3 force_)
+//	{
+//		velocity += force_ * mass;
+//	}
+//};
+
 class Entity : public GameObject {
 public:
 	//Constructors
@@ -23,13 +55,13 @@ public:
 	void SetGravity(bool isGravity_);
 	bool GetGravity();
 
-	void SetHealth(bool health_);
+	void SetHealth(int health_);
 	int GetHealth();
 
-	void SetStamina(bool stamina_);
+	void SetStamina(int stamina_);
 	int GetStamina();
 
-	void SetSpeed(bool speed_);
+	void SetSpeed(float speed_);
 	float GetSpeed();
 
 	void SetVelocity(glm::vec3 velocity_);

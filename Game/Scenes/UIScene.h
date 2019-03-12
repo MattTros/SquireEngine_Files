@@ -3,12 +3,14 @@
 
 #define BASE_SHADER Shader::GetInstance()->GetShader("baseShader")
 
-#include "SceneManager.h"
+#include "SceneInterface.h"
 #include <glm/gtx/string_cast.hpp>
 #include "../../Engine/UI/MainMenu.h"
 #include "../../Engine/UI/OptionsMenu.h"
 
-class UIScene : public SceneManager {
+class SceneManager;
+
+class UIScene : public SceneInterface {
 public:
 	UIScene();
 	~UIScene();

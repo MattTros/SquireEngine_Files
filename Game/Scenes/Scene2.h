@@ -9,7 +9,9 @@
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
 
-class Scene2 : public SceneManager {
+class SceneManager;
+
+class Scene2 : public SceneInterface {
 public:
 	Scene2();
 	~Scene2();
@@ -29,6 +31,8 @@ private:
 	//Platform stuff
 	Platform* p;
 	Platform* p2;
+
+	GameObject* go;
 };
 
 #endif // !SCENE2_H
