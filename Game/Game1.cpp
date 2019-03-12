@@ -8,29 +8,21 @@ Game1::Game1()
 
 Game1::~Game1()
 {
-	
+
 }
 
 bool Game1::Initialize()
 {
-	scene = new Scene1();
-	scene->Initialize();
-
-
+	SceneManager::GetInstance()->SetScene(new UIScene);
 	return true;
 }
 
 void Game1::Update(const float deltaTime_)
 {
-	scene->Update(deltaTime_);
+	SceneManager::GetInstance()->Update(deltaTime_);
 }
 
 void Game1::Render()
 {
-
-	scene->Render();
-}
-
-void Game1::SetScene(SceneManager* newScene_) {
-	scene = newScene_;
+	SceneManager::GetInstance()->Render();
 }

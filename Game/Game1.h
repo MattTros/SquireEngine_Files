@@ -11,6 +11,7 @@
 #include "Scenes/SceneManager.h"
 #include "Scenes/UIScene.h"
 #include "Scenes/Scene1.h"
+#include "Scenes/Scene2.h"
 
 class Game1 : public GameInterface
 {
@@ -21,13 +22,6 @@ public:
 	virtual bool Initialize();
 	virtual void Update(const float deltaTime_);
 	virtual void Render();
-
-	void SetScene(SceneManager* newScene_);
-
-private:
-	//Scene stuff
-	SceneManager* scene;
-
 };
 
 #endif // !GAME1_H
