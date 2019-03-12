@@ -174,6 +174,14 @@ void Engine::NotifyButtonYUp()
 
 }
 
+float Engine::Randomize(float min_, float max_)
+{
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = max_ - min_;
+	float r = random * diff;
+	return min_ + r;
+}
+
 void Engine::ExitGame()
 {
 	isRunning = false;

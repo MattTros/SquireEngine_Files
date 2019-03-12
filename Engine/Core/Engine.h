@@ -54,6 +54,8 @@ public:
 	void NotifyButtonYDown();
 	void NotifyButtonYUp();
 
+	float Randomize(float min_, float max_);
+
 	Window* GetWindow() const;
 
 	void ExitGame();

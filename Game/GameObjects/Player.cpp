@@ -5,9 +5,10 @@
 Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_) : Entity(model_, position_, true)
 {
 	///Particle System Initialization
-	particle = new Model("Brick.obj", "Brick.mtl", Shader::GetInstance()->GetShader("baseShader"));
+	particle = new Model("KnightParticle.obj", "KnightParticle.mtl", Shader::GetInstance()->GetShader("baseShader"));
 	fountain = new ParticleSystem();
-	fountain->CreateSystem(particle, 100, glm::vec3(0.25f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 2.0f);
+	fountain->CreateSystem(particle, 100, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 2.0f);
+	fountain->SetRadius(0.25f);
 	fountain->SetOrigin(this->GetPosition());
 	fountain->SetRotationSpeed(5.0f);
 	fountain->StartSystem();
@@ -30,6 +31,15 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	jumpCooldown.active = false;
 	jumpCooldown.waitTime = 1.0f;
 	jumpCooldown.seconds = 0.0f;
+	///Sword Inititalization
+	sword = sword_;
+	sword->SetTag("Sword");
+	sword->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	sword->SetAngle(1.0f);
+	attackTimer = WaitForSeconds();
+	attackTimer.active = false;
+	attackTimer.waitTime = 0.5f;
+	attackTimer.seconds = 0.0f;
 }
 
 
@@ -42,6 +52,7 @@ Player::~Player()
 void Player::Movement(float deltaTime_)
 {
 	fountain->SetOrigin(this->GetPosition());
+	sword->SetPosition(this->GetPosition());
 	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
 	{
@@ -112,15 +123,27 @@ void Player::Combat(float deltaTime_)
 	{
 		HeavyAttack();
 	}
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_E))
+	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_RIGHT))
 	{
-		LightAttack();
+		LightAttack(-1.0f);
 	}
+	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_LEFT))
+	{
+		LightAttack(1.0f);
+	}
+
+	if (isAttacking)
+		sword->Update(deltaTime_);
 }
 
-void Player::LightAttack()
+void Player::LightAttack(float zAxisRotation_)
 {
-	
+	if (!isAttacking)
+	{
+		isAttacking = true;
+		attackTimer.active = true;
+		sword->SetRotation(glm::vec3(0.0f, 0.0f, zAxisRotation_));
+	}
 }
 
 void Player::HeavyAttack()
@@ -146,6 +169,11 @@ void Player::SetIFrames(bool iFrames_)
 void Player::GroundCollision(GameObject* ground_, float deltaTime_)
 {
 	DefaultCollision(ground_, deltaTime_);
+}
+
+void Player::WallCollision(GameObject* wall_, float deltaTime_)
+{
+
 }
 
 void Player::Update(float deltaTime_)
@@ -186,6 +214,19 @@ void Player::Update(float deltaTime_)
 			jumpCooldown.seconds = 0.0f;
 		}
 	}
+	if (attackTimer.active)
+	{
+		sword->SetAngle(sword->GetAngle() + (deltaTime_ * 2.0f));
+		attackTimer.seconds += deltaTime_;
+		if (attackTimer.seconds >= attackTimer.waitTime)
+		{
+			isAttacking = false;
+			attackTimer.active = false;
+			attackTimer.seconds = 0.0f;
+			sword->SetAngle(1.0f);
+		}
+	}
+
 	Movement(deltaTime_);
 	Combat(deltaTime_);
 	fountain->Update(deltaTime_);
@@ -195,4 +236,6 @@ void Player::Render(Camera* camera_)
 {
 	this->GetModel()->Render(camera_);
 	fountain->Render(camera_);
+	if (isAttacking)
+		sword->GetModel()->Render(Camera::GetInstance());
 }

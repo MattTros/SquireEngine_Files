@@ -17,7 +17,7 @@ public:
 	void Dash();
 
 	void Combat(float deltaTime_);
-	void LightAttack();
+	void LightAttack(float zAxisRotation_);
 	void HeavyAttack();
 	void Shoot();
 
@@ -25,6 +25,8 @@ public:
 	void SetIFrames(bool iFrames_);
 
 	void GroundCollision(GameObject* ground_, float deltaTime_);
+	void WallCollision(GameObject* wall_, float deltaTime_);
+
 	void Update(float deltaTime_);
 	void Render(Camera* camera_);
 private:
@@ -39,11 +41,13 @@ private:
 	bool isDashing = false;
 	bool isFacingRight = true;
 	bool iFrames = false;
+	bool isAttacking = false;
 	float jumpForce;
 	float dashForce = 5.0f;
 	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;
+	WaitForSeconds attackTimer;
 };
 
 

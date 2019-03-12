@@ -34,6 +34,11 @@ public:
 	void SetOrigin(glm::vec3 origin_);
 	glm::vec3 GetOrigin();
 	void SetRotationSpeed(float rotSpeed_);
+	void SetMinMaxVelocity(glm::vec3 minVel_, glm::vec3 maxVel_);
+	glm::vec3 GetMinVelocity();
+	glm::vec3 GetMaxVelocity();
+	void SetRadius(float radius_);
+	float GetRadius();
 	void StartSystem();
 	void StopSystem();
 
@@ -54,6 +59,7 @@ private:
 	float rotationSpeed = 1.0f;
 	bool initialBurst = false;
 	bool isPlaying;
+	float radius = 0.0f;
 };
 
 
