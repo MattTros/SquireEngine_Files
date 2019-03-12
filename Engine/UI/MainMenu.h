@@ -2,6 +2,8 @@
 #define MAINMENU_H
 
 #include "../UI/UIManager.h" 
+#include "../../Game/Scenes/SceneManager.h"
+#include "../../Game/Scenes/Scene1.h"
 
 class MainMenu : public UIManager{
 
