@@ -11,7 +11,7 @@ public:
 	GameObject(Model* model_, glm::vec3 position_);
 	~GameObject();
 
-	void Update(const float delataTime_);
+	void Update(const float deltaTime_);
 	glm::vec3 GetPosition() const;
 	void SetPosition(glm::vec3 position_);
 	float GetAngle() const;

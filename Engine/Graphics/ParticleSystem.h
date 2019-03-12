@@ -46,7 +46,7 @@ public:
 	void SetGravity(float gravScale_);
 	void SetInitialBurst(bool doesBurst_);
 
-	void Update(float delataTime_);
+	void Update(float deltaTime_);
 	void Render(Camera* camera_);
 private:
 	std::vector<Particle*> particles;

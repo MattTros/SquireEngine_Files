@@ -12,8 +12,8 @@ public:
 	~Model();
 	void Render(Camera* camera_);
 	void AddMesh(Mesh* mesh_);
-	GLuint CreateInstance(glm::vec3 position_, float angle_, glm::vec3 roatation_, glm::vec3 scale_);
-	void UpdateInstance(GLuint index_, glm::vec3 position_, float angle_, glm::vec3 roatation_, glm::vec3 scale_);
+	GLuint CreateInstance(glm::vec3 position_, float angle_, glm::vec3 rotation_, glm::vec3 scale_);
+	void UpdateInstance(GLuint index_, glm::vec3 position_, float angle_, glm::vec3 rotation_, glm::vec3 scale_);
 	glm::mat4 GetTransform(GLuint index_) const;
 
 	BoundingBox GetBoundingBox();

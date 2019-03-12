@@ -46,7 +46,7 @@ GameObject::~GameObject()
 	model = nullptr;
 }
 
-void GameObject::Update(const float delataTime_)
+void GameObject::Update(const float deltaTime_)
 {
 	
 }
