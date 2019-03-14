@@ -9,10 +9,9 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-	if (currentScene != nullptr)
+	if (sceneMap.size() > 0)
 	{
-		delete currentScene;
-		currentScene = nullptr;
+		sceneMap.clear();
 	}
 }
 
@@ -27,27 +26,37 @@ SceneManager* SceneManager::GetInstance()
 
 bool SceneManager::Initialize()
 {
-	currentScene->Initialize();
+	sceneMap[sceneIndex]->Initialize();
 	return true;
 }
 
 void SceneManager::Update(const float deltaTime_)
 {
 	if(!paused)
-		currentScene->Update(deltaTime_);
+		sceneMap[sceneIndex]->Update(deltaTime_);
 }
 
 void SceneManager::Render()
 {
-	currentScene->Render();
+	sceneMap[sceneIndex]->Render();
 }
 
-void SceneManager::SetScene(SceneInterface* newScene_)
+void SceneManager::AddScene(SceneInterface* scene_, int index_)
 {
-	currentScene = nullptr;
-	delete currentScene;
-	currentScene = newScene_;
-	currentScene->Initialize();
+	if (sceneMap[index_] == nullptr)
+	{
+		sceneMap[index_] = scene_;
+		if (sceneMap[index_] == NULL)
+		{
+			Debug::Error("Scene @ Index: " + std::to_string(index_) + " failed to load", __FILE__, __LINE__);
+		}
+	}
+}
+
+void SceneManager::SetScene(int sceneIndex_)
+{
+	sceneIndex = sceneIndex_;
+	sceneMap[sceneIndex]->Initialize();
 }
 
 void SceneManager::Pause()

@@ -18,7 +18,8 @@ public:
 	void Update(const float deltaTime_);
 	void Render();
 
-	void SetScene(SceneInterface* newScene_);
+	void AddScene(SceneInterface* scene_, int index_);
+	void SetScene(int sceneIndex_);
 
 	void Pause();
 	void Unpause();
@@ -29,7 +30,8 @@ private:
 	static std::unique_ptr<SceneManager> sceneManagerInstance;
 	friend std::default_delete<SceneManager>;
 
-	SceneInterface* currentScene;
+	std::map<int, SceneInterface*> sceneMap;
+	int sceneIndex;
 	bool paused = false;
 };
 

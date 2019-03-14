@@ -13,7 +13,10 @@ Game1::~Game1()
 
 bool Game1::Initialize()
 {
-	SceneManager::GetInstance()->SetScene(new UIScene);
+	SceneManager::GetInstance()->AddScene(new UIScene, 0);
+	SceneManager::GetInstance()->AddScene(new Scene1, 1);
+	SceneManager::GetInstance()->AddScene(new Scene2, 2);
+	SceneManager::GetInstance()->SetScene(0);
 	return true;
 }
 
