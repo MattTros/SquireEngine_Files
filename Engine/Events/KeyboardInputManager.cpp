@@ -4,12 +4,16 @@ std::unique_ptr<KeyboardInputManager> KeyboardInputManager::keyboardInputManager
 
 KeyboardInputManager::KeyboardInputManager()
 {
-
+	keyboardState = SDL_GetKeyboardState(&keyLength);
+	previousKeyboardState = new Uint8[keyLength];
+	memcpy(previousKeyboardState, keyboardState, keyLength);
 }
 
 
 KeyboardInputManager::~KeyboardInputManager()
 {
+	delete[] previousKeyboardState;
+	previousKeyboardState = nullptr;
 }
 
 KeyboardInputManager* KeyboardInputManager::GetInstance()
@@ -23,10 +27,25 @@ KeyboardInputManager* KeyboardInputManager::GetInstance()
 
 bool KeyboardInputManager::KeyDown(SDL_Scancode scancode_)
 {
-	return keyboardStates[scancode_];
+	return keyboardState[scancode_];
+}
+
+bool KeyboardInputManager::KeyPressed(SDL_Scancode scancode_)
+{
+	return !previousKeyboardState[scancode_] && keyboardState[scancode_];
+}
+
+bool KeyboardInputManager::KeyReleased(SDL_Scancode scancode_)
+{
+	return previousKeyboardState[scancode_] && !keyboardState[scancode_];
 }
 
 void KeyboardInputManager::Update()
 {
-	keyboardStates = SDL_GetKeyboardState(NULL);
+	keyboardState = SDL_GetKeyboardState(NULL);
+}
+
+void KeyboardInputManager::UpdatePrevious()
+{
+	memcpy(previousKeyboardState, keyboardState, keyLength);
 }

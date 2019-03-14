@@ -14,15 +14,19 @@ public:
 
 	static KeyboardInputManager* GetInstance();
 	bool KeyDown(SDL_Scancode scancode_);
+	bool KeyPressed(SDL_Scancode scancode_);
+	bool KeyReleased(SDL_Scancode scancode_);
 	void Update();
-	
+	void UpdatePrevious();
 private:
 	KeyboardInputManager();
 	~KeyboardInputManager();
 
 	static std::unique_ptr<KeyboardInputManager> keyboardInputManagerInstance;
 	friend std::default_delete<KeyboardInputManager>;
-	const Uint8* keyboardStates;
+	Uint8* previousKeyboardState;
+	const Uint8* keyboardState;
+	int keyLength;
 };
 
 
