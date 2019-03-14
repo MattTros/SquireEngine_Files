@@ -62,6 +62,7 @@ void Mesh::GenerateBuffers()
 	lightColorLocation = glGetUniformLocation(shaderProgram, "light.lightColor");
 
 	iFramesID = glGetUniformLocation(shaderProgram, "iFrames");
+	transparencyID = glGetUniformLocation(shaderProgram, "transparency");
 	timerID = glGetUniformLocation(shaderProgram, "time");
 }
 
@@ -87,6 +88,7 @@ void Mesh::Render(std::vector<glm::mat4> instances_, Camera* camera_)
 	glBindVertexArray(VAO);
 
 	glUniform1f(iFramesID, iFramesBool);
+	glUniform1f(transparencyID, transparency);
 	glUniform1f(timerID, time);
 
 	for (int i = 0; i < instances_.size(); i++)

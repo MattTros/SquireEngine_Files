@@ -31,6 +31,7 @@ public:
 	void Render(std::vector<glm::mat4> instances_, Camera* camera_);
 
 	float time = 0.0f;
+	float transparency = 0.5f;
 	bool iFramesBool = false;
 private:
 	GLuint VAO, VBO;
@@ -55,6 +56,7 @@ private:
 	SubMesh subMesh;
 
 	GLuint iFramesID;
+	GLuint transparencyID;
 	GLuint timerID;
 
 	void GenerateBuffers();
