@@ -29,6 +29,7 @@ public:
 
 	void Update(float deltaTime_);
 	void Render(Camera* camera_);
+
 private:
 	Model* particle;
 	ParticleSystem* fountain;
@@ -48,6 +49,10 @@ private:
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;
 	WaitForSeconds attackTimer;
+
+	//collision bools
+	bool canGoRight;
+	bool canGoLeft;
 };
 
 

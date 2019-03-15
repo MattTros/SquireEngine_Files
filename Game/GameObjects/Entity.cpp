@@ -18,10 +18,38 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 	SetAngle(NINETY_DEGREES);
 	//set the tag of this object
 	SetTag("Platform");
+	currentPlatform = nullptr;
 }
 
 Entity::~Entity() {
 
+}
+
+//Entity Specific methods
+void Entity::Update(const float deltaTime_) {
+	if (currentPlatform != nullptr) {
+		ResetGravity(currentPlatform);
+	}
+}
+
+//Reseting gravity
+void Entity::ResetGravity(GameObject* currentPlatform_) {
+	//If gravity then don't bother calculating
+	if (isGravity) {
+		return;
+	}
+	glm::vec3 distance = abs(GetPosition() - currentPlatform_->GetPosition());
+	//length of the platform
+	glm::vec3 platLength = abs(currentPlatform_->GetBoundingBox().minVert - currentPlatform_->GetBoundingBox().maxVert);
+
+	//length of the this object
+	glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
+
+	//if you move off the platform apply gravity
+	if (distance.x >= ((platLength.x + (thisLength.x)) / 2.0f)) {
+		SetGravity(true);
+		currentPlatform = nullptr;
+	}
 }
 
 void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
@@ -29,13 +57,32 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
 		//determine which object is being collided with
 		if (other_->GetTag() == "Platform") {
-			//Collision with specific object respone
-			isGravity = false;
+			//Collision with specific object response
+
+			//distance needs to be positive
+			glm::vec3 distance = GetPosition() - other_->GetPosition();
+			//length of the platform
+			glm::vec3 platLength = abs(other_->GetBoundingBox().minVert - other_->GetBoundingBox().maxVert);
+			//length of this object
+			glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
+
+			if (distance.y >= ((platLength.y + (thisLength.y / 2)) / 2.0f)) {
+				//the player is on the side of the platform
+				//if the entity is on top
+				isGravity = false;
+				currentPlatform = other_;
+				glm::vec3 vel = glm::vec3(GetVelocity().x, 0.0f, GetVelocity().z);
+				SetVelocity(vel);
+
+			}
+			
 		}
 
 		if (other_->GetTag() == "MovingPlatform") {
 			//Collision with specific object respone
 			//TODO
+
+			currentPlatform = other_;
 		}
 
 		if (other_->GetTag() == "Spike") {
@@ -99,4 +146,8 @@ void Entity::SetAcceleration(glm::vec3 accleration_) {
 
 glm::vec3 Entity::GetAcceleration() {
 	return acceleration;
+}
+
+void Entity::SetCurrentPlatform(GameObject* currentPlatform_) {
+	currentPlatform = currentPlatform_;
 }

@@ -46,7 +46,10 @@ public:
 	~Entity();
 
 	//Entity Specific methods
-	virtual void Update(const float deltaTime_) = 0;
+	void Update(const float deltaTime_);
+
+	//Reseting gravity
+	void ResetGravity(GameObject* currentPlatform_);
 
 	//Default collision method, will not be complete for enemies or players, but will streamline that process
 	void DefaultCollision(GameObject* other_, const float deltaTime_);
@@ -70,6 +73,8 @@ public:
 	void SetAcceleration(glm::vec3 accleration_);
 	glm::vec3 GetAcceleration();
 
+	void SetCurrentPlatform(GameObject* currentPlatform_);
+
 private:
 	//boolean to turn gravity on and off
 	bool isGravity;
@@ -85,6 +90,8 @@ private:
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 
+	//platform variable for turning gravity back on
+	GameObject* currentPlatform;
 };
 
 #endif // !ENTITY_H

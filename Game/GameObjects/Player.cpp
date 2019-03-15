@@ -40,6 +40,9 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	attackTimer.active = false;
 	attackTimer.waitTime = 0.5f;
 	attackTimer.seconds = 0.0f;
+	//collision bool init
+	canGoLeft = true;
+	canGoRight = true;
 }
 
 
@@ -54,12 +57,12 @@ void Player::Movement(float deltaTime_)
 	fountain->SetOrigin(this->GetPosition());
 	sword->SetPosition(this->GetPosition());
 	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
+	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && canGoLeft)
 	{
 		if (!GetGravity())
 			SetSpeed(-1.0f);
 		else
-			SetSpeed(GetSpeed());
+			SetSpeed(-1.0f);
 		if(!isDashing)
 			SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
 		if (isFacingRight)
@@ -67,13 +70,15 @@ void Player::Movement(float deltaTime_)
 			SetAngle(-1.575);
 			isFacingRight = false;
 		}
+		if(canGoRight == false)
+			canGoRight = true;
 	}
-	else if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D))
+	else if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && canGoRight)
 	{
 		if (!GetGravity())
 			SetSpeed(1.0f);
 		else
-			SetSpeed(GetSpeed());
+			SetSpeed(1.0f);
 		if (!isDashing)
 			SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
 		if (!isFacingRight)
@@ -81,6 +86,8 @@ void Player::Movement(float deltaTime_)
 			SetAngle(1.575);
 			isFacingRight = true;
 		}
+		if (canGoLeft == false)
+			canGoLeft = true;
 	}
 
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_SPACE))
@@ -102,7 +109,7 @@ void Player::Movement(float deltaTime_)
 
 void Player::Jump()
 {
-	SetGravity(true);
+	//SetGravity(true);
 	jumpCooldown.active = true;
 }
 
@@ -169,6 +176,43 @@ void Player::SetIFrames(bool iFrames_)
 void Player::GroundCollision(GameObject* ground_, float deltaTime_)
 {
 	DefaultCollision(ground_, deltaTime_);
+	if (ground_->GetBoundingBox().Intersects(&GetBoundingBox())) {
+		if (ground_->GetTag() == "Platform") {
+			//Collision with specific object response
+
+			glm::vec3 distance = GetPosition() - ground_->GetPosition();
+			//length of the platform
+			glm::vec3 platLength = abs(ground_->GetBoundingBox().minVert - ground_->GetBoundingBox().maxVert);
+			//length of this object
+			glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
+
+			if (distance.y <= ((platLength.y + (thisLength.y / 2)) / 2.0f)) {
+				std::cout << "down" << std::endl;
+				//glm::vec3 vel = glm::vec3(GetVelocity().x, 0.0f, GetVelocity().z);
+				jumpCooldown.seconds = 2.0f;
+				//SetVelocity(vel);
+
+				//distance needs to be positive
+				glm::vec3 positiveDist = abs(GetPosition() - ground_->GetPosition());
+
+				//if you are on the side of the platform
+				if (positiveDist.x >= ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
+					if (distance.x < ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
+						canGoRight = false;
+						dashTimer.seconds = 1.0f;
+						jumpCooldown.seconds = 0.0f;
+					}
+
+					if (distance.x > ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
+						canGoLeft = false;
+						dashTimer.seconds = 1.0f;
+						jumpCooldown.seconds = 0.0f;
+					}
+				}
+			}
+		}
+	}
+
 }
 
 void Player::WallCollision(GameObject* wall_, float deltaTime_)
@@ -178,8 +222,10 @@ void Player::WallCollision(GameObject* wall_, float deltaTime_)
 
 void Player::Update(float deltaTime_)
 {
+	Entity::Update(deltaTime_);
+
 	if (GetGravity())
-		SetVelocity(glm::vec3(GetVelocity().x, GetVelocity().y + (GetVelocity().y * deltaTime_) + (0.5f * GetAcceleration().y * (deltaTime_ * deltaTime_)), GetVelocity().z));
+		SetVelocity(glm::vec3(GetVelocity().x, GetVelocity().y + (GetVelocity().y * deltaTime_) + (0.5f * (GetAcceleration().y * 4) * (deltaTime_ * deltaTime_)), GetVelocity().z));
 	if (isDashing)
 	{
 		dashTimer.seconds += deltaTime_;
@@ -204,6 +250,7 @@ void Player::Update(float deltaTime_)
 	
 	if (jumpCooldown.active)
 	{
+		SetVelocity(glm::vec3(GetVelocity().x, 0.0f, GetVelocity().z));
 		SetVelocity(glm::vec3(GetVelocity().x, GetVelocity().y + jumpForce, GetVelocity().z));
 		jumpCooldown.seconds += deltaTime_;
 		if (jumpCooldown.seconds >= jumpCooldown.waitTime)
@@ -212,6 +259,8 @@ void Player::Update(float deltaTime_)
 			SetGravity(true);
 			jumpCooldown.active = false;
 			jumpCooldown.seconds = 0.0f;
+			canGoLeft = true;
+			canGoRight = true;
 		}
 	}
 	if (attackTimer.active)
