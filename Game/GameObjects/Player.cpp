@@ -4,6 +4,9 @@
 
 Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_) : Entity(model_, position_, true)
 {
+	//Set the player tag and health
+	SetHealth(100);
+	SetTag("Player");
 	///Particle System Initialization
 	particle = new Model("KnightParticle.obj", "KnightParticle.mtl", Shader::GetInstance()->GetShader("baseShader"));
 	fountain = new ParticleSystem();
@@ -173,16 +176,22 @@ void Player::SetIFrames(bool iFrames_)
 	iFrames = iFrames_;
 }
 
-void Player::GroundCollision(GameObject* ground_, float deltaTime_)
+void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 {
-	DefaultCollision(ground_, deltaTime_);
-	if (ground_->GetBoundingBox().Intersects(&GetBoundingBox())) {
-		if (ground_->GetTag() == "Platform") {
+	DefaultCollision(other_, deltaTime_);
+	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
+		if (other_->GetTag() == "Enemy") {
+			//damage the player
+			SetHealth(GetHealth() - 10);
+			std::cout << "Player Health: " << GetHealth() << std::endl;
+		}
+
+		if (other_->GetTag() == "Platform") {
 			//Collision with specific object response
 
-			glm::vec3 distance = GetPosition() - ground_->GetPosition();
+			glm::vec3 distance = GetPosition() - other_->GetPosition();
 			//length of the platform
-			glm::vec3 platLength = abs(ground_->GetBoundingBox().minVert - ground_->GetBoundingBox().maxVert);
+			glm::vec3 platLength = abs(other_->GetBoundingBox().minVert - other_->GetBoundingBox().maxVert);
 			//length of this object
 			glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
 
@@ -193,7 +202,7 @@ void Player::GroundCollision(GameObject* ground_, float deltaTime_)
 				//SetVelocity(vel);
 
 				//distance needs to be positive
-				glm::vec3 positiveDist = abs(GetPosition() - ground_->GetPosition());
+				glm::vec3 positiveDist = abs(GetPosition() - other_->GetPosition());
 
 				//if you are on the side of the platform
 				if (positiveDist.x >= ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
@@ -215,10 +224,6 @@ void Player::GroundCollision(GameObject* ground_, float deltaTime_)
 
 }
 
-void Player::WallCollision(GameObject* wall_, float deltaTime_)
-{
-
-}
 
 void Player::Update(float deltaTime_)
 {
@@ -287,4 +292,8 @@ void Player::Render(Camera* camera_)
 	fountain->Render(camera_);
 	if (isAttacking)
 		sword->GetModel()->Render(Camera::GetInstance());
+}
+
+GameObject* Player::GetSword() {
+	return sword;
 }

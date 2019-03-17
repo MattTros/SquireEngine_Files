@@ -1,15 +1,13 @@
-#ifndef OOZE_H
-#define OOZE_H
+#ifndef FLY_H
+#define FLY_H
 
 //Class by Jake G. Cunningham
+#include "Enemy.h"
 
-#include "../Enemies/Enemy.h"
-
-class Ooze : public Enemy {
-
+class Fly : public Enemy {
 public:
-	Ooze(Model* model_, glm::vec3 position_, bool isGravity_, Entity* player_);
-	~Ooze();
+	Fly(Model* model_, glm::vec3 position_, Entity* player_);
+	~Fly();
 
 	void Update(const float deltaTime_);
 	void CollisionResponse(GameObject* other_, const float deltaTime_);
@@ -22,20 +20,22 @@ private:
 
 	//player object that gets passed into the constructor
 	Entity* player;
-	
+
 	//temp physics variable
 	glm::vec3 position;
 	glm::vec3 acceleration;
 	glm::vec3 velocity;
 
-
-	//variable to decide what state the enemy is in
+	//State variables
 	int state;
-	bool patrolRight;
 
-	//iframe stuff
-	WaitForSeconds wfs;
+	//Particle Variables
+	glm::vec3 particlePos;
+	bool particleOn;
+
+	//Angle for sin wave movement
+	int angle;
 
 };
 
-#endif //OOZE_H
+#endif // !FLY_H

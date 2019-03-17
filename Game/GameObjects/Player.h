@@ -24,11 +24,13 @@ public:
 	bool GetIFrames();
 	void SetIFrames(bool iFrames_);
 
-	void GroundCollision(GameObject* ground_, float deltaTime_);
-	void WallCollision(GameObject* wall_, float deltaTime_);
+	void PlayerCollision(GameObject* other_, float deltaTime_);
 
 	void Update(float deltaTime_);
 	void Render(Camera* camera_);
+
+	//sword getter
+	GameObject* GetSword();
 
 private:
 	Model* particle;

@@ -10,6 +10,7 @@
 #include "../GameObjects/MovingPlatform.h"
 #include "../GameObjects/Entity.h"
 #include "../Enemies/Ooze.h"
+#include "../Enemies/Fly.h"
 #include "../GameObjects/Wall.h"
 #include "../GameObjects/Player.h"
 #include "Scene2.h"
@@ -41,6 +42,7 @@ private:
 
 	//Enemy Stuff
 	Ooze* ooze;
+	Fly* fly;
 
 	GameObject* go;
 };

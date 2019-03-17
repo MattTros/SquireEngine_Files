@@ -72,11 +72,14 @@ bool Scene1::Initialize()
 	Model* playerModel = new Model("SoulKnight.obj", "SoulKnight.mtl", BASE_SHADER);
 	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
 	GameObject* sword = new GameObject(swordModel);
-	player = new Player(playerModel, sword, /*arrow*/nullptr, glm::vec3(0.0f, 3.0f, 0.0f));
+	player = new Player(playerModel, sword, /*arrow*/nullptr, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//Enemy Stuff
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
-	ooze = new Ooze(brick, glm::vec3(2.0f, 1.0f, 0.0f), true , player);
+	ooze = new Ooze(oozeModel, glm::vec3(2.0f, 0.0f, 0.0f), true , player);
+
+	Model* flyModel = new Model("DeathFly.obj", "DeathFly.mtl", BASE_SHADER);
+	fly = new Fly(flyModel, glm::vec3(-2.0f, 0.0f, 0.0f), player);
 
 	return true;
 }
@@ -105,14 +108,14 @@ void Scene1::Update(const float deltaTime_)
 	}
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_1))
 	{
-		SceneManager::GetInstance()->SetScene(new Scene2);
+		SceneManager::GetInstance()->SetScene(2);
 	}
 
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_F))
+	if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_F))
 	{
 		AudioManager::GetInstance()->PlaySoundFX("laserFX");
 	}
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_F))
+	if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_F))
 	{
 		if (player->GetModel()->GetMesh(0)->iFramesBool == true)
 		{
@@ -128,6 +131,11 @@ void Scene1::Update(const float deltaTime_)
 	player->GetModel()->GetMesh(0)->time += deltaTime_;
 	player->GetModel()->GetMesh(1)->time += deltaTime_;
 
+	if (MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::back))
+	{
+		AudioManager::GetInstance()->PlaySoundFX("laserFX");
+	}
+
 	/*if (pB != nullptr)
 		pB->Update(deltaTime_);*/
 
@@ -140,13 +148,23 @@ void Scene1::Update(const float deltaTime_)
 		for (int i = 0; i < 5; i++) {
 			ooze->CollisionResponse(gameObjects[i], deltaTime_);
 		}
+		ooze->CollisionResponse(player->GetSword(), deltaTime_);
+		ooze->CollisionResponse(player, deltaTime_);
+	}
+	
+	if (fly != nullptr) {
+		fly->Update(deltaTime_);
+		
+		fly->CollisionResponse(player->GetSword(), deltaTime_);
+		fly->CollisionResponse(player, deltaTime_);
 	}
 
 	if (player != nullptr) {
 		player->Update(deltaTime_);
 		for (int i = 0; i < 38; i++) {
-			player->GroundCollision(gameObjects[i], deltaTime_);
+			player->PlayerCollision(gameObjects[i], deltaTime_);
 		}
+		player->PlayerCollision(ooze, deltaTime_);
 	}
 
 	SceneGraph::GetInstance()->Update(deltaTime_);
@@ -157,6 +175,7 @@ void Scene1::Render()
 	//SceneGraph::GetInstance()->Render(Camera::GetInstance());
 
 	ooze->GetModel()->Render(Camera::GetInstance());
+	fly->GetModel()->Render(Camera::GetInstance());
 
 	player->Render(Camera::GetInstance());
 

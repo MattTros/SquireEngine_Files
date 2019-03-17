@@ -59,6 +59,10 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 		if (other_->GetTag() == "Platform") {
 			//Collision with specific object response
 
+			if (GetTag() == "Enemy") {
+				isGravity = false;
+			}
+
 			//distance needs to be positive
 			glm::vec3 distance = GetPosition() - other_->GetPosition();
 			//length of the platform

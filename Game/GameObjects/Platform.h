@@ -6,7 +6,7 @@
 #include "../../Engine/Rendering/3D/GameObject.h"
 #include <iostream>
 
-class Platform : public GameObject{
+class Platform : public GameObject {
 public:
 	//Constructors
 	Platform(Model* model_, bool isGravity_);
@@ -24,7 +24,10 @@ private:
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 	glm::vec3 position;
-	
+
+	//sword getter
+	GameObject* GetSword();
+
 };
 
 #endif // !PLATFORM
