@@ -35,6 +35,8 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	jumpCooldown.waitTime = 1.0f;
 	jumpCooldown.seconds = 0.0f;
 	///Sword Inititalization
+	Model* box = new Model("AttackBox.obj", "AttackBox.mtl", Shader::GetInstance()->GetShader("baseShader"));
+	attackBox = new GameObject(box);
 	sword = sword_;
 	sword->SetTag("Sword");
 	sword->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
@@ -59,6 +61,7 @@ void Player::Movement(float deltaTime_)
 {
 	fountain->SetOrigin(this->GetPosition());
 	sword->SetPosition(this->GetPosition());
+	attackBox->SetPosition(this->GetPosition());
 	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && canGoLeft)
 	{
@@ -150,6 +153,7 @@ void Player::LightAttack(float zAxisRotation_)
 {
 	if (!isAttacking)
 	{
+		attackBox->SetPosition(glm::vec3(attackBox->GetPosition().x + (zAxisRotation_ * (GetBoundingBox().minVert.x - GetBoundingBox().maxVert.x)), attackBox->GetPosition().y, attackBox->GetPosition().z));
 		isAttacking = true;
 		attackTimer.active = true;
 		sword->SetRotation(glm::vec3(0.0f, 0.0f, zAxisRotation_));
@@ -270,6 +274,7 @@ void Player::Update(float deltaTime_)
 	}
 	if (attackTimer.active)
 	{
+		attackBox->Update(deltaTime_);
 		sword->SetAngle(sword->GetAngle() + (deltaTime_ * 2.0f));
 		attackTimer.seconds += deltaTime_;
 		if (attackTimer.seconds >= attackTimer.waitTime)
@@ -290,6 +295,7 @@ void Player::Render(Camera* camera_)
 {
 	this->GetModel()->Render(camera_);
 	fountain->Render(camera_);
+	//attackBox->GetModel()->Render(camera_); ///Debug Attack Box
 	if (isAttacking)
 		sword->GetModel()->Render(Camera::GetInstance());
 }

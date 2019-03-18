@@ -38,6 +38,7 @@ private:
 
 	GameObject* sword;
 	GameObject* arrow;
+	GameObject* attackBox;
 
 	//Rigidbody rb;
 
