@@ -27,6 +27,7 @@ private:
 	glm::vec3 position;
 	glm::vec3 acceleration;
 	glm::vec3 velocity;
+	int knockBackDirection;
 
 
 	//variable to decide what state the enemy is in

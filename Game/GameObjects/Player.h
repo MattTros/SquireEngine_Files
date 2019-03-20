@@ -30,8 +30,7 @@ public:
 	void Render(Camera* camera_);
 
 	//sword getter
-	GameObject* GetSword();
-
+	GameObject* GetAttackBox();
 private:
 	Model* particle;
 	ParticleSystem* fountain;
@@ -52,6 +51,7 @@ private:
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;
 	WaitForSeconds attackTimer;
+	WaitForSeconds knockbackTimer;
 
 	//collision bools
 	bool canGoRight;

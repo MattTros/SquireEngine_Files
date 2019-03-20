@@ -32,13 +32,13 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	///Jump Cooldown Initialization
 	jumpCooldown = WaitForSeconds();
 	jumpCooldown.active = false;
-	jumpCooldown.waitTime = 1.0f;
+	jumpCooldown.waitTime = 1.5f;
 	jumpCooldown.seconds = 0.0f;
 	///Sword Inititalization
 	Model* box = new Model("AttackBox.obj", "AttackBox.mtl", Shader::GetInstance()->GetShader("baseShader"));
 	attackBox = new GameObject(box);
 	sword = sword_;
-	sword->SetTag("Sword");
+	attackBox->SetTag("AttackBox");
 	sword->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
 	sword->SetAngle(1.0f);
 	attackTimer = WaitForSeconds();
@@ -48,6 +48,11 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	//collision bool init
 	canGoLeft = true;
 	canGoRight = true;
+	///Knockback Timer Initialize
+	knockbackTimer = WaitForSeconds();
+	knockbackTimer.active = false;
+	knockbackTimer.waitTime = 0.5f;
+	knockbackTimer.seconds = 0.0f;
 }
 
 
@@ -61,7 +66,7 @@ void Player::Movement(float deltaTime_)
 {
 	fountain->SetOrigin(this->GetPosition());
 	sword->SetPosition(this->GetPosition());
-	attackBox->SetPosition(this->GetPosition());
+	attackBox->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, this->GetPosition().z - 10.0f));
 	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && canGoLeft)
 	{
@@ -123,6 +128,7 @@ void Player::Dash()
 {
 	std::cout << "Dashed" << std::endl;
 	isDashing = true;
+	iFrames = true;
 	dashTimer.active = true;
 }
 
@@ -153,7 +159,7 @@ void Player::LightAttack(float zAxisRotation_)
 {
 	if (!isAttacking)
 	{
-		attackBox->SetPosition(glm::vec3(attackBox->GetPosition().x + (zAxisRotation_ * (GetBoundingBox().minVert.x - GetBoundingBox().maxVert.x)), attackBox->GetPosition().y, attackBox->GetPosition().z));
+		attackBox->SetPosition(glm::vec3(attackBox->GetPosition().x + (zAxisRotation_ * (GetBoundingBox().minVert.x - GetBoundingBox().maxVert.x)), attackBox->GetPosition().y, this->GetPosition().z));
 		isAttacking = true;
 		attackTimer.active = true;
 		sword->SetRotation(glm::vec3(0.0f, 0.0f, zAxisRotation_));
@@ -184,10 +190,17 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 {
 	DefaultCollision(other_, deltaTime_);
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
-		if (other_->GetTag() == "Enemy") {
+		if (other_->GetTag() == "Enemy" && !iFrames) {
 			//damage the player
 			SetHealth(GetHealth() - 10);
 			std::cout << "Player Health: " << GetHealth() << std::endl;
+			if (other_->GetPosition().x - GetPosition().x > 0.0f)
+				SetSpeed(-1.0f);
+			else
+				SetSpeed(1.0f);
+			iFrames = true;
+			knockbackTimer.active = true;
+			canGoRight = canGoLeft = false;
 		}
 
 		if (other_->GetTag() == "Platform") {
@@ -243,6 +256,7 @@ void Player::Update(float deltaTime_)
 		{
 			dashTimer.active = false;
 			isDashing = false;
+			iFrames = false;
 			dashCooldown.active = true;
 			dashTimer.seconds = 0.0f;
 		}
@@ -285,6 +299,18 @@ void Player::Update(float deltaTime_)
 			sword->SetAngle(1.0f);
 		}
 	}
+	if (knockbackTimer.active)
+	{
+		knockbackTimer.seconds += deltaTime_;
+		SetVelocity(glm::vec3(GetVelocity().x + (dashForce / 4.0f * GetSpeed()), GetVelocity().y, GetVelocity().z));
+		if (knockbackTimer.seconds >= knockbackTimer.waitTime)
+		{
+			iFrames = false;
+			knockbackTimer.active = false;
+			knockbackTimer.seconds = 0.0f;
+			canGoRight = canGoLeft = true;
+		}
+	}
 
 	Movement(deltaTime_);
 	Combat(deltaTime_);
@@ -300,6 +326,6 @@ void Player::Render(Camera* camera_)
 		sword->GetModel()->Render(Camera::GetInstance());
 }
 
-GameObject* Player::GetSword() {
-	return sword;
+GameObject* Player::GetAttackBox() {
+	return attackBox;
 }

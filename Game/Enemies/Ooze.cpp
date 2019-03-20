@@ -30,24 +30,28 @@ void Ooze::Update(const float deltaTime_) {
 
 	//iframe stuff
 	if (wfs.active) {
+		wfs.seconds += deltaTime_;
+		SetVelocity(glm::vec3(0.0f, GetVelocity().y, 0.0f));
+		SetVelocity(glm::vec3(GetVelocity().x + (2.0f * knockBackDirection), GetVelocity().y, GetVelocity().z));
+		SetPosition(GetPosition() + GetVelocity() * deltaTime_);
 		if (wfs.seconds >= wfs.waitTime) {
 			wfs.seconds = 0.0f;
 			wfs.active = false;
 		}
-		wfs.seconds += deltaTime_;
 	}
 
 	//State machine, 0 = Patrol state. 1 = Chase the player state.
-	if (state == 0) {
+	if (state == 0 && !wfs.active) {
 		Patrol(deltaTime_);
 	}
-	else if (state == 1) {
+	else if (state == 1 && !wfs.active) {
 		Chase(deltaTime_);
 	}
 
 	if (GetGravity() == true) {
 		velocity += (velocity * deltaTime_) + (0.5f * acceleration * (deltaTime_ * deltaTime_));
 		position += velocity * deltaTime_;
+		SetVelocity(glm::vec3(GetVelocity().x, velocity.y, GetVelocity().z));
 		SetPosition(position);
 	}
 }
@@ -58,10 +62,14 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
 
-		if (other_->GetTag() == "Sword"){
+		if (other_->GetTag() == "AttackBox"){
 			if (!wfs.active) {
 				SetHealth(GetHealth() - 50);
 				wfs.active = true;
+				if (other_->GetPosition().x - GetPosition().x > 0.0f)
+					knockBackDirection = -1.0f;
+				else
+					knockBackDirection = 1.0f;
 			}
 		}
 
@@ -106,10 +114,12 @@ void Ooze::Patrol(const float deltaTime_) {
 	//Goomba like AI
 	float speed = GetSpeed();
 	if (patrolRight) {
-		SetVelocity(glm::vec3(-GetSpeed(), 0.0f, 0.0f));
+		SetSpeed(-0.2f);
+		SetVelocity(glm::vec3(GetSpeed(), 0.0f, 0.0f));
 		SetRotation(glm::vec3(0.0f, -1.0f, 0.0f));
 	}
 	else {
+		SetSpeed(0.2f);
 		SetVelocity(glm::vec3(GetSpeed(), 0.0f, 0.0f));
 		SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
@@ -128,7 +138,7 @@ void Ooze::Chase(const float deltaTime_) {
 		//velocity equation
 		SetVelocity(GetSpeed() * direction);
 		//new position equation applying velocity
-		position.x += GetVelocity().x * deltaTime_;
+		position += glm::vec3(GetVelocity().x, 0.0f, 0.0f) * deltaTime_;
 		if (GetVelocity().x > 0) {
 			SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 		}
