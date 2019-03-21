@@ -8,9 +8,10 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	SetHealth(100);
 	SetTag("Player");
 	///Particle System Initialization
-	particle = new Model("KnightParticle.obj", "KnightParticle.mtl", Shader::GetInstance()->GetShader("baseShader"));
+	particle = new Model("KnightParticle.obj", "KnightParticle.mtl", Shader::GetInstance()->GetShader("alphaShader"));
+	particle->GetMesh(0)->transparency = 0.3f;
 	fountain = new ParticleSystem();
-	fountain->CreateSystem(particle, 100, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 2.0f);
+	fountain->CreateSystem(particle, 20, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 2.0f);
 	fountain->SetRadius(0.25f);
 	fountain->SetOrigin(this->GetPosition());
 	fountain->SetRotationSpeed(5.0f);
@@ -53,6 +54,10 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	knockbackTimer.active = false;
 	knockbackTimer.waitTime = 0.5f;
 	knockbackTimer.seconds = 0.0f;
+	//UI Initialize
+	UI = new PlayerUI();
+	window = Engine::GetInstance()->Engine::GetWindow();
+	UI->Initialize(window->GetWindow(), window->GetContext());
 }
 
 
@@ -190,9 +195,30 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 {
 	DefaultCollision(other_, deltaTime_);
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
+		//Collision with specific object response
+		
+		if (other_->GetTag() == "Gas" && !iFrames) {
+			//Fly gas response
+			//damage the player
+			SetHealth(GetHealth() - 10);
+			GetModel()->GetMesh(0)->iFramesBool = true;
+			GetModel()->GetMesh(1)->iFramesBool = true;
+			std::cout << "Player gased: " << GetHealth() << std::endl;
+			if (other_->GetPosition().x - GetPosition().x > 0.0f)
+				SetSpeed(-1.0f);
+			else
+				SetSpeed(1.0f);
+			iFrames = true;
+			knockbackTimer.active = true;
+			knockbackTimer.seconds = 0.2;
+			canGoRight = canGoLeft = false;
+		}
+
 		if (other_->GetTag() == "Enemy" && !iFrames) {
 			//damage the player
 			SetHealth(GetHealth() - 10);
+			GetModel()->GetMesh(0)->iFramesBool = true;
+			GetModel()->GetMesh(1)->iFramesBool = true;
 			std::cout << "Player Health: " << GetHealth() << std::endl;
 			if (other_->GetPosition().x - GetPosition().x > 0.0f)
 				SetSpeed(-1.0f);
@@ -204,8 +230,6 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 		}
 
 		if (other_->GetTag() == "Platform") {
-			//Collision with specific object response
-
 			glm::vec3 distance = GetPosition() - other_->GetPosition();
 			//length of the platform
 			glm::vec3 platLength = abs(other_->GetBoundingBox().minVert - other_->GetBoundingBox().maxVert);
@@ -245,7 +269,8 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 void Player::Update(float deltaTime_)
 {
 	Entity::Update(deltaTime_);
-
+	UI->Update(deltaTime_);
+	
 	if (GetGravity())
 		SetVelocity(glm::vec3(GetVelocity().x, GetVelocity().y + (GetVelocity().y * deltaTime_) + (0.5f * (GetAcceleration().y * 4) * (deltaTime_ * deltaTime_)), GetVelocity().z));
 	if (isDashing)
@@ -301,14 +326,21 @@ void Player::Update(float deltaTime_)
 	}
 	if (knockbackTimer.active)
 	{
+		UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+		UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+		UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
 		knockbackTimer.seconds += deltaTime_;
 		SetVelocity(glm::vec3(GetVelocity().x + (dashForce / 4.0f * GetSpeed()), GetVelocity().y, GetVelocity().z));
+		GetModel()->GetMesh(0)->time += deltaTime_;
+		GetModel()->GetMesh(1)->time += deltaTime_;
 		if (knockbackTimer.seconds >= knockbackTimer.waitTime)
 		{
 			iFrames = false;
 			knockbackTimer.active = false;
 			knockbackTimer.seconds = 0.0f;
 			canGoRight = canGoLeft = true;
+			GetModel()->GetMesh(0)->iFramesBool = false;
+			GetModel()->GetMesh(1)->iFramesBool = false;
 		}
 	}
 
@@ -324,6 +356,7 @@ void Player::Render(Camera* camera_)
 	//attackBox->GetModel()->Render(camera_); ///Debug Attack Box
 	if (isAttacking)
 		sword->GetModel()->Render(Camera::GetInstance());
+	UI->Render();
 }
 
 GameObject* Player::GetAttackBox() {
