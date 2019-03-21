@@ -9,32 +9,100 @@ Fly::Fly(Model* model_, glm::vec3 position_, Entity* player_) : Enemy(model_, po
 	velocity = glm::vec3(0);
 	SetSpeed(0.5f);
 	angle = 0;
-	particleOn = false;	
-	particlePos = glm::vec3(0);
+	//Attacking variables
+	attackModel = new Model("AttackBox.obj", "AttackBox.mtl", Shader::GetInstance()->GetShader("baseShader"));
+	attackBox = new GameObject(attackModel, glm::vec3(position_.x, position_.y, position_.z - 10));
+	attackBox->SetTag("Gas");
+	knockedBack = false;
+	isAttacking = false;
+	attackTimer = 0.0f;
+	gasPos = glm::vec3();
+	//Particle variables
+	particle = new Model("GasBubble.obj", "GasBubble.mtl", Shader::GetInstance()->GetShader("alphaShader"));
+	particle->GetMesh(0)->transparency = 0.3f;
+	fountain = new ParticleSystem();
+	fountain->CreateSystem(particle, 20, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, 0.4f);
+	fountain->SetRadius(0.5f);
+	fountain->SetOrigin(attackBox->GetPosition());
+	fountain->SetRotationSpeed(5.0f);
+	fountain->StartSystem();
 }
 
 Fly::~Fly() {
-	delete player;
+	delete fountain;
+	fountain = nullptr;
 }
 
 void Fly::Update(const float deltaTime_) {
-	//State machine, 0 = Patrol state. 1 = Chase the player state.
-	switch (state) {
-	case 0:
-		Patrol(deltaTime_);
-		break;
-	case 1:
-		Chase(deltaTime_);
-		break;
+	
+	fountain->Update(deltaTime_);
+	fountain->SetOrigin(gasPos);
+
+	if (isAttacking) {
+		//increment timer
+		attackTimer += deltaTime_;
+		
+		//knockback reset
+		//atack begins
+		if (attackTimer >= 1.0f) {
+			Attack();
+			knockedBack = false;
+		}
+		
+		//stop attacking
+		if (attackTimer >= 5.0f) {
+			isAttacking = false;
+			attackTimer = 0.0f;
+			attackBox->SetPosition(glm::vec3(GetVelocity().x, GetVelocity().y, -10.0f));
+		}
 	}
 
+	//State machine, 0 = Patrol state. 1 = Chase the player state.
+	attackBox->Update(deltaTime_);
+	if (!knockedBack) {
+		switch (state) {
+		case 0:
+			Patrol(deltaTime_);
+			break;
+		case 1:
+			Chase(deltaTime_);
+			break;
+		}
+	}
+	else {
+		Knockback(deltaTime_);
+	}
+}
+
+void Fly::Render(Camera* camera_) {
+	GetModel()->Render(camera_);
+	if (isAttacking) {
+		//attackBox->GetModel()->Render(camera_);
+		fountain->Render(camera_);
+	}
 }
 
 void Fly::CollisionResponse(GameObject* other_, const float deltaTime_) {
-	//if fly touches the player, it can fly through anything else
+	//if fly touches the player or is attacked, it can fly through anything else
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
-		if (other_->GetTag() == "Player") {
-			Attack();
+		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "Player") {
+			isAttacking = true;
+			attackTimer = 0.0f;
+			gasPos = GetPosition();
+			
+			if (player->GetPosition().x - GetPosition().x > 0.0f) {
+				knockbackDirection = -1;
+				knockedBack = true;
+			}
+			else {
+				knockbackDirection = 1;
+				knockedBack = true;
+			}
+		}
+
+		if (other_->GetTag() == "AttackBox") {
+			SetHealth(GetHealth() - 50.0f);
+			
 		}
 	}
 }
@@ -44,7 +112,6 @@ void Fly::Patrol(const float deltaTime_) {
 
 	//flutter idle code
 	position = GetPosition();
-
 	position.y += (sin(angle) * deltaTime_) / 2;
 	angle++;
 	if (angle == 360) {
@@ -52,8 +119,9 @@ void Fly::Patrol(const float deltaTime_) {
 	}
 	SetPosition(position);
 
+	//check to see if chasing
 	float distance = glm::length(player->GetPosition() - position);
-	if (distance <= 2.0f) {
+	if (distance <= 5.0f) {
 		state = 1;
 	}
 
@@ -78,10 +146,10 @@ void Fly::Chase(const float deltaTime_) {
 		}
 
 		SetPosition(position);
-		//check the distance to set the state if the platform is close to it's final position
+		//check the distance to set the state
 		float distance = glm::length(player->GetPosition() - position);
 
-		if (distance > 2.0f) {
+		if (distance > 5.0f) {
 			state = 0;
 		}
 	}
@@ -89,5 +157,20 @@ void Fly::Chase(const float deltaTime_) {
 
 void Fly::Attack() {
 	//The fly exudes a cloud when it get's close enough to the player
-	//Activate 
+	//Activate the gas
+	attackBox->SetPosition(gasPos);
+	attackBox->GetModel()->Render(Camera::GetInstance());
+	fountain->Render(Camera::GetInstance());
+
+}
+
+GameObject* Fly::GetGas() {
+	return attackBox;
+}
+
+void Fly::Knockback(const float deltaTime_) {
+	//apply force in the direction that the fly is hit
+	SetVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+	SetVelocity(glm::vec3(GetVelocity().x + (1.0f * knockbackDirection), GetVelocity().y, GetVelocity().z));
+	SetPosition(GetPosition() + GetVelocity() * deltaTime_);
 }

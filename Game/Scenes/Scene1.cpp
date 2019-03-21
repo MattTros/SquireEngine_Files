@@ -10,11 +10,10 @@ Scene1::~Scene1() {
 
 bool Scene1::Initialize()
 {
-	std::string texturePath = "Resources/Textures/";
 
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
-	TextureHandler::GetInstance()->CreateTexture("playdrunnerTexture", texturePath + "PlaydRunnerLogoCircleCircuit.png");
+	
 
 	AudioManager::GetInstance()->LoadSoundFXFile("laserFX", "Laser.wav");
 
@@ -76,7 +75,7 @@ bool Scene1::Initialize()
 
 	//Enemy Stuff
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
-	ooze = new Ooze(oozeModel, glm::vec3(2.0f, 0.0f, 0.0f), true , player);
+	spiker = new Spiker(oozeModel, glm::vec3(2.0f, 0.0f, 0.0f), player);
 
 	Model* flyModel = new Model("DeathFly.obj", "DeathFly.mtl", BASE_SHADER);
 	fly = new Fly(flyModel, glm::vec3(-2.0f, 0.0f, 0.0f), player);
@@ -143,19 +142,19 @@ void Scene1::Update(const float deltaTime_)
 		gameObjects[i]->Update(deltaTime_);
 	}
 
-	if (ooze != nullptr) {
-		ooze->Update(deltaTime_);
+	if (spiker != nullptr) {
+		spiker->Update(deltaTime_);
 		for (int i = 0; i < 5; i++) {
-			ooze->CollisionResponse(gameObjects[i], deltaTime_);
+			spiker->CollisionResponse(gameObjects[i], deltaTime_);
 		}
-		ooze->CollisionResponse(player->GetSword(), deltaTime_);
-		ooze->CollisionResponse(player, deltaTime_);
+		spiker->CollisionResponse(player->GetAttackBox(), deltaTime_);
+		spiker->CollisionResponse(player, deltaTime_);
 	}
 	
 	if (fly != nullptr) {
 		fly->Update(deltaTime_);
 		
-		fly->CollisionResponse(player->GetSword(), deltaTime_);
+		fly->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		fly->CollisionResponse(player, deltaTime_);
 	}
 
@@ -164,7 +163,9 @@ void Scene1::Update(const float deltaTime_)
 		for (int i = 0; i < 38; i++) {
 			player->PlayerCollision(gameObjects[i], deltaTime_);
 		}
-		player->PlayerCollision(ooze, deltaTime_);
+		player->PlayerCollision(spiker, deltaTime_);
+		player->PlayerCollision(fly, deltaTime_);
+		player->PlayerCollision(fly->GetGas(), deltaTime_);
 	}
 
 	SceneGraph::GetInstance()->Update(deltaTime_);
@@ -174,8 +175,8 @@ void Scene1::Render()
 {
 	//SceneGraph::GetInstance()->Render(Camera::GetInstance());
 
-	ooze->GetModel()->Render(Camera::GetInstance());
-	fly->GetModel()->Render(Camera::GetInstance());
+	spiker->Render(Camera::GetInstance());
+	fly->Render(Camera::GetInstance());
 
 	player->Render(Camera::GetInstance());
 

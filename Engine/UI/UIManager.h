@@ -27,8 +27,22 @@ public:
 	//This bool is so that my menu's that are not the main menu don't run the new frame stuff twice when they get loaded
 	bool firstTimeThrough;
 
+	GLuint heart1;
+	GLuint heart2;
+	GLuint heart3;
+
 	inline bool Initialize(SDL_Window* window_, SDL_GLContext context) {
+
 		clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+		//Textures
+		std::string texturePath = "Resources/Textures/";
+		TextureHandler::GetInstance()->CreateTexture("heart", texturePath + "HealthHeart.png");
+		TextureHandler::GetInstance()->CreateTexture("brokenHeart", texturePath + "LostHeart.png");
+
+		heart1 = TextureHandler::GetInstance()->GetTexture("heart");
+		heart2 = TextureHandler::GetInstance()->GetTexture("heart");
+		heart3 = TextureHandler::GetInstance()->GetTexture("heart");
 
 		//Setup Imgui Context
 		IMGUI_CHECKVERSION();

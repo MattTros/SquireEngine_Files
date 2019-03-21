@@ -5,6 +5,8 @@
 #include "Entity.h"
 #include "../../Engine/Events/KeyboardInputManager.h"
 #include "../../Engine/Core/Timer.h"
+#include "../../Engine/UI/UIManager.h"
+#include "../../Engine/UI/PlayerUI.h"
 
 class Player : public Entity
 {
@@ -31,7 +33,12 @@ public:
 
 	//sword getter
 	GameObject* GetAttackBox();
+
 private:
+	//UI variables
+	UIManager* UI;
+	Window* window;
+
 	Model* particle;
 	ParticleSystem* fountain;
 
