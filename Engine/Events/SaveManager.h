@@ -41,6 +41,7 @@ public:
 	void AddSave(const std::string& name_, Save& info_);
 	const Save GetSave(const std::string& saveName_);
 	const Save LoadSave(const std::string& saveName_);
+	void WriteTo(Save save_);
 
 	inline bool CheckExists(const std::string& name)
 	{

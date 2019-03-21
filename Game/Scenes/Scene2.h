@@ -8,6 +8,12 @@
 #include "../ParallaxingBackground.h"
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
+#include "../GameObjects/Entity.h"
+#include "../Enemies/Ooze.h"
+#include "../Enemies/Fly.h"
+#include "../GameObjects/Wall.h"
+#include "../GameObjects/Player.h"
+#include "../GameObjects/Flag.h"
 
 class SceneManager;
 
@@ -23,16 +29,18 @@ public:
 	//UI state machine and update
 	void UpdateUI(const float deltaTime_);
 private:
-	ParticleSystem* particleFountain;
-
-	//! Background stuff:
-	ParallaxingBackground* pB;
-
 	//Platform stuff
-	Platform* p;
-	Platform* p2;
+	GameObject* gameObjects[23];
 
-	GameObject* go;
+	//Player stuff
+	Player* player;
+
+	//Enemy Stuff
+	Ooze* ooze;
+	Fly* fly;
+
+	///Finish Flag
+	Flag* end;
 };
 
 #endif // !SCENE2_H

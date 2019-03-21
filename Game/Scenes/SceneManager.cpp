@@ -48,15 +48,45 @@ void SceneManager::AddScene(SceneInterface* scene_, int index_)
 		sceneMap[index_] = scene_;
 		if (sceneMap[index_] == NULL)
 		{
-			Debug::Error("Scene @ Index: " + std::to_string(index_) + " failed to load", __FILE__, __LINE__);
+			Debug::Error("Scene @ Index: " + std::to_string(index_) + " failed to add", __FILE__, __LINE__);
 		}
 	}
 }
 
 void SceneManager::SetScene(int sceneIndex_)
 {
-	sceneIndex = sceneIndex_;
-	sceneMap[sceneIndex]->Initialize();
+	if (sceneMap[sceneIndex_] == nullptr)
+	{
+		Debug::Error("Scene @ Index: " + std::to_string(sceneIndex_) + " failed to load", __FILE__, __LINE__);
+	}
+	else
+	{
+		sceneIndex = sceneIndex_;
+		sceneMap[sceneIndex]->Initialize();
+	}
+}
+
+int SceneManager::GetSceneIndex()
+{
+	return sceneIndex;
+}
+
+void SceneManager::SaveScene()
+{
+	if (SaveManager::GetInstance()->CheckExists("save1"))
+	{
+		Save save = Save();
+		save.name = "save1";
+		save.info = std::to_string(GetSceneIndex());
+		SaveManager::GetInstance()->WriteTo(save);
+	}
+	else
+	{
+		Save save = Save();
+		save.name = "save1";
+		save.info = std::to_string(GetSceneIndex());
+		SaveManager::GetInstance()->CreateSave("save1", save);
+	}
 }
 
 void SceneManager::Pause()

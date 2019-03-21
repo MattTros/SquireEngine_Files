@@ -116,3 +116,21 @@ const Save SaveManager::LoadSave(const std::string& saveName_)
 
 	return Save();
 }
+
+void SaveManager::WriteTo(Save save_)
+{
+	//! Write to file:
+	std::ofstream myfile;
+	myfile.open(SAVE_PATH + save_.name + ".txt", std::ios::out);
+	if (myfile.is_open())
+	{
+		std::cout << "Opened file.";
+		myfile << "name " << save_.name.c_str() << "\n";
+		myfile << "info " << save_.info.c_str() << "\n";
+		myfile.flush();
+		myfile.close();
+	}
+	else std::cout << "Unable to open file.\n";
+
+	std::cout << "Save over-written.\n";
+}

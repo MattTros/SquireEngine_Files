@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "SceneInterface.h"
+#include "../../Engine/Events/SaveManager.h"
 
 class SceneManager
 {
@@ -20,6 +21,10 @@ public:
 
 	void AddScene(SceneInterface* scene_, int index_);
 	void SetScene(int sceneIndex_);
+
+	int GetSceneIndex();
+
+	void SaveScene();
 
 	void Pause();
 	void Unpause();

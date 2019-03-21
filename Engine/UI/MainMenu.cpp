@@ -41,15 +41,20 @@ void MainMenu::Update(const float deltaTime_) {
 	widgetPos = ImVec2(size.x / 2 - (buttonSize.x / 2), 100);
 	ImGui::SetCursorPos(widgetPos);
 	if (ImGui::Button("New Game", buttonSize))
-	{                      // This button will load the game scene without save data
+	{                      
+		// This button will load the game scene without save data
 		counter++;
-		SceneManager::GetInstance()->SetScene(new Scene1);
+		SceneManager::GetInstance()->SetScene(1);
 	}
 
 	widgetPos = ImVec2(size.x / 2 - (buttonSize.x / 2), 150 + buttonSize.y);
 	ImGui::SetCursorPos(widgetPos);
-	if (ImGui::Button("Load Game", buttonSize))                            // This button will load the game scene with save data
+	if (ImGui::Button("Load Game", buttonSize))
+	{
+		// This button will load the game scene with save data
 		counter++;
+		SceneManager::GetInstance()->SetScene(std::atoi(SaveManager::GetInstance()->LoadSave("save1").info.c_str()));
+	}
 
 	widgetPos = ImVec2(size.x / 2 - (buttonSize.x / 2), (150 * 2 )+ buttonSize.y );
 	ImGui::SetCursorPos(widgetPos);
