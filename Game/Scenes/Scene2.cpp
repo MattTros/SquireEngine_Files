@@ -64,12 +64,29 @@ bool Scene2::Initialize()
 	Model* flyModel = new Model("DeathFly.obj", "DeathFly.mtl", BASE_SHADER);
 	fly = new Fly(flyModel, glm::vec3(26.0f, -3.0f, 0.0f), player);
 
+	initTimer = WaitForSeconds();
+	initTimer.waitTime = 2.0f;
+	initTimer.seconds = 0.0f;
+	initTimer.active = true;
+	player->SetGravity(false); ooze->SetGravity(false);
+
 	return true;
 }
 
 void Scene2::Update(const float deltaTime_)
 {
 	//SceneGraph::GetInstance()->Update(deltaTime_);
+
+	if (initTimer.active)
+	{
+		initTimer.seconds += deltaTime_;
+		if (initTimer.seconds >= initTimer.waitTime)
+		{
+			initTimer.active = false;
+			player->SetGravity(true); ooze->SetGravity(true);
+			initTimer.seconds = 0.0f;
+		}
+	}
 
 	for (int i = 0; i < 23; i++) {
 		gameObjects[i]->Update(deltaTime_);

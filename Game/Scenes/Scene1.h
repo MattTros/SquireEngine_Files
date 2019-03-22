@@ -46,7 +46,8 @@ private:
 	Fly* fly;
 	Spiker* spiker;
 
-	GameObject* go;
+	Flag* end;
+	WaitForSeconds initTimer;
 };
 
 #endif // !SCENE1_H

@@ -41,6 +41,7 @@ private:
 
 	///Finish Flag
 	Flag* end;
+	WaitForSeconds initTimer;
 };
 
 #endif // !SCENE2_H
