@@ -17,6 +17,7 @@
 #include "../Rendering/SceneGraph.h"
 #include "../FX/AudioManager.h"
 #include "../Events/KeyboardInputManager.h"
+#include "../Events/MouseInputManager.h"
 #include "../Events/GamepadInputManager.h"
 #include "../Graphics/ParticleSystem.h"
 #include "../UI/UIManager.h"

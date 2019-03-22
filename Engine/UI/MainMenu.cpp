@@ -16,11 +16,10 @@ MainMenu::~MainMenu() {
 void MainMenu::Update(const float deltaTime_) {
 
 	// Start the Dear ImGui frame
-	if (!firstTimeThrough) {
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(w);
-		ImGui::NewFrame();
-	}
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(w);
+	ImGui::NewFrame();
+	
 	static int counter = 0;
 
 	//setting the size and position of our window
@@ -44,7 +43,11 @@ void MainMenu::Update(const float deltaTime_) {
 	{                      
 		// This button will load the game scene without save data
 		counter++;
+
+		ImGui::End();
+		ImGui::EndFrame();
 		SceneManager::GetInstance()->SetScene(1);
+		return;
 	}
 
 	widgetPos = ImVec2(size.x / 2 - (buttonSize.x / 2), 150 + buttonSize.y);
@@ -53,7 +56,13 @@ void MainMenu::Update(const float deltaTime_) {
 	{
 		// This button will load the game scene with save data
 		counter++;
+
+		Render();
+		ImGui::End();
+		ImGui::EndFrame();
 		SceneManager::GetInstance()->SetScene(std::atoi(SaveManager::GetInstance()->LoadSave("save1").info.c_str()));
+		
+		
 	}
 
 	widgetPos = ImVec2(size.x / 2 - (buttonSize.x / 2), (150 * 2 )+ buttonSize.y );

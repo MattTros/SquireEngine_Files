@@ -82,21 +82,34 @@ void Scene2::Update(const float deltaTime_)
 		}
 		ooze->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		ooze->CollisionResponse(player, deltaTime_);
+		if (ooze->GetHealth() <= 0) {
+			ooze->~Ooze();
+			ooze = nullptr;
+		}
 	}
 
-	/*if (fly != nullptr) {
+	if (fly != nullptr) {
 		fly->Update(deltaTime_);
 
-		fly->CollisionResponse(player->GetSword(), deltaTime_);
+		fly->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		fly->CollisionResponse(player, deltaTime_);
-	}*/
+		if (fly->GetHealth() <= 0) {
+			fly->~Fly();
+			fly = nullptr;
+		}
+	}
 
 	if (player != nullptr) {
 		player->Update(deltaTime_);
 		for (int i = 0; i < 23; i++) {
 			player->PlayerCollision(gameObjects[i], deltaTime_);
 		}
-		player->PlayerCollision(ooze, deltaTime_);
+		if (ooze != nullptr)
+			player->PlayerCollision(ooze, deltaTime_);
+		if (fly != nullptr) {
+			player->PlayerCollision(fly, deltaTime_);
+			player->PlayerCollision(fly->GetGas(), deltaTime_);
+		}
 	}
 
 	if (end != nullptr)
@@ -109,10 +122,13 @@ void Scene2::Render()
 {
 	//SceneGraph::GetInstance()->Render(Camera::GetInstance());
 
-	ooze->GetModel()->Render(Camera::GetInstance());
-	fly->GetModel()->Render(Camera::GetInstance());
+	if(ooze != nullptr)
+		ooze->Render(Camera::GetInstance());
 
-	player->Render(Camera::GetInstance());
+	if (fly != nullptr)
+		fly->Render(Camera::GetInstance());
 
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
+
+	player->Render(Camera::GetInstance());
 }

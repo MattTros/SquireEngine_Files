@@ -35,7 +35,7 @@ void main()
 {
 	if (iFrames)
 	{
-		color = mix(texture(inputTexture,TexCoords), vec4(0.0f, 0.0f, 1.0f, 1.0f), abs(sin(time * 1.0f)));
+		color = mix(texture(inputTexture,TexCoords), vec4(0.5f, 0.5f, 0.5f, 1.0f), abs(sin(time * 4.0f)));
 	}
 	else
 	{

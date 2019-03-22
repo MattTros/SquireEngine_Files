@@ -12,6 +12,7 @@ public:
 	~Ooze();
 
 	void Update(const float deltaTime_);
+	void Render(Camera* camera_);
 	void CollisionResponse(GameObject* other_, const float deltaTime_);
 
 private:

@@ -1,6 +1,7 @@
 #include "Fly.h"
 
 Fly::Fly(Model* model_, glm::vec3 position_, Entity* player_) : Enemy(model_, position_, false) {
+	SetHealth(100);
 	state = 0;
 	player = player_;
 	SetTag("Enemy");
@@ -101,8 +102,7 @@ void Fly::CollisionResponse(GameObject* other_, const float deltaTime_) {
 		}
 
 		if (other_->GetTag() == "AttackBox") {
-			SetHealth(GetHealth() - 50.0f);
-			
+			SetHealth(GetHealth() - 25.0f);
 		}
 	}
 }

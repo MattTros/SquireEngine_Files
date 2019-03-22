@@ -22,7 +22,7 @@ bool Engine::Initialize(std::string name_, int width_, int height_)
 	Debug::SetSeverity(MessageType::TYPE_INFO);
 
 	window = new Window();
-	if (!window->Initialize("Engine Window", 1600, 900))
+	if (!window->Initialize(name_, width_, height_))
 	{
 		Debug::FatalError("Failed to initialize window", __FILE__, __LINE__);
 		std::cout << "Failed to initialize window" << std::endl;
@@ -34,6 +34,7 @@ bool Engine::Initialize(std::string name_, int width_, int height_)
 
 	Shader::GetInstance()->CreateProgram("colorShader", "Engine/Shaders/ColorVertexShader.glsl", "Engine/Shaders/ColorFragmentShader.glsl");
 	Shader::GetInstance()->CreateProgram("baseShader", "Engine/Shaders/VertexShader.glsl", "Engine/Shaders/FragmentShader.glsl");
+	Shader::GetInstance()->CreateProgram("alphaShader", "Engine/Shaders/AlphaShaderVert.glsl", "Engine/Shaders/AlphaShaderFrag.glsl");
 
 	if (gameInterface)
 	{
@@ -57,6 +58,9 @@ void Engine::Run()
 	while (isRunning)
 	{
 		KeyboardInputManager::GetInstance()->Update();
+		KeyboardInputManager::GetInstance()->UpdatePrevious();
+		MouseInputManager::GetInstance()->Update();
+		MouseInputManager::GetInstance()->UpdatePrevious();
 		GamepadInputManager::GetInstance()->Update();
 		EventListener::Update();
 		timer.UpdateFrameTicks();

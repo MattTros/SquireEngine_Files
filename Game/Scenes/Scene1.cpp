@@ -178,9 +178,9 @@ void Scene1::Render()
 	spiker->Render(Camera::GetInstance());
 	fly->Render(Camera::GetInstance());
 
-	player->Render(Camera::GetInstance());
-
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[5]->GetModel()->Render(Camera::GetInstance());
+
+	player->Render(Camera::GetInstance());
 
 }

@@ -58,9 +58,6 @@ public:
 
 		ImGui_ImplSDL2_InitForOpenGL(w, c);
 		ImGui_ImplOpenGL3_Init("#version 130");
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(w);
-		ImGui::NewFrame();
 
 		firstTimeThrough = true;
 

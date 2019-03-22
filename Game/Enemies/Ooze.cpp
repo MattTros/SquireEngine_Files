@@ -56,6 +56,10 @@ void Ooze::Update(const float deltaTime_) {
 	}
 }
 
+void Ooze::Render(Camera* camera_) {
+	GetModel()->Render(camera_);
+}
+
 void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 	//call the default collisions from the entity class
 	DefaultCollision(other_, deltaTime_);
@@ -64,9 +68,9 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 		if (other_->GetTag() == "AttackBox"){
 			if (!wfs.active) {
-				SetHealth(GetHealth() - 50);
+				SetHealth(GetHealth() - 25);
 				wfs.active = true;
-				if (other_->GetPosition().x - GetPosition().x > 0.0f)
+				if (player->GetPosition().x - GetPosition().x > 0.0f)
 					knockBackDirection = -1.0f;
 				else
 					knockBackDirection = 1.0f;

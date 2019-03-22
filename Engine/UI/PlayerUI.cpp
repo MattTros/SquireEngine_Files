@@ -13,11 +13,9 @@ PlayerUI::~PlayerUI() {
 
 void PlayerUI::Update(const float deltaTime_) {
 	// Start the Dear ImGui frame
-	if (!firstTimeThrough) {
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(w);
-		ImGui::NewFrame();
-	}
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame(w);
+	ImGui::NewFrame();
 
 	//setting the size and position of our window
 	ImVec2 size = ImVec2(Engine::GetInstance()->GetScreenSize().x, Engine::GetInstance()->GetScreenSize().y);

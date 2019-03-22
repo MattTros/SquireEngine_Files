@@ -118,7 +118,7 @@ void LoadOBJModel::LoadModel(const std::string& fileName_)
 				if (indices.size() > 0)
 				{
 					PostProcessing();
-				}
+				} 
 				LoadMaterial(line.substr(7));
 			}
 		}

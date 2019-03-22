@@ -5,7 +5,7 @@
 Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_) : Entity(model_, position_, true)
 {
 	//Set the player tag and health
-	SetHealth(100);
+	SetHealth(3);
 	SetTag("Player");
 	///Particle System Initialization
 	particle = new Model("KnightParticle.obj", "KnightParticle.mtl", Shader::GetInstance()->GetShader("alphaShader"));
@@ -200,7 +200,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 		if (other_->GetTag() == "Gas" && !iFrames) {
 			//Fly gas response
 			//damage the player
-			SetHealth(GetHealth() - 10);
+			SetHealth(GetHealth() - 1);
 			GetModel()->GetMesh(0)->iFramesBool = true;
 			GetModel()->GetMesh(1)->iFramesBool = true;
 			std::cout << "Player gased: " << GetHealth() << std::endl;
@@ -216,7 +216,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 
 		if (other_->GetTag() == "Enemy" && !iFrames) {
 			//damage the player
-			SetHealth(GetHealth() - 10);
+			SetHealth(GetHealth() - 1);
 			GetModel()->GetMesh(0)->iFramesBool = true;
 			GetModel()->GetMesh(1)->iFramesBool = true;
 			std::cout << "Player Health: " << GetHealth() << std::endl;
@@ -326,9 +326,18 @@ void Player::Update(float deltaTime_)
 	}
 	if (knockbackTimer.active)
 	{
-		UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
-		UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
-		UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+		switch (GetHealth())
+		{
+		case 2:
+			UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+			break;
+		case 1:
+			UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+			break;
+		case 0:
+			UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+			break;
+		}
 		knockbackTimer.seconds += deltaTime_;
 		SetVelocity(glm::vec3(GetVelocity().x + (dashForce / 4.0f * GetSpeed()), GetVelocity().y, GetVelocity().z));
 		GetModel()->GetMesh(0)->time += deltaTime_;
