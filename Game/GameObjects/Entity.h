@@ -80,6 +80,7 @@ private:
 	bool isGravity;
 
 	WaitForSeconds* spikeWFS;
+	WaitForSeconds dropThroughTimer;
 
 	//private variables that will belong to all entities
 	int health;

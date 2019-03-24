@@ -13,7 +13,7 @@ bool Scene1::Initialize()
 
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
-	
+
 
 	AudioManager::GetInstance()->LoadSoundFXFile("laserFX", "Laser.wav");
 
@@ -42,7 +42,7 @@ bool Scene1::Initialize()
 	gameObjects[12] = new Platform(brick, glm::vec3(14.0f, -2.0f, 0.0f), false);
 	gameObjects[13] = new Platform(brick, glm::vec3(16.0f, -2.0f, 0.0f), false);
 	gameObjects[14] = new Platform(brick, glm::vec3(18.0f, -2.0f, 0.0f), false);
-	gameObjects[15] = new Platform(platform, glm::vec3(20.0f, -2.0f, 0.0f), false); ///Drop through platform
+	gameObjects[15] = new DropThroughPlatform(platform, glm::vec3(20.0f, -2.0f, 0.0f), false); ///Drop through platform
 	gameObjects[16] = new Platform(brick, glm::vec3(22.0f, -2.0f, 0.0f), false);
 	gameObjects[17] = new Platform(brick, glm::vec3(22.0f, -1.0f, 0.0f), false);
 	gameObjects[18] = new Platform(brick, glm::vec3(22.0f, 0.0f, 0.0f), false);
@@ -167,10 +167,10 @@ void Scene1::Update(const float deltaTime_)
 		spiker->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		spiker->CollisionResponse(player, deltaTime_);
 	}
-	
+
 	if (fly != nullptr) {
 		fly->Update(deltaTime_);
-		
+
 		fly->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		fly->CollisionResponse(player, deltaTime_);
 	}

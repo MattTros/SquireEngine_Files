@@ -79,6 +79,11 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 
 		if (other_->GetTag() == "Wall" || other_->GetTag() == "Player") {
+
+			if (other_->GetTag() == "Wall") {
+				wfs.seconds = 0.5f;
+			}
+
 			//Collision for if patrolling
 			if (GetSpeed() == 0.0f) {
 				SetSpeed(0.2f);
@@ -96,7 +101,22 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 				//collision for if chasing
 			}
 			else {
-				SetSpeed(0.0f);
+				//calculate which side of the wall and player the ooze is on
+				float playerDist = player->GetPosition().x - GetPosition().x;
+				float platformDist = other_->GetPosition().x - GetPosition().x;
+
+				if (playerDist > 0 && platformDist > 0) {
+					SetSpeed(0.0f);
+				}
+				else if (playerDist < 0 && platformDist < 0) {
+					SetSpeed(0.0f);
+				}
+				else if (playerDist > 0 && platformDist < 0) {
+					SetSpeed(0.2f);
+				}
+				else if (playerDist < 0 && platformDist > 0) {
+					SetSpeed(0.2f);
+				}
 			}
 		}
 		else {
