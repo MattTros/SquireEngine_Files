@@ -54,6 +54,8 @@ private:
 	bool isAttacking = false;
 	float jumpForce;
 	float dashForce = 5.0f;
+	bool dashingRight;
+	bool dashingLeft;
 	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;

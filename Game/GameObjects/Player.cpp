@@ -131,9 +131,20 @@ void Player::Jump()
 
 void Player::Dash()
 {
-	std::cout << "Dashed" << std::endl;
 	isDashing = true;
 	iFrames = true;
+	if (GetSpeed() == 1.0f)
+	{
+		dashingRight = true;
+		dashingLeft = false;
+	}
+	else
+	{
+		dashingLeft = true;
+		dashingRight = false;
+	}
+	GetModel()->GetMesh(0)->iFramesBool = true;
+	GetModel()->GetMesh(1)->iFramesBool = true;
 	dashTimer.active = true;
 }
 
@@ -203,7 +214,6 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			SetHealth(GetHealth() - 1);
 			GetModel()->GetMesh(0)->iFramesBool = true;
 			GetModel()->GetMesh(1)->iFramesBool = true;
-			std::cout << "Player gased: " << GetHealth() << std::endl;
 			if (other_->GetPosition().x - GetPosition().x > 0.0f)
 				SetSpeed(-1.0f);
 			else
@@ -219,7 +229,6 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			SetHealth(GetHealth() - 1);
 			GetModel()->GetMesh(0)->iFramesBool = true;
 			GetModel()->GetMesh(1)->iFramesBool = true;
-			std::cout << "Player Health: " << GetHealth() << std::endl;
 			if (other_->GetPosition().x - GetPosition().x > 0.0f)
 				SetSpeed(-1.0f);
 			else
@@ -237,7 +246,6 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
 
 			if (distance.y <= ((platLength.y + (thisLength.y / 2)) / 2.0f)) {
-				std::cout << "down" << std::endl;
 				//glm::vec3 vel = glm::vec3(GetVelocity().x, 0.0f, GetVelocity().z);
 				jumpCooldown.seconds = 2.0f;
 				//SetVelocity(vel);
@@ -249,13 +257,11 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 				if (positiveDist.x >= ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
 					if (distance.x < ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
 						canGoRight = false;
-						dashTimer.seconds = 1.0f;
 						jumpCooldown.seconds = 0.0f;
 					}
 
 					if (distance.x > ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
 						canGoLeft = false;
-						dashTimer.seconds = 1.0f;
 						jumpCooldown.seconds = 0.0f;
 					}
 				}
@@ -276,13 +282,33 @@ void Player::Update(float deltaTime_)
 	if (isDashing)
 	{
 		dashTimer.seconds += deltaTime_;
-		SetVelocity(glm::vec3(GetVelocity().x + (dashForce * GetSpeed()), GetVelocity().y, GetVelocity().z));
+		GetModel()->GetMesh(0)->time += deltaTime_;
+		GetModel()->GetMesh(1)->time += deltaTime_;
+		if (dashingRight && canGoRight)
+		{
+			SetVelocity(glm::vec3(GetVelocity().x + (dashForce * GetSpeed()), GetVelocity().y, GetVelocity().z));
+			std::cout << "Dashing" << std::endl;
+		}
+		else if (dashingLeft && canGoLeft)
+		{
+			SetVelocity(glm::vec3(GetVelocity().x + (dashForce * GetSpeed()), GetVelocity().y, GetVelocity().z));
+			std::cout << "Dashing" << std::endl;
+		}
+		else
+		{
+			SetVelocity(glm::vec3(0.0f, GetVelocity().y, GetVelocity().z));
+			dashTimer.seconds = 0.51f;
+			std::cout << "Not Dashing" << std::endl;
+		}
 		if (dashTimer.seconds > dashTimer.waitTime)
 		{
 			dashTimer.active = false;
 			isDashing = false;
 			iFrames = false;
 			dashCooldown.active = true;
+			dashingRight = dashingLeft = false;
+			GetModel()->GetMesh(0)->iFramesBool = false;
+			GetModel()->GetMesh(1)->iFramesBool = false;
 			dashTimer.seconds = 0.0f;
 		}
 	}
