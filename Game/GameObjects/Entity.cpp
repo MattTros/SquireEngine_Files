@@ -19,6 +19,11 @@ Entity::Entity(Model* model_, glm::vec3 position_, bool isGravity_) : GameObject
 	//set the tag of this object
 	SetTag("Platform");
 	currentPlatform = nullptr;
+	//! Drop Through WFS:
+	dropThroughTimer = WaitForSeconds();
+	dropThroughTimer.active = false;
+	dropThroughTimer.waitTime = 1.0f;
+	dropThroughTimer.seconds = 0.0f;
 }
 
 Entity::~Entity() {
@@ -29,6 +34,16 @@ Entity::~Entity() {
 void Entity::Update(const float deltaTime_) {
 	if (currentPlatform != nullptr) {
 		ResetGravity(currentPlatform);
+	}
+
+	if (dropThroughTimer.active)
+	{
+		if (dropThroughTimer.seconds >= dropThroughTimer.waitTime)
+		{
+			dropThroughTimer.active = false;
+			dropThroughTimer.seconds = 0.0f;
+		}
+		dropThroughTimer.seconds += deltaTime_;
 	}
 }
 
@@ -80,6 +95,44 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 
 			}
 			
+		}
+
+		if (other_->GetTag() == "DropThroughPlatform")
+		{
+			//Collision with specific object response
+
+			if (GetTag() == "Enemy") 
+			{
+				isGravity = false;
+			}
+
+
+			if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_S) && GetTag() == "Player")
+			{
+				dropThroughTimer.active = true;
+				SetGravity(true);
+			}
+
+			if (!dropThroughTimer.active)
+			{
+				//distance needs to be positive
+				glm::vec3 distance = GetPosition() - other_->GetPosition();
+				//length of the platform
+				glm::vec3 platLength = abs(other_->GetBoundingBox().minVert - other_->GetBoundingBox().maxVert);
+				//length of this object
+				glm::vec3 thisLength = abs(GetBoundingBox().minVert - GetBoundingBox().maxVert);
+
+				if (distance.y >= ((platLength.y + (thisLength.y / 2)) / 2.0f))
+				{
+					//the player is on the side of the platform
+					//if the entity is on top
+					isGravity = false;
+					currentPlatform = other_;
+					glm::vec3 vel = glm::vec3(GetVelocity().x, 0.0f, GetVelocity().z);
+					SetVelocity(vel);
+
+				}
+			}
 		}
 
 		if (other_->GetTag() == "MovingPlatform") {
