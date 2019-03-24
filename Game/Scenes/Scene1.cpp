@@ -71,37 +71,20 @@ bool Scene1::Initialize()
 	Model* playerModel = new Model("SoulKnight.obj", "SoulKnight.mtl", BASE_SHADER);
 	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
 	GameObject* sword = new GameObject(swordModel);
-	player = new Player(playerModel, sword, /*arrow*/nullptr, glm::vec3(0.0f, -1.0f, 0.0f));
+	player = new Player(playerModel, sword, /*arrow*/nullptr, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//Enemy Stuff
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
-	spiker = new Spiker(oozeModel, glm::vec3(2.0f, -1.0f, 0.0f), player);
+	spiker = new Spiker(oozeModel, glm::vec3(2.0f, 0.0f, 0.0f), player);
 
 	Model* flyModel = new Model("DeathFly.obj", "DeathFly.mtl", BASE_SHADER);
 	fly = new Fly(flyModel, glm::vec3(-2.0f, 0.0f, 0.0f), player);
-
-	initTimer = WaitForSeconds();
-	initTimer.waitTime = 2.0f;
-	initTimer.seconds = 0.0f;
-	initTimer.active = true;
-	player->SetGravity(false); spiker->SetGravity(false);
 
 	return true;
 }
 
 void Scene1::Update(const float deltaTime_)
 {
-	if (initTimer.active)
-	{
-		initTimer.seconds += deltaTime_;
-		if (initTimer.seconds >= initTimer.waitTime)
-		{
-			initTimer.active = false;
-			player->SetGravity(true); spiker->SetGravity(true);
-			initTimer.seconds = 0.0f;
-		}
-	}
-
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_W))
 	{
 		//particleFountain->SetOrigin(particleFountain->GetOrigin() + glm::vec3(0.0f, deltaTime_, 0.0f));
@@ -147,10 +130,10 @@ void Scene1::Update(const float deltaTime_)
 	player->GetModel()->GetMesh(0)->time += deltaTime_;
 	player->GetModel()->GetMesh(1)->time += deltaTime_;
 
-	if (MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::back))
+	/*if (MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::back))
 	{
 		AudioManager::GetInstance()->PlaySoundFX("laserFX");
-	}
+	}*/
 
 	/*if (pB != nullptr)
 		pB->Update(deltaTime_);*/
@@ -195,9 +178,9 @@ void Scene1::Render()
 	spiker->Render(Camera::GetInstance());
 	fly->Render(Camera::GetInstance());
 
+	player->Render(Camera::GetInstance());
+
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[5]->GetModel()->Render(Camera::GetInstance());
-
-	player->Render(Camera::GetInstance());
 
 }
