@@ -56,6 +56,7 @@ private:
 	float dashForce = 5.0f;
 	bool dashingRight;
 	bool dashingLeft;
+	bool hittingWall = false;
 	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;

@@ -255,6 +255,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 
 				//if you are on the side of the platform
 				if (positiveDist.x >= ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
+					hittingWall = true;
 					if (distance.x < ((platLength.x + (thisLength.x / 2)) / 2.0f)) {
 						canGoRight = false;
 						jumpCooldown.seconds = 0.0f;
@@ -285,20 +286,13 @@ void Player::Update(float deltaTime_)
 		GetModel()->GetMesh(0)->time += deltaTime_;
 		GetModel()->GetMesh(1)->time += deltaTime_;
 		if (dashingRight && canGoRight)
-		{
 			SetVelocity(glm::vec3(GetVelocity().x + (dashForce * GetSpeed()), GetVelocity().y, GetVelocity().z));
-			std::cout << "Dashing" << std::endl;
-		}
 		else if (dashingLeft && canGoLeft)
-		{
 			SetVelocity(glm::vec3(GetVelocity().x + (dashForce * GetSpeed()), GetVelocity().y, GetVelocity().z));
-			std::cout << "Dashing" << std::endl;
-		}
 		else
 		{
 			SetVelocity(glm::vec3(0.0f, GetVelocity().y, GetVelocity().z));
 			dashTimer.seconds = 0.51f;
-			std::cout << "Not Dashing" << std::endl;
 		}
 		if (dashTimer.seconds > dashTimer.waitTime)
 		{
@@ -365,7 +359,10 @@ void Player::Update(float deltaTime_)
 			break;
 		}
 		knockbackTimer.seconds += deltaTime_;
-		SetVelocity(glm::vec3(GetVelocity().x + (dashForce / 4.0f * GetSpeed()), GetVelocity().y, GetVelocity().z));
+		if(!hittingWall)
+			SetVelocity(glm::vec3(GetVelocity().x + (dashForce / 4.0f * GetSpeed()), GetVelocity().y, GetVelocity().z));
+		else
+			SetVelocity(glm::vec3(0.0f, GetVelocity().y, GetVelocity().z));
 		GetModel()->GetMesh(0)->time += deltaTime_;
 		GetModel()->GetMesh(1)->time += deltaTime_;
 		if (knockbackTimer.seconds >= knockbackTimer.waitTime)
@@ -376,6 +373,7 @@ void Player::Update(float deltaTime_)
 			canGoRight = canGoLeft = true;
 			GetModel()->GetMesh(0)->iFramesBool = false;
 			GetModel()->GetMesh(1)->iFramesBool = false;
+			hittingWall = false;
 		}
 	}
 
