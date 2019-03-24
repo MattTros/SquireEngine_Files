@@ -8,6 +8,7 @@
 #include "../ParallaxingBackground.h"
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
+#include "../GameObjects/DropThroughPlatform.h"
 #include "../GameObjects/Entity.h"
 #include "../Enemies/Ooze.h"
 #include "../Enemies/Fly.h"
@@ -46,7 +47,8 @@ private:
 	Fly* fly;
 	Spiker* spiker;
 
-	GameObject* go;
+	Flag* end;
+	WaitForSeconds initTimer;
 };
 
 #endif // !SCENE1_H
