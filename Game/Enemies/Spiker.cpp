@@ -58,10 +58,34 @@ void Spiker::Update(const float deltaTime_) {
 		attackTimer = 0.0f;
 	}
 
+	if (shotSpike != nullptr)
+	{
+		shotSpike->Update(deltaTime_);
+		shotSpike->SetPosition(glm::vec3(shotSpike->GetPosition().x + (deltaTime_ * shotSpike->GetSpeed() * shotSpike->GetDirection()), shotSpike->GetPosition().y, shotSpike->GetPosition().z));
+		
+		//shotSpike->SetPosition(glm::vec3(shotSpike->GetPosition().x + (deltaTime_ * shotSpike->GetSpeed()), shotSpike->GetPosition() + Parabola(shotSpike->GetPosition().x), shotSpike->GetPosition().z));
+
+		if (shotSpike->GetCurrentLifetime() >= shotSpike->GetLifetime())
+		{
+			shotSpike->~Projectile();
+
+			delete shotSpike;
+			shotSpike = nullptr;
+
+			delete spike;
+			spike = nullptr;
+		}
+	}
+
 }
 
 void Spiker::Render(Camera* camera_) {
 	GetModel()->Render(camera_);
+
+	if (spike != nullptr)
+	{
+		spike->Render(camera_);
+	}
 }
 
 void Spiker::CollisionResponse(GameObject* other_, const float deltaTime_) {
@@ -104,7 +128,6 @@ void Spiker::CollisionResponse(GameObject* other_, const float deltaTime_) {
 		else {
 			SetSpeed(0.2f);
 		}
-
 	}
 }
 
@@ -160,9 +183,62 @@ void Spiker::Chase(const float deltaTime_) {
 	}
 }
 
-void Spiker::Attack() {
-	std::cout << "Attack" << std::endl;
+void Spiker::Attack()
+{
+	std::cout << "attack" << std::endl;
+	spike = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", BASE_SHADER);
+	shotSpike = new Projectile(spike, glm::vec3(GetPosition().x, GetPosition().y + 0.125f, GetPosition().z), false, 5.0f, 2.0f);
 
+	shotSpike->SetTag("EnemyProjectile");
+	shotSpike->SetDirection(GetPosition().x > player->GetPosition().x ? -1 : 1); //If spiker is on the right side, he shoots along the -X-Axis, otherwise he shoots to the right.
+	shotSpike->SetRotation(glm::vec3(shotSpike->GetRotation().x, shotSpike->GetDirection(), shotSpike->GetRotation().z));
 
+	//! Parabola work:
+	//float x1 = 0.0f; //! X-intercept 1
+	//float x2 = 0.0f; //! X-intercept 2
 
+	//glm::vec3 posPlayer = player->GetPosition(); //! Position of player at instance of method call
+	//glm::vec3 posEnemy = GetPosition(); //! Position of Spiker at instance of method call
+
+	////! Find the vertex:
+	//if (posPlayer.y > posEnemy.y)
+	//{
+	//	//! Player is higher up than enemy, adjust vertex y value to be higher than player so arc looks natural:
+	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+	//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
+	//}
+	//else if (posEnemy.y > posPlayer.y)
+	//{
+	//	//! Spiker is higher than player, adjust vertex's y value to be higher than spiker so arc looks natural:
+	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+	//	vertex.y = posEnemy.y + 0.05f;
+	//}
+	//else
+	//{
+	//	//! Player and Spiker share a y value, so use either or to calcuate based off either height, I'll use players:
+	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+	//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
+	//}
+
+	////! Calculate x intercepts (for parabola to form):
+	////! (h,k) = vertex(x,y);
+	////! too find x intercepts: x = h +- root(k)
+	//x1 = vertex.x - glm::sqrt(vertex.y);
+	//x2 = vertex.x + glm::sqrt(vertex.y);
+
+	////! Find parabolic equation, to find our y value at x (allows us to set position of an object as it moves towards the player):
+	////! Using vertex form: y = a(x-h)^2 + k
+	////! Find a (going to use x1):
+	////! x1 technically = (x1, 0) because it's on the x-axis.
+	////! 0 = a(x1-vertex.x)^2 + vertex.y
+	////! vertex.y = a(x1-vertex.x)^2
+	////! a = vertex.y / ((x1-vertex.x)^2)
+	//a = vertex.y / ((x1 - vertex.x) * (x1 - vertex.x));
+
+	//Parabola(shotSpike->GetPosition().x);
+}
+
+float Spiker::Parabola(float x_)
+{
+	return (a * ((x_ - vertex.x) * (x_ - vertex.x))) + vertex.y; //! The return is equal to the y position @ the x value.
 }
