@@ -28,6 +28,10 @@ private:
 	//This varible is to compare against the state variable in the UIManager class.
 	//I compare states so I'm not recreating the UIManager object when I don't need to. (JakeCunningham)
 	int uiState;
+
+	GameObject* floor;
+	GameObject* sword;
+	Flag* firepit;
 };
 
 #endif // !UISCENE_H

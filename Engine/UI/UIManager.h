@@ -24,12 +24,15 @@ public:
 	UIManager() {};
 	virtual ~UIManager() {};
 
-	//This bool is so that my menu's that are not the main menu don't run the new frame stuff twice when they get loaded
-	bool firstTimeThrough;
-
 	GLuint heart1;
 	GLuint heart2;
 	GLuint heart3;
+
+	GLuint newGameImg;
+	GLuint loadGameImg;
+	GLuint optionsImg;
+	GLuint quitImg;
+	GLuint titleImg;
 
 	inline bool Initialize(SDL_Window* window_, SDL_GLContext context) {
 
@@ -39,6 +42,19 @@ public:
 		std::string texturePath = "Resources/Textures/";
 		TextureHandler::GetInstance()->CreateTexture("heart", texturePath + "HealthHeart.png");
 		TextureHandler::GetInstance()->CreateTexture("brokenHeart", texturePath + "LostHeart.png");
+
+		///Buttons & Title
+		TextureHandler::GetInstance()->CreateTexture("newGame", texturePath + "NewGameButton.png");
+		TextureHandler::GetInstance()->CreateTexture("loadGame", texturePath + "LoadGameButton.png");
+		TextureHandler::GetInstance()->CreateTexture("options", texturePath + "OptionsButton.png");
+		TextureHandler::GetInstance()->CreateTexture("quit", texturePath + "QuitButton.png");
+		TextureHandler::GetInstance()->CreateTexture("title", texturePath + "Title.png");
+
+		newGameImg = TextureHandler::GetInstance()->GetTexture("newGame");
+		loadGameImg = TextureHandler::GetInstance()->GetTexture("loadGame");
+		optionsImg = TextureHandler::GetInstance()->GetTexture("options");
+		quitImg = TextureHandler::GetInstance()->GetTexture("quit");
+		titleImg = TextureHandler::GetInstance()->GetTexture("title");
 
 		heart1 = TextureHandler::GetInstance()->GetTexture("heart");
 		heart2 = TextureHandler::GetInstance()->GetTexture("heart");
@@ -59,8 +75,6 @@ public:
 		ImGui_ImplSDL2_InitForOpenGL(w, c);
 		ImGui_ImplOpenGL3_Init("#version 130");
 
-		firstTimeThrough = true;
-
 		return true;
 	}
 
@@ -72,6 +86,17 @@ public:
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+
+	inline void SetTag(std::string tag_) {
+		tag = tag_;
+	}
+
+	inline std::string GetTag() {
+		return tag;
+	}
+
+private:
+	std::string tag;
 };
 
 #endif // !UIMANAGER_H

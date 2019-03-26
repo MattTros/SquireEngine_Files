@@ -15,7 +15,6 @@ bool UIScene::Initialize()
 
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
-	TextureHandler::GetInstance()->CreateTexture("playdrunnerTexture", texturePath + "PlaydRunnerLogoCircleCircuit.png");
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
 	UI = new MainMenu();
@@ -23,17 +22,35 @@ bool UIScene::Initialize()
 	UI->Initialize(window->GetWindow(), window->GetContext());
 	uiState = UI->state;
 
+	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
+	floor = new GameObject(brick, glm::vec3(0.0f, -1.7f, 0.0f));
+	floor->SetScale(glm::vec3(5.0f, 1.0f, 1.0f));
+
+	Model* box = new Model("AttackBox.obj", "AttackBox.mtl", BASE_SHADER);
+	firepit = new Flag(box, glm::vec3(2.0f, -0.75f, 0.0f), 0);
+
+	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
+	sword = new GameObject(swordModel, glm::vec3(-1.0f, 0.0f, 0.0f));
+	sword->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	sword->SetAngle(2.5f);
+
 	return true;
 }
 
 void UIScene::Update(const float deltaTime_)
 {
 	SceneGraph::GetInstance()->Update(deltaTime_);
+
+	firepit->Update(deltaTime_);
+
 	UpdateUI(deltaTime_);
 }
 
 void UIScene::Render()
 {
+	floor->GetModel()->Render(Camera::GetInstance());
+	firepit->Render(Camera::GetInstance());
+	sword->GetModel()->Render(Camera::GetInstance());
 	if (UI != nullptr)
 		UI->Render();
 }

@@ -16,6 +16,10 @@ public:
 	void Render(Camera* camera_);
 private:
 	int sceneIndex;
+
+	GameObject* firepit;
+	ParticleSystem* fire;
+	ParticleSystem* smoke;
 };
 
 #endif FLAG_H
