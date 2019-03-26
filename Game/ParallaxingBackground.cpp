@@ -19,90 +19,87 @@ ParallaxingBackground::~ParallaxingBackground()
 
 void ParallaxingBackground::Initialize()
 {
-	//! Create objects and add to scenegraph for the render to control:
-
-	//! Add models to graph:
-	SceneGraph::GetInstance()->AddModel(backgroundFront);
-	SceneGraph::GetInstance()->AddModel(backgroundFrontTwo);
-	SceneGraph::GetInstance()->AddModel(backgroundMid);
-	SceneGraph::GetInstance()->AddModel(backgroundMidTwo);
-	SceneGraph::GetInstance()->AddModel(backgroundBack);
-
-	//! Create GameObjects from the sceneGraph models we just added:
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(backgroundFront), "bFront");
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(backgroundFrontTwo), "bFrontTwo");
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(backgroundMid), "bMid");
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(backgroundMidTwo), "bMidTwo");
-	SceneGraph::GetInstance()->AddGameObject(new GameObject(backgroundBack), "bBack");
+	//! Create GameObjects:
+	bFront = new GameObject(backgroundFront);
+	bFrontTwo = new GameObject(backgroundFrontTwo);
+	bMid = new GameObject(backgroundMid);
+	bMidTwo = new GameObject(backgroundMidTwo);
+	bBack = new GameObject(backgroundBack);
 
 	//! Manipulate foreground (darker plane)
-	SceneGraph::GetInstance()->GetGameObject("bFront")->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
-	SceneGraph::GetInstance()->GetGameObject("bFront")->SetPosition(glm::vec3(-0.5f, -2.0f, 0.0f));
-	SceneGraph::GetInstance()->GetGameObject("bFront")->SetScale(glm::vec3(2.5f, 2.0f, 2.0f));
-	SceneGraph::GetInstance()->GetGameObject("bFront")->SetAngle(1.575f);
+	bFront->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
+	bFront->SetPosition(glm::vec3(-0.5f, -2.0f, -1.0f));
+	bFront->SetScale(glm::vec3(3.0f, 2.0f, 2.0f));
+	bFront->SetAngle(1.575f);
 
 	//! Make the added-on ground have all the same characteristics of the layer it's copying:
-	SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetRotation(SceneGraph::GetInstance()->GetGameObject("bFront")->GetRotation());
-	SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetAngle(SceneGraph::GetInstance()->GetGameObject("bFront")->GetAngle());
-	SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetScale(SceneGraph::GetInstance()->GetGameObject("bFront")->GetScale());
-	SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetPosition
+	bFrontTwo->SetRotation(bFront->GetRotation());
+	bFrontTwo->SetAngle(bFront->GetAngle());
+	bFrontTwo->SetScale(bFront->GetScale());
+	bFrontTwo->SetPosition
 	(
 		glm::vec3
 		(
 			//! Make the x position of the add-on at the right edge of the layer it's following:
-			SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().x +
-			SceneGraph::GetInstance()->GetGameObject("bFront")->GetModel()->GetBoundingBox().maxVert.x *
-			SceneGraph::GetInstance()->GetGameObject("bFront")->GetScale().x * 2.0,
-			SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().y,
-			SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().z
+			bFront->GetPosition().x +
+			bFront->GetModel()->GetBoundingBox().maxVert.x *
+			bFront->GetScale().x * 2.0,
+			bFront->GetPosition().y,
+			bFront->GetPosition().z
 		)
 	);
 
 	//! Manipulate the midground (lighter plane):
-	SceneGraph::GetInstance()->GetGameObject("bMid")->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
-	SceneGraph::GetInstance()->GetGameObject("bMid")->SetAngle(1.575f);
-	SceneGraph::GetInstance()->GetGameObject("bMid")->SetScale(glm::vec3(2.5f, 2.0f, 2.0f));
-	SceneGraph::GetInstance()->GetGameObject("bMid")->SetPosition(glm::vec3(-0.5f, -1.75f, -0.01f));
+	bMid->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
+	bMid->SetAngle(1.575f);
+	bMid->SetScale(glm::vec3(3.0f, 2.0f, 2.0f));
+	bMid->SetPosition(glm::vec3(-0.5f, -1.75f, -1.01f));
 
 	//! Make the added-on ground have all the same characteristics of the layer it's copying:
-	SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetRotation(SceneGraph::GetInstance()->GetGameObject("bMid")->GetRotation());
-	SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetAngle(SceneGraph::GetInstance()->GetGameObject("bMid")->GetAngle());
-	SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetScale(SceneGraph::GetInstance()->GetGameObject("bMid")->GetScale());
-	SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetPosition
+	bMidTwo->SetRotation(bMid->GetRotation());
+	bMidTwo->SetAngle(bMid->GetAngle());
+	bMidTwo->SetScale(bMid->GetScale());
+	bMidTwo->SetPosition
 	(
 		glm::vec3
 		(
 			//! Make the x position of the add-on at the right edge of the layer it's following:
-			SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().x +
-			SceneGraph::GetInstance()->GetGameObject("bMid")->GetModel()->GetBoundingBox().maxVert.x *
-			SceneGraph::GetInstance()->GetGameObject("bMid")->GetScale().x * 2.0,
-			SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().y,
-			SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().z
+			bMid->GetPosition().x +
+			bMid->GetModel()->GetBoundingBox().maxVert.x *
+			bMid->GetScale().x * 2.0,
+			bMid->GetPosition().y,
+			bMid->GetPosition().z
 		)
 	);
 
 	//! Manipulate the background (image, doesn't move):
-	SceneGraph::GetInstance()->GetGameObject("bBack")->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
-	SceneGraph::GetInstance()->GetGameObject("bBack")->SetAngle(-1.575f);
-	SceneGraph::GetInstance()->GetGameObject("bBack")->SetPosition(glm::vec3(0.0f, 0.0f, -0.1f));
-
-	//! Set centerpoint for background image:
-	backCenter = SceneGraph::GetInstance()->GetGameObject("bBack")->GetPosition().x +
-		(SceneGraph::GetInstance()->GetGameObject("bBack")->GetModel()->GetBoundingBox().maxVert.x / 2);
+	bBack->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
+	bBack->SetAngle(-1.575f);
+	bBack->SetPosition(glm::vec3(0.0f, 0.0f, -1.1f));
+	bBack->SetScale(glm::vec3(3.0f));
 }
 	 
 void ParallaxingBackground::Update(float deltaTime_)
 {
+	cameraPos = Camera::GetInstance()->GetPosition();
+	bBack->SetPosition(cameraPos);
+	//! Set centerpoint for background image:
+	backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
+	bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.3f, bFront->GetPosition().z));
+	bMid->SetPosition(glm::vec3(bMid->GetPosition().x, cameraPos.y - 1.05f, bMid->GetPosition().z));
+	bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x, cameraPos.y - 1.3f, bFrontTwo->GetPosition().z));
+	bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x, cameraPos.y - 1.05f, bMidTwo->GetPosition().z));
+
 	//! Keyboard controls:
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
 	{
 		//! Player moving left, background move right:
 		movingRight = true;
 
-		SceneGraph::GetInstance()->GetGameObject("bFront")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().x + (deltaTime_ / 2.0f), -2.0f, 0.0f));
-		SceneGraph::GetInstance()->GetGameObject("bMid")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().x + (deltaTime_ / 4.0f), -1.75f, -0.01f));
-		SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->GetPosition().x + (deltaTime_ / 2.0f), -2.0f, 0.0f));
-		SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bMidTwo")->GetPosition().x + (deltaTime_ / 4.0f), -1.75f, -0.01f));
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
+		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 	}
 
 	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D))
@@ -110,23 +107,23 @@ void ParallaxingBackground::Update(float deltaTime_)
 		//! Player moving right, background move left:
 		movingLeft = true;
 
-		SceneGraph::GetInstance()->GetGameObject("bFront")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().x + (-deltaTime_ / 2.0f), -2.0f, 0.0f));
-		SceneGraph::GetInstance()->GetGameObject("bMid")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().x + (-deltaTime_ / 4.0f), -1.75f, -0.01f));
-		SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->GetPosition().x + (-deltaTime_ / 2.0f), -2.0f, 0.0f));
-		SceneGraph::GetInstance()->GetGameObject("bMidTwo")->SetPosition(glm::vec3(SceneGraph::GetInstance()->GetGameObject("bMidTwo")->GetPosition().x + (-deltaTime_ / 4.0f), -1.75f, -0.01f));
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (-deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (-deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
+		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (-deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (-deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 	}
 
 
 	//! Update centerpoints of all the objects:
-	frontCenterOne = SceneGraph::GetInstance()->GetGameObject("bFront")->GetPosition().x +
-		(SceneGraph::GetInstance()->GetGameObject("bFront")->GetModel()->GetBoundingBox().maxVert.x / 2);
-	frontCenterTwo = SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->GetPosition().x +
-		(SceneGraph::GetInstance()->GetGameObject("bFrontTwo")->GetModel()->GetBoundingBox().maxVert.x / 2);
+	frontCenterOne = bFront->GetPosition().x +
+		(bFront->GetModel()->GetBoundingBox().maxVert.x / 2);
+	frontCenterTwo = bFrontTwo->GetPosition().x +
+		(bFrontTwo->GetModel()->GetBoundingBox().maxVert.x / 2);
 
-	midCenterOne = SceneGraph::GetInstance()->GetGameObject("bMid")->GetPosition().x +
-		(SceneGraph::GetInstance()->GetGameObject("bMid")->GetModel()->GetBoundingBox().maxVert.x / 2);
-	midCenterTwo = SceneGraph::GetInstance()->GetGameObject("bMidTwo")->GetPosition().x +
-		(SceneGraph::GetInstance()->GetGameObject("bMidTwo")->GetModel()->GetBoundingBox().maxVert.x / 2);
+	midCenterOne = bMid->GetPosition().x +
+		(bMid->GetModel()->GetBoundingBox().maxVert.x / 2);
+	midCenterTwo = bMidTwo->GetPosition().x +
+		(bMidTwo->GetModel()->GetBoundingBox().maxVert.x / 2);
 
 	//! Check if centers of backgrounds are at the center of screen:
 	if (movingRight)
@@ -136,13 +133,13 @@ void ParallaxingBackground::Update(float deltaTime_)
 		if (frontCenterOne >= backCenter)
 		{
 			//! Foreground is too far to the right, move ForegroundTwo's center to the center of the screen
-			MoveLeft(SceneGraph::GetInstance()->GetGameObject("bFront"), SceneGraph::GetInstance()->GetGameObject("bFrontTwo"));
+			MoveLeft(bFront, bFrontTwo);
 		}
 
 		if (midCenterOne >= backCenter)
 		{
 			//! Background is too far to the right, move backgroundTwo's center to the center of the screen
-			MoveLeft(SceneGraph::GetInstance()->GetGameObject("bMid"), SceneGraph::GetInstance()->GetGameObject("bMidTwo"));
+			MoveLeft(bMid, bMidTwo);
 		}
 	}
 
@@ -152,13 +149,13 @@ void ParallaxingBackground::Update(float deltaTime_)
 		if (backCenter >= frontCenterTwo)
 		{
 			//! Foreground is too far to the left, move ForegroundTwo's center to the center of the screen
-			MoveRight(SceneGraph::GetInstance()->GetGameObject("bFront"), SceneGraph::GetInstance()->GetGameObject("bFrontTwo"));
+			MoveRight(bFront, bFrontTwo);
 		}
 
 		if (backCenter >= midCenterTwo)
 		{
 			//! Background is too far to the right, move backgroundTwo's center to the center of the screen
-			MoveRight(SceneGraph::GetInstance()->GetGameObject("bMid"), SceneGraph::GetInstance()->GetGameObject("bMidTwo"));
+			MoveRight(bMid, bMidTwo);
 		}
 	}
 	
@@ -209,4 +206,13 @@ void ParallaxingBackground::MoveLeft(GameObject* objA_, GameObject* objB_)
 		objA_->GetPosition().y,
 		objA_->GetPosition().z
 	));
+}
+
+void ParallaxingBackground::Render(Camera* camera_)
+{
+	backgroundFront->Render(camera_);
+	backgroundFrontTwo->Render(camera_);
+	backgroundMid->Render(camera_);
+	backgroundMidTwo->Render(camera_);
+	backgroundBack->Render(camera_);
 }

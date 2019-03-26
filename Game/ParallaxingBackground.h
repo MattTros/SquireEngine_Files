@@ -14,6 +14,14 @@ public:
 
 	void Initialize();
 	void Update(float deltaTime_);
+	void Render(Camera* camera_);
+	glm::vec3 cameraPos = glm::vec3();
+
+	GameObject* bFront;
+	GameObject * bFrontTwo;
+	GameObject* bMid;
+	GameObject* bMidTwo;
+	GameObject * bBack;
 
 private:
 	Model* backgroundFront = new Model("FrontRocks.obj", "FrontRocks.mtl", BASE_SHADER);
