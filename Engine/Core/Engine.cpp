@@ -35,6 +35,7 @@ bool Engine::Initialize(std::string name_, int width_, int height_)
 	Shader::GetInstance()->CreateProgram("colorShader", "Engine/Shaders/ColorVertexShader.glsl", "Engine/Shaders/ColorFragmentShader.glsl");
 	Shader::GetInstance()->CreateProgram("baseShader", "Engine/Shaders/VertexShader.glsl", "Engine/Shaders/FragmentShader.glsl");
 	Shader::GetInstance()->CreateProgram("alphaShader", "Engine/Shaders/AlphaShaderVert.glsl", "Engine/Shaders/AlphaShaderFrag.glsl");
+	Shader::GetInstance()->CreateProgram("toonShader", "Engine/Shaders/ToonVertexShader.glsl", "Engine/Shaders/ToonFragmentShader.glsl");
 
 	if (gameInterface)
 	{
