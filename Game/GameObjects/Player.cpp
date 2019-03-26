@@ -2,7 +2,7 @@
 
 
 
-Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_) : Entity(model_, position_, true)
+Player::Player(Model* model_, GameObject* sword_, glm::vec3 position_) : Entity(model_, position_, true)
 {
 	//Set the player tag and health
 	SetHealth(3);
@@ -46,6 +46,8 @@ Player::Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 
 	attackTimer.active = false;
 	attackTimer.waitTime = 0.5f;
 	attackTimer.seconds = 0.0f;
+	///Arrow Initialization
+	arrowShooting = false;
 	//collision bool init
 	canGoLeft = true;
 	canGoRight = true;
@@ -189,7 +191,15 @@ void Player::HeavyAttack()
 
 void Player::Shoot()
 {
-
+	if (!arrowShooting)
+	{
+		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("toonShader"));
+		arrow = new Projectile(arrowModel, GetPosition(), false, 5.0f, 1.0f);
+		arrow->SetTag("FriendlyProjectile");
+		arrow->SetDirection(GetSpeed());
+		arrow->SetRotation(glm::vec3(arrow->GetRotation().x, arrow->GetDirection(), arrow->GetRotation().z));
+		arrowShooting = true;
+	}
 }
 
 bool Player::GetIFrames()
@@ -344,6 +354,20 @@ void Player::Update(float deltaTime_)
 			sword->SetAngle(1.0f);
 		}
 	}
+	if (arrowShooting && arrow != nullptr)
+	{
+		arrow->Update(deltaTime_);
+		arrow->SetPosition(glm::vec3(arrow->GetPosition().x + (deltaTime_ * arrow->GetSpeed() * arrow->GetDirection()), arrow->GetPosition().y, arrow->GetPosition().z));
+		if (arrow->GetCurrentLifetime() >= arrow->GetLifetime())
+		{
+			arrow->~Projectile();
+			delete arrow;
+			arrow = nullptr;
+			delete arrowModel;
+			arrowModel = nullptr;
+			arrowShooting = false;
+		}
+	}
 	if (knockbackTimer.active)
 	{
 		switch (GetHealth())
@@ -389,6 +413,8 @@ void Player::Render(Camera* camera_)
 	//attackBox->GetModel()->Render(camera_); ///Debug Attack Box
 	if (isAttacking)
 		sword->GetModel()->Render(Camera::GetInstance());
+	if(arrow != nullptr)
+		arrow->Render(Camera::GetInstance());
 	UI->Render();
 }
 

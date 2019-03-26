@@ -7,11 +7,12 @@
 #include "../../Engine/Core/Timer.h"
 #include "../../Engine/UI/UIManager.h"
 #include "../../Engine/UI/PlayerUI.h"
+#include "Projectile.h"
 
 class Player : public Entity
 {
 public:
-	Player(Model* model_, GameObject* sword_, GameObject* arrow_, glm::vec3 position_);
+	Player(Model* model_, GameObject* sword_, glm::vec3 position_);
 	~Player();
 
 	void Movement(float deltaTime_);
@@ -43,10 +44,11 @@ private:
 	ParticleSystem* fountain;
 
 	GameObject* sword;
-	GameObject* arrow;
 	GameObject* attackBox;
 
-	//Rigidbody rb;
+	Model* arrowModel;
+	Projectile* arrow;
+	bool arrowShooting;
 
 	bool isDashing = false;
 	bool isFacingRight = true;
