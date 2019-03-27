@@ -13,9 +13,6 @@ public:
 
 	void Update(const float deltaTime_);
 
-	//takes in TextureHandler::GetInstance()->GetTexture("heart") or TextureHandler::GetInstance()->GetTexture("brokenHeart")
-	
-
 };
 
 #endif // !PLAYER_UI

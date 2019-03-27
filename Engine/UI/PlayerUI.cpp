@@ -20,6 +20,7 @@ void PlayerUI::Update(const float deltaTime_) {
 	//setting the size and position of our window
 	ImVec2 size = ImVec2(Engine::GetInstance()->GetScreenSize().x, Engine::GetInstance()->GetScreenSize().y);
 	ImVec2 imgSize = ImVec2(100, 100);
+	ImVec2 textSize = ImVec2(200, 100);
 	ImVec2 pos = ImVec2(0, 0);
 	ImGui::SetNextWindowSize(size);
 	ImGui::SetNextWindowPos(pos);
@@ -47,11 +48,21 @@ void PlayerUI::Update(const float deltaTime_) {
 	ImGui::SetCursorPos(widgetPos);
 	ImGui::Image((void*)(intptr_t)heart3, imgSize);
 
-	ImGui::End();
+	//Tutorial popups
 
-	if (firstTimeThrough) {
-		firstTimeThrough = false;
+	//show the correct Tutorial info based on the tag from the TutorialCollider class
+	if (GetTag() == "Jump") {
+		ImGui::Text("press Space to jump", textSize);
 	}
+	else if (GetTag() == "Movement") {
+		ImGui::Text("press A to move left and D to move right", textSize);
+	}
+	else if (GetTag() == "Drop") {
+		ImGui::Text("press S to drop through platforms that look like this one!", textSize);
+	}
+	else {
+
+	}
+
+	ImGui::End();
 }
-
-

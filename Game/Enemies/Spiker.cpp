@@ -30,24 +30,28 @@ void Spiker::Update(const float deltaTime_) {
 
 	//iframe stuff
 	if (wfs.active) {
+		wfs.seconds += deltaTime_;
+		SetVelocity(glm::vec3(0.0f, GetVelocity().y, 0.0f));
+		SetVelocity(glm::vec3(GetVelocity().x + (2.0f * knockBackDirection), GetVelocity().y, GetVelocity().z));
+		SetPosition(GetPosition() + GetVelocity() * deltaTime_);
 		if (wfs.seconds >= wfs.waitTime) {
 			wfs.seconds = 0.0f;
 			wfs.active = false;
 		}
-		wfs.seconds += deltaTime_;
 	}
 
 	//State machine, 0 = Patrol state. 1 = Chase the player state.
-	if (state == 0) {
+	if (state == 0 && !wfs.active) {
 		Patrol(deltaTime_);
 	}
-	else if (state == 1) {
+	else if (state == 1 && !wfs.active) {
 		Chase(deltaTime_);
 	}
 
 	if (GetGravity() == true) {
 		velocity += (velocity * deltaTime_) + (0.5f * acceleration * (deltaTime_ * deltaTime_));
 		position += velocity * deltaTime_;
+		SetVelocity(glm::vec3(GetVelocity().x, velocity.y, GetVelocity().z));
 		SetPosition(position);
 	}
 
@@ -62,7 +66,7 @@ void Spiker::Update(const float deltaTime_) {
 	{
 		shotSpike->Update(deltaTime_);
 		shotSpike->SetPosition(glm::vec3(shotSpike->GetPosition().x + (deltaTime_ * shotSpike->GetSpeed() * shotSpike->GetDirection()), shotSpike->GetPosition().y, shotSpike->GetPosition().z));
-		
+
 		//shotSpike->SetPosition(glm::vec3(shotSpike->GetPosition().x + (deltaTime_ * shotSpike->GetSpeed()), shotSpike->GetPosition() + Parabola(shotSpike->GetPosition().x), shotSpike->GetPosition().z));
 
 		if (shotSpike->GetCurrentLifetime() >= shotSpike->GetLifetime())
@@ -94,16 +98,22 @@ void Spiker::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
 
-		if (other_->GetTag() == "Sword") {
+		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "FriendlyProjectile") {
 			if (!wfs.active) {
-				SetHealth(GetHealth() - 50);
+				SetHealth(GetHealth() - 25);
 				wfs.active = true;
+				if (player->GetPosition().x - GetPosition().x > 0.0f)
+					knockBackDirection = -1.0f;
+				else
+					knockBackDirection = 1.0f;
 			}
 		}
 
 		if (other_->GetTag() == "Wall") {
+			wfs.seconds = 0.5f;
+
 			//Collision for if patrolling
-			if (GetSpeed() == 0.0f) {
+ 			if (GetSpeed() == 0.0f) {
 				SetSpeed(0.2f);
 			}
 			if (state == 0) {
@@ -119,9 +129,24 @@ void Spiker::CollisionResponse(GameObject* other_, const float deltaTime_) {
 				//collision for if chasing
 			}
 			else {
-				SetSpeed(0.0f);
 				//direction = the normalized distance between the other object and the platform
 				glm::vec3 direction = glm::normalize(player->GetPosition() - position);
+				//calculate which side of the wall and player the ooze is on
+				float playerDist = player->GetPosition().x - GetPosition().x;
+				float platformDist = other_->GetPosition().x - GetPosition().x;
+
+				if (playerDist > 0 && platformDist > 0) {
+					SetSpeed(0.2f);
+				}
+				else if (playerDist < 0 && platformDist < 0) {
+					SetSpeed(0.2f);
+				}
+				else if (playerDist > 0 && platformDist < 0) {
+					SetSpeed(0.0f);
+				}
+				else if (playerDist < 0 && platformDist > 0) {
+					SetSpeed(0.0f);
+				}
 				SetRotation(glm::vec3(0.0f, direction.x, 0.0f));
 			}
 		}
@@ -143,10 +168,12 @@ void Spiker::Patrol(float deltaTime_) {
 	//Goomba like AI
 	float speed = GetSpeed();
 	if (patrolRight) {
-		SetVelocity(glm::vec3(-GetSpeed(), 0.0f, 0.0f));
+		SetSpeed(-0.2f);
+		SetVelocity(glm::vec3(GetSpeed(), 0.0f, 0.0f));
 		SetRotation(glm::vec3(0.0f, -1.0f, 0.0f));
 	}
 	else {
+		SetSpeed(0.2f);
 		SetVelocity(glm::vec3(GetSpeed(), 0.0f, 0.0f));
 		SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
@@ -193,49 +220,51 @@ void Spiker::Attack()
 	shotSpike->SetDirection(GetPosition().x > player->GetPosition().x ? -1 : 1); //If spiker is on the right side, he shoots along the -X-Axis, otherwise he shoots to the right.
 	shotSpike->SetRotation(glm::vec3(shotSpike->GetRotation().x, shotSpike->GetDirection(), shotSpike->GetRotation().z));
 
-	//! Parabola work:
-	//float x1 = 0.0f; //! X-intercept 1
-	//float x2 = 0.0f; //! X-intercept 2
+	{
+		//! Parabola work:
+		//float x1 = 0.0f; //! X-intercept 1
+		//float x2 = 0.0f; //! X-intercept 2
 
-	//glm::vec3 posPlayer = player->GetPosition(); //! Position of player at instance of method call
-	//glm::vec3 posEnemy = GetPosition(); //! Position of Spiker at instance of method call
+		//glm::vec3 posPlayer = player->GetPosition(); //! Position of player at instance of method call
+		//glm::vec3 posEnemy = GetPosition(); //! Position of Spiker at instance of method call
 
-	////! Find the vertex:
-	//if (posPlayer.y > posEnemy.y)
-	//{
-	//	//! Player is higher up than enemy, adjust vertex y value to be higher than player so arc looks natural:
-	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
-	//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
-	//}
-	//else if (posEnemy.y > posPlayer.y)
-	//{
-	//	//! Spiker is higher than player, adjust vertex's y value to be higher than spiker so arc looks natural:
-	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
-	//	vertex.y = posEnemy.y + 0.05f;
-	//}
-	//else
-	//{
-	//	//! Player and Spiker share a y value, so use either or to calcuate based off either height, I'll use players:
-	//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
-	//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
-	//}
+		////! Find the vertex:
+		//if (posPlayer.y > posEnemy.y)
+		//{
+		//	//! Player is higher up than enemy, adjust vertex y value to be higher than player so arc looks natural:
+		//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+		//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
+		//}
+		//else if (posEnemy.y > posPlayer.y)
+		//{
+		//	//! Spiker is higher than player, adjust vertex's y value to be higher than spiker so arc looks natural:
+		//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+		//	vertex.y = posEnemy.y + 0.05f;
+		//}
+		//else
+		//{
+		//	//! Player and Spiker share a y value, so use either or to calcuate based off either height, I'll use players:
+		//	vertex.x = glm::length(posPlayer - posEnemy) / 2.0f; //! This places the vertex's x position halfway between the spiker and player.
+		//	vertex.y = posPlayer.y + 0.05f; //! This places the vertex's y position above the higher object, plus a little, to make the arc proper.
+		//}
 
-	////! Calculate x intercepts (for parabola to form):
-	////! (h,k) = vertex(x,y);
-	////! too find x intercepts: x = h +- root(k)
-	//x1 = vertex.x - glm::sqrt(vertex.y);
-	//x2 = vertex.x + glm::sqrt(vertex.y);
+		////! Calculate x intercepts (for parabola to form):
+		////! (h,k) = vertex(x,y);
+		////! too find x intercepts: x = h +- root(k)
+		//x1 = vertex.x - glm::sqrt(vertex.y);
+		//x2 = vertex.x + glm::sqrt(vertex.y);
 
-	////! Find parabolic equation, to find our y value at x (allows us to set position of an object as it moves towards the player):
-	////! Using vertex form: y = a(x-h)^2 + k
-	////! Find a (going to use x1):
-	////! x1 technically = (x1, 0) because it's on the x-axis.
-	////! 0 = a(x1-vertex.x)^2 + vertex.y
-	////! vertex.y = a(x1-vertex.x)^2
-	////! a = vertex.y / ((x1-vertex.x)^2)
-	//a = vertex.y / ((x1 - vertex.x) * (x1 - vertex.x));
+		////! Find parabolic equation, to find our y value at x (allows us to set position of an object as it moves towards the player):
+		////! Using vertex form: y = a(x-h)^2 + k
+		////! Find a (going to use x1):
+		////! x1 technically = (x1, 0) because it's on the x-axis.
+		////! 0 = a(x1-vertex.x)^2 + vertex.y
+		////! vertex.y = a(x1-vertex.x)^2
+		////! a = vertex.y / ((x1-vertex.x)^2)
+		//a = vertex.y / ((x1 - vertex.x) * (x1 - vertex.x));
 
-	//Parabola(shotSpike->GetPosition().x);
+		//Parabola(shotSpike->GetPosition().x);
+	}
 }
 
 float Spiker::Parabola(float x_)

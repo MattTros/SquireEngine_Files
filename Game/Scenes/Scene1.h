@@ -15,7 +15,8 @@
 #include "../Enemies/Spiker.h"
 #include "../GameObjects/Wall.h"
 #include "../GameObjects/Player.h"
-#include "Scene2.h"
+#include "../GameObjects/TutorialCollider.h"
+#include "../GameObjects/Flag.h"
 
 class SceneManager;
 
@@ -42,13 +43,13 @@ private:
 	//Player stuff
 	Player* player;
 
-	//Enemy Stuff
-	Ooze* ooze;
-	Fly* fly;
-	Spiker* spiker;
-
 	Flag* end;
 	WaitForSeconds initTimer;
+
+	//Tutorial
+	TutorialCollider* movementTutorial;
+	TutorialCollider* jumpTutorial;
+	TutorialCollider* dropTutorial;
 };
 
 #endif // !SCENE1_H

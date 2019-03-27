@@ -66,7 +66,7 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
 
-		if (other_->GetTag() == "AttackBox"){
+		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "FriendlyProjectile"){
 			if (!wfs.active) {
 				SetHealth(GetHealth() - 25);
 				wfs.active = true;

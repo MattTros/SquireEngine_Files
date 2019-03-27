@@ -11,9 +11,11 @@
 #include "../GameObjects/Entity.h"
 #include "../Enemies/Ooze.h"
 #include "../Enemies/Fly.h"
+#include "../Enemies/Spiker.h"
 #include "../GameObjects/Wall.h"
 #include "../GameObjects/Player.h"
 #include "../GameObjects/Flag.h"
+#include "../GameObjects/TutorialCollider.h"
 
 class SceneManager;
 
@@ -25,12 +27,9 @@ public:
 	bool Initialize();
 	void Update(const float deltaTime_);
 	void Render();
-
-	//UI state machine and update
-	void UpdateUI(const float deltaTime_);
 private:
 	//Platform stuff
-	GameObject* gameObjects[23];
+	GameObject* gameObjects[33];
 
 	//Player stuff
 	Player* player;
@@ -38,6 +37,7 @@ private:
 	//Enemy Stuff
 	Ooze* ooze;
 	Fly* fly;
+	Spiker* spiker;
 
 	///Finish Flag
 	Flag* end;
