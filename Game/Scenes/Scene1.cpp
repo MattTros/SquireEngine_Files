@@ -20,8 +20,8 @@ bool Scene1::Initialize()
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
 	//! Create background images:
-	//pB = new ParallaxingBackground();
-	//pB->Initialize();
+	pB = new ParallaxingBackground();
+	pB->Initialize();
 
 	///Level Layout Start
 	Model* platform = new Model("Platform.obj", "Platform.mtl", BASE_SHADER);
@@ -81,7 +81,7 @@ bool Scene1::Initialize()
 	dropTutorial = new TutorialCollider("Drop", glm::vec3(20.0f, -1.0f, 0.0f));
 
 	initTimer = WaitForSeconds();
-	initTimer.waitTime = 2.0f;
+	initTimer.waitTime = 4.0f;
 	initTimer.seconds = 0.0f;
 	initTimer.active = true;
 	player->SetGravity(false); 
@@ -102,10 +102,10 @@ void Scene1::Update(const float deltaTime_)
 		}
 	}
 
-	/*if (pB != nullptr)
-		pB->Update(deltaTime_);*/
+	if (pB != nullptr)
+		pB->Update(deltaTime_);
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 38; i++) {
 		gameObjects[i]->Update(deltaTime_);
 	}
 
@@ -117,6 +117,16 @@ void Scene1::Update(const float deltaTime_)
 		player->PlayerCollision(movementTutorial, deltaTime_);
 		player->PlayerCollision(jumpTutorial, deltaTime_);
 		player->PlayerCollision(dropTutorial, deltaTime_);
+		if (player->arrow != nullptr)
+		{
+			for (int i = 0; i < 38; i++)
+			{
+				if (player->arrow->ProjectileColliding(player->arrow, gameObjects[i]))
+				{
+					player->arrow->SetLifetime(2.0f);
+				}
+			}
+		}
 	}
 
 	if (end != nullptr)
@@ -134,6 +144,8 @@ void Scene1::Render()
 
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[15]->GetModel()->Render(Camera::GetInstance());
+
+	pB->Render(Camera::GetInstance());
 
 	end->Render(Camera::GetInstance());
 

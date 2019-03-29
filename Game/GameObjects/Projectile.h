@@ -12,6 +12,7 @@ public:
 	float GetCurrentLifetime();
 	float GetLifetime();
 	float GetDirection();
+	void SetLifetime(float lifeTime_);
 	void SetDirection(float direction_);
 	void Update(float deltaTime_);
 	void Render(Camera* camera_);

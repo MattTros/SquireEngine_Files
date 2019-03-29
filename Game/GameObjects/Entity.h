@@ -53,6 +53,7 @@ public:
 
 	//Default collision method, will not be complete for enemies or players, but will streamline that process
 	void DefaultCollision(GameObject* other_, const float deltaTime_);
+	bool ProjectileColliding(GameObject* projectile_, GameObject* object_);
 
 	//getters and setters
 	void SetGravity(bool isGravity_);

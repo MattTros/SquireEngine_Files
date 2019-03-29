@@ -107,7 +107,7 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 			}
 
 
-			if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_S) && GetTag() == "Player")
+			if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_S) && GetTag() == "Player")
 			{
 				dropThroughTimer.active = true;
 				SetGravity(true);
@@ -155,6 +155,15 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 			}
 		}
 	}
+}
+
+bool Entity::ProjectileColliding(GameObject* projectile_, GameObject* object_)
+{
+	if (projectile_->GetBoundingBox().Intersects(&object_->GetBoundingBox()))
+	{
+		return true;
+	}
+	return false;
 }
 
 void Entity::SetGravity(bool isGravity_) {

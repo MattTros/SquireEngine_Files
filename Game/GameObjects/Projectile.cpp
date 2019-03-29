@@ -33,6 +33,11 @@ float Projectile::GetDirection()
 	return direction;
 }
 
+void Projectile::SetLifetime(float lifeTime_)
+{
+	currentLifetime = lifeTime_;
+}
+
 void Projectile::SetDirection(float direction_)
 {
 	direction = direction_;

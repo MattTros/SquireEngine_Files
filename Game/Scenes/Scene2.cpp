@@ -167,11 +167,48 @@ void Scene2::Update(const float deltaTime_)
 		if (spiker != nullptr) {
 			player->PlayerCollision(spiker, deltaTime_);
 			if (spiker->shotSpike != nullptr)
+			{
 				player->PlayerCollision(spiker->shotSpike, deltaTime_);
+				if (spiker->shotSpike->ProjectileColliding(spiker->shotSpike, player))
+				{
+					spiker->shotSpike->SetLifetime(2.5f);
+				}
+				for (int i = 0; i < 33; i++)
+				{
+					if (spiker->shotSpike->ProjectileColliding(player->arrow, gameObjects[i]))
+					{
+						spiker->shotSpike->SetLifetime(2.5f);
+					}
+				}
+			}
 		}
 		player->PlayerCollision(attackTutorial, deltaTime_);
 		player->PlayerCollision(dashTutorial, deltaTime_);
 		player->PlayerCollision(arrowTutorial, deltaTime_);
+
+		if (player->arrow != nullptr)
+		{
+			if (player->arrow->ProjectileColliding(player->arrow, ooze) || player->arrow->ProjectileColliding(player->arrow, fly) || player->arrow->ProjectileColliding(player->arrow, spiker))
+			{
+				player->arrow->SetLifetime(2.0f);
+			}
+			for (int i = 0; i < 33; i++)
+			{
+				if (player->arrow->ProjectileColliding(player->arrow, gameObjects[i]))
+				{
+					player->arrow->SetLifetime(2.0f);
+				}
+			}
+		}
+
+		if (player->arrow != nullptr && spiker->shotSpike != nullptr)
+		{
+			if (player->arrow->ProjectileColliding(player->arrow, spiker->shotSpike))
+			{
+				player->arrow->SetLifetime(2.0f);
+				spiker->shotSpike->SetLifetime(2.5f);
+			}
+		}
 	}
 
 	pB->Update(deltaTime_);
