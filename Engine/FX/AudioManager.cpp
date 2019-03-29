@@ -36,6 +36,16 @@ AudioManager* AudioManager::GetInstance()
 	return audioManagerInstance.get();
 }
 
+void AudioManager::SetAudioVolume(int channel_, int volume_)
+{
+	Mix_Volume(channel_, volume_);
+}
+
+void AudioManager::SetMusicVolume(int volume_)
+{
+	Mix_VolumeMusic(volume_);
+}
+
 void AudioManager::LoadSoundFXFile(const std::string& audioName_, const std::string& fileName_)
 {
 	std::string filePath = "Resources/Audio/" + fileName_;

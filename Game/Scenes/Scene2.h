@@ -39,9 +39,15 @@ private:
 	Fly* fly;
 	Spiker* spiker;
 
+	ParallaxingBackground* pB;
 	///Finish Flag
 	Flag* end;
 	WaitForSeconds initTimer;
+
+	///Tutorials
+	TutorialCollider* attackTutorial;
+	TutorialCollider* dashTutorial;
+	TutorialCollider* arrowTutorial;
 };
 
 #endif // !SCENE2_H

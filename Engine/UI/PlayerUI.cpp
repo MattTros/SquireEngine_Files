@@ -51,14 +51,24 @@ void PlayerUI::Update(const float deltaTime_) {
 	//Tutorial popups
 
 	//show the correct Tutorial info based on the tag from the TutorialCollider class
+	ImGui::SetWindowFontScale(3.0f);
 	if (GetTag() == "Jump") {
-		ImGui::Text("press Space to jump", textSize);
+		ImGui::Text("Press Space to jump");
 	}
 	else if (GetTag() == "Movement") {
-		ImGui::Text("press A to move left and D to move right", textSize);
+		ImGui::Text("Press A to move left and D to move right");
 	}
 	else if (GetTag() == "Drop") {
-		ImGui::Text("press S to drop through platforms that look like this one!", textSize);
+		ImGui::Text("Press S to drop through platforms that look like this one!");
+	}
+	else if (GetTag() == "Dash") {
+		ImGui::Text("Press LShift to dash");
+	}
+	else if (GetTag() == "SwordAttack") {
+		ImGui::Text("Press left or right arrow to swing your sword");
+	}
+	else if (GetTag() == "Arrow") {
+		ImGui::Text("Press F to fire an arrow");
 	}
 	else {
 

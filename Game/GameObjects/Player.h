@@ -35,6 +35,8 @@ public:
 	//sword getter
 	GameObject* GetAttackBox();
 
+	Projectile* arrow;
+
 private:
 	//UI variables
 	UIManager* UI;
@@ -47,7 +49,6 @@ private:
 	GameObject* attackBox;
 
 	Model* arrowModel;
-	Projectile* arrow;
 	bool arrowShooting;
 
 	bool isDashing = false;
@@ -55,15 +56,18 @@ private:
 	bool iFrames = false;
 	bool isAttacking = false;
 	float jumpForce;
+	float gravityScale = 3.0f;
 	float dashForce = 5.0f;
 	bool dashingRight;
 	bool dashingLeft;
 	bool hittingWall = false;
+	bool isDead;
 	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;
 	WaitForSeconds attackTimer;
 	WaitForSeconds knockbackTimer;
+	WaitForSeconds deathTimer;
 
 	//collision bools
 	bool canGoRight;

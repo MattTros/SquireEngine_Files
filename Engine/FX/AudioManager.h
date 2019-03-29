@@ -17,6 +17,9 @@ public:
 
 	static AudioManager* GetInstance();
 
+	void SetAudioVolume(int channel_, int volume_);
+	void SetMusicVolume(int volume_);
+
 	void LoadSoundFXFile(const std::string& audioName_, const std::string& fileName_);
 	void LoadMusicFile(const std::string& audioName_, const std::string& fileName_);
 

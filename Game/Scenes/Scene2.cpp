@@ -75,8 +75,15 @@ bool Scene2::Initialize()
 	Model* spikerModel = new Model("Spiker.obj", "Spiker.mtl", BASE_SHADER);
 	spiker = new Spiker(spikerModel, glm::vec3(38.0f, -3.0f, 0.0f), player);
 
+	pB = new ParallaxingBackground();
+	pB->Initialize();
+
+	attackTutorial = new TutorialCollider("SwordAttack", glm::vec3(4.0f, -1.0f, 0.0f));
+	dashTutorial = new TutorialCollider("Dash", glm::vec3(20.0f, -1.0f, 0.0f));
+	arrowTutorial = new TutorialCollider("Arrow", glm::vec3(32.0f, -1.0f, 0.0f));
+
 	initTimer = WaitForSeconds();
-	initTimer.waitTime = 2.0f;
+	initTimer.waitTime = 4.0f;
 	initTimer.seconds = 0.0f;
 	initTimer.active = true;
 	player->SetGravity(false); ooze->SetGravity(false); spiker->SetGravity(false);
@@ -110,6 +117,8 @@ void Scene2::Update(const float deltaTime_)
 		}
 		ooze->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		ooze->CollisionResponse(player, deltaTime_);
+		if (player->arrow != nullptr)
+			ooze->CollisionResponse(player->arrow, deltaTime_);
 		if (ooze->GetHealth() <= 0) {
 			ooze->~Ooze();
 			ooze = nullptr;
@@ -123,6 +132,8 @@ void Scene2::Update(const float deltaTime_)
 		}
 		spiker->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		spiker->CollisionResponse(player, deltaTime_);
+		if (player->arrow != nullptr)
+			spiker->CollisionResponse(player->arrow, deltaTime_);
 		if (spiker->GetHealth() <= 0) {
 			spiker->~Spiker();
 			spiker = nullptr;
@@ -134,6 +145,8 @@ void Scene2::Update(const float deltaTime_)
 
 		fly->CollisionResponse(player->GetAttackBox(), deltaTime_);
 		fly->CollisionResponse(player, deltaTime_);
+		if (player->arrow != nullptr)
+			fly->CollisionResponse(player->arrow, deltaTime_);
 		if (fly->GetHealth() <= 0) {
 			fly->~Fly();
 			fly = nullptr;
@@ -153,8 +166,15 @@ void Scene2::Update(const float deltaTime_)
 		}
 		if (spiker != nullptr) {
 			player->PlayerCollision(spiker, deltaTime_);
+			if (spiker->shotSpike != nullptr)
+				player->PlayerCollision(spiker->shotSpike, deltaTime_);
 		}
+		player->PlayerCollision(attackTutorial, deltaTime_);
+		player->PlayerCollision(dashTutorial, deltaTime_);
+		player->PlayerCollision(arrowTutorial, deltaTime_);
 	}
+
+	pB->Update(deltaTime_);
 
 	if (end != nullptr)
 	{
@@ -166,6 +186,7 @@ void Scene2::Update(const float deltaTime_)
 void Scene2::Render()
 {
 	//SceneGraph::GetInstance()->Render(Camera::GetInstance());
+	pB->Render(Camera::GetInstance());
 
 	if(ooze != nullptr)
 		ooze->Render(Camera::GetInstance());
