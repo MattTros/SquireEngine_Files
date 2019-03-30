@@ -14,9 +14,6 @@ bool Scene1::Initialize()
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
 
-
-	AudioManager::GetInstance()->LoadSoundFXFile("laserFX", "Laser.wav");
-
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
 	//! Create background images:
@@ -76,7 +73,10 @@ bool Scene1::Initialize()
 	GameObject* sword = new GameObject(swordModel);
 	player = new Player(playerModel, sword, glm::vec3(0.0f, -1.0f, 0.0f));
 
+	AudioManager::GetInstance()->PlaySoundFX("introAndWalkJumpTutorial");
+
 	movementTutorial = new TutorialCollider("Movement", glm::vec3(0.0f, -1.0f, 0.0f));	
+	expositionCollider = new TutorialCollider("Exposition", glm::vec3(2.0f, -1.0f, 0.0f));	
 	jumpTutorial = new TutorialCollider("Jump", glm::vec3(6.0f, -1.0f, 0.0f));
 	dropTutorial = new TutorialCollider("Drop", glm::vec3(20.0f, -1.0f, 0.0f));
 
@@ -84,7 +84,7 @@ bool Scene1::Initialize()
 	initTimer.waitTime = 4.0f;
 	initTimer.seconds = 0.0f;
 	initTimer.active = true;
-	player->SetGravity(false); 
+	player->SetGravity(false);
 
 	return true;
 }
@@ -117,6 +117,7 @@ void Scene1::Update(const float deltaTime_)
 		player->PlayerCollision(movementTutorial, deltaTime_);
 		player->PlayerCollision(jumpTutorial, deltaTime_);
 		player->PlayerCollision(dropTutorial, deltaTime_);
+		player->PlayerCollision(expositionCollider, deltaTime_);
 		if (player->arrow != nullptr)
 		{
 			for (int i = 0; i < 38; i++)

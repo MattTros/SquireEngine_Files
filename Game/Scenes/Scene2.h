@@ -45,8 +45,9 @@ private:
 	WaitForSeconds initTimer;
 
 	//Tutorial
-	TutorialCollider* movementTutorial;
-	TutorialCollider* jumpTutorial;
+	TutorialCollider* swordTutorial;
+	TutorialCollider* dashTutorial;
+	TutorialCollider* arrowTutorial;
 };
 
 #endif // !SCENE2_H

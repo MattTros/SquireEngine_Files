@@ -58,14 +58,30 @@ void PlayerUI::Update(const float deltaTime_) {
 	else if (GetTag() == "Movement") {
 		ImGui::Text("Press A to move left and D to move right");
 	}
+	else if (GetTag() == "Exposition")
+	{
+		ImGui::Text("");
+		if (!expositionAudioPlayed)
+			AudioManager::GetInstance()->PlaySoundFX("exposition");
+		expositionAudioPlayed = true;
+	}
 	else if (GetTag() == "Drop") {
 		ImGui::Text("Press S to drop through platforms that look like this one!");
+		if(!dropDownAudioPlayed)
+			AudioManager::GetInstance()->PlaySoundFX("dropDownTutorial");
+		dropDownAudioPlayed = true;
 	}
 	else if (GetTag() == "Dash") {
 		ImGui::Text("Press LShift to dash");
+		if(!dashAudioPlayed)
+			AudioManager::GetInstance()->PlaySoundFX("dashTutorial");
+		dashAudioPlayed = true;
 	}
 	else if (GetTag() == "SwordAttack") {
 		ImGui::Text("Press left or right arrow to swing your sword");
+		if(!attackAudioPlayed)
+			AudioManager::GetInstance()->PlaySoundFX("attackTutorial");
+		attackAudioPlayed = true;
 	}
 	else if (GetTag() == "Arrow") {
 		ImGui::Text("Press F to fire an arrow");

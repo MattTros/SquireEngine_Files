@@ -230,7 +230,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
 		//Collision with specific object response
 		
-		if (other_->GetTag() == "Movement" || other_->GetTag() == "Jump" || other_->GetTag() == "Drop" || other_->GetTag() == "Dash" || other_->GetTag() == "SwordAttack" || other_->GetTag() == "Arrow")
+		if (other_->GetTag() == "Movement" || other_->GetTag() == "Exposition" || other_->GetTag() == "Jump" || other_->GetTag() == "Drop" || other_->GetTag() == "Dash" || other_->GetTag() == "SwordAttack" || other_->GetTag() == "Arrow")
 			UI->SetTag(other_->GetTag());
 		else
 			UI->SetTag("");
@@ -239,6 +239,19 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			//Fly gas response
 			//damage the player
 			SetHealth(GetHealth() - 1);
+			switch (GetHealth())
+			{
+			case 2:
+				UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				break;
+			case 1:
+				UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				break;
+			case 0:
+				UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				isDead = true;
+				break;
+			}
 			GetModel()->GetMesh(0)->iFramesBool = true;
 			GetModel()->GetMesh(1)->iFramesBool = true;
 			if (other_->GetPosition().x - GetPosition().x > 0.0f)

@@ -50,6 +50,7 @@ private:
 	TutorialCollider* movementTutorial;
 	TutorialCollider* jumpTutorial;
 	TutorialCollider* dropTutorial;
+	TutorialCollider* expositionCollider;
 };
 
 #endif // !SCENE1_H

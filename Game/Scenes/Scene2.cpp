@@ -22,7 +22,7 @@ bool Scene2::Initialize()
 
 	gameObjects[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false);
 	gameObjects[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
-	gameObjects[2] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false); // sword tutorial
+	gameObjects[2] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false); //Sword tutorial
 	gameObjects[3] = new Platform(brick, glm::vec3(5.0f, -3.0f, 0.0f), false);//wall
 	gameObjects[4] = new Platform(brick, glm::vec3(6.0f, -4.0f, 0.0f), false);
 	gameObjects[5] = new Platform(brick, glm::vec3(8.0f, -4.0f, 0.0f), false);
@@ -32,7 +32,7 @@ bool Scene2::Initialize()
 	gameObjects[9] = new Platform(brick, glm::vec3(14.0f, -2.0f, 0.0f), false);
 	gameObjects[10] = new Platform(brick, glm::vec3(16.0f, -2.0f, 0.0f), false);
 	gameObjects[11] = new Platform(brick, glm::vec3(18.0f, -2.0f, 0.0f), false);
-	gameObjects[12] = new Platform(brick, glm::vec3(20.0f, -2.0f, 0.0f), false);
+	gameObjects[12] = new Platform(brick, glm::vec3(20.0f, -2.0f, 0.0f), false); //Dash tutorial
 	gameObjects[13] = new Platform(brick, glm::vec3(21.0f, -3.0f, 0.0f), false);
 	gameObjects[14] = new Platform(brick, glm::vec3(22.0f, -4.0f, 0.0f), false);
 	gameObjects[15] = new Platform(brick, glm::vec3(24.0f, -4.0f, 0.0f), false);
@@ -74,6 +74,10 @@ bool Scene2::Initialize()
 
 	Model* spikerModel = new Model("Spiker.obj", "Spiker.mtl", BASE_SHADER);
 	spiker = new Spiker(spikerModel, glm::vec3(38.0f, -3.0f, 0.0f), player);
+
+	swordTutorial = new TutorialCollider("SwordAttack", glm::vec3(4.0f, -1.0f, 0.0f));
+	dashTutorial = new TutorialCollider("Dash", glm::vec3(20.0f, -1.0f, 0.0f));
+	arrowTutorial = new TutorialCollider("Arrow", glm::vec3(32.0f, -1.0f, 0.0f));
 
 	pB = new ParallaxingBackground();
 	pB->Initialize();
@@ -165,7 +169,9 @@ void Scene2::Update(const float deltaTime_)
 			if (spiker->shotSpike != nullptr)
 				player->PlayerCollision(spiker->shotSpike, deltaTime_);
 		}
-		
+		player->PlayerCollision(swordTutorial, deltaTime_);
+		player->PlayerCollision(dashTutorial, deltaTime_);
+		player->PlayerCollision(arrowTutorial, deltaTime_);
 	}
 
 	pB->Update(deltaTime_);
