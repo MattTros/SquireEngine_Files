@@ -2,6 +2,7 @@
 #define OPTIONSMENU_H
 
 #include "../UI/UIManager.h" 
+#include "../FX/AudioManager.h"
 
 class OptionsMenu : public UIManager {
 

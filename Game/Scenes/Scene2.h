@@ -44,10 +44,9 @@ private:
 	Flag* end;
 	WaitForSeconds initTimer;
 
-	///Tutorials
-	TutorialCollider* attackTutorial;
-	TutorialCollider* dashTutorial;
-	TutorialCollider* arrowTutorial;
+	//Tutorial
+	TutorialCollider* movementTutorial;
+	TutorialCollider* jumpTutorial;
 };
 
 #endif // !SCENE2_H

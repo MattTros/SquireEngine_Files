@@ -26,6 +26,8 @@ public:
 	void ShutDown();
 	int GetHeight();
 	int GetWidth();
+	void SetHeight(int height_);
+	void SetWidth(int width);
 	SDL_Window* GetWindow() const;
 	SDL_GLContext GetContext() const;
 private:

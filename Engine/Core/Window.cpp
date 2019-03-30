@@ -73,6 +73,14 @@ int Window::GetWidth()
 	return width;
 }
 
+void Window::SetHeight(int height_) {
+	height = height_;
+}
+
+void Window::SetWidth(int width_) {
+	width = width_;
+}
+
 SDL_Window* Window::GetWindow() const
 {
 	return window;

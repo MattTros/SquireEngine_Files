@@ -22,7 +22,7 @@ bool Scene2::Initialize()
 
 	gameObjects[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false);
 	gameObjects[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
-	gameObjects[2] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false);
+	gameObjects[2] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false); // sword tutorial
 	gameObjects[3] = new Platform(brick, glm::vec3(5.0f, -3.0f, 0.0f), false);//wall
 	gameObjects[4] = new Platform(brick, glm::vec3(6.0f, -4.0f, 0.0f), false);
 	gameObjects[5] = new Platform(brick, glm::vec3(8.0f, -4.0f, 0.0f), false);
@@ -40,7 +40,7 @@ bool Scene2::Initialize()
 	gameObjects[17] = new Platform(brick, glm::vec3(28.0f, -4.0f, 0.0f), false);
 	gameObjects[18] = new Platform(brick, glm::vec3(29.0f, -3.0f, 0.0f), false);
 	gameObjects[19] = new Platform(brick, glm::vec3(30.0f, -2.0f, 0.0f), false);
-	gameObjects[20] = new Platform(brick, glm::vec3(32.0f, -2.0f, 0.0f), false);
+	gameObjects[20] = new Platform(brick, glm::vec3(32.0f, -2.0f, 0.0f), false); //Projectile tutorial
 	gameObjects[23] = new Platform(brick, glm::vec3(33.0f, -3.0f, 0.0f), false);//wall
 	gameObjects[24] = new Platform(brick, glm::vec3(34.0f, -4.0f, 0.0f), false);
 	gameObjects[25] = new Platform(brick, glm::vec3(36.0f, -4.0f, 0.0f), false);
@@ -77,10 +77,6 @@ bool Scene2::Initialize()
 
 	pB = new ParallaxingBackground();
 	pB->Initialize();
-
-	attackTutorial = new TutorialCollider("SwordAttack", glm::vec3(4.0f, -1.0f, 0.0f));
-	dashTutorial = new TutorialCollider("Dash", glm::vec3(20.0f, -1.0f, 0.0f));
-	arrowTutorial = new TutorialCollider("Arrow", glm::vec3(32.0f, -1.0f, 0.0f));
 
 	initTimer = WaitForSeconds();
 	initTimer.waitTime = 4.0f;
@@ -167,48 +163,9 @@ void Scene2::Update(const float deltaTime_)
 		if (spiker != nullptr) {
 			player->PlayerCollision(spiker, deltaTime_);
 			if (spiker->shotSpike != nullptr)
-			{
 				player->PlayerCollision(spiker->shotSpike, deltaTime_);
-				if (spiker->shotSpike->ProjectileColliding(spiker->shotSpike, player))
-				{
-					spiker->shotSpike->SetLifetime(2.5f);
-				}
-				for (int i = 0; i < 33; i++)
-				{
-					if (spiker->shotSpike->ProjectileColliding(player->arrow, gameObjects[i]))
-					{
-						spiker->shotSpike->SetLifetime(2.5f);
-					}
-				}
-			}
 		}
-		player->PlayerCollision(attackTutorial, deltaTime_);
-		player->PlayerCollision(dashTutorial, deltaTime_);
-		player->PlayerCollision(arrowTutorial, deltaTime_);
-
-		if (player->arrow != nullptr)
-		{
-			if (player->arrow->ProjectileColliding(player->arrow, ooze) || player->arrow->ProjectileColliding(player->arrow, fly) || player->arrow->ProjectileColliding(player->arrow, spiker))
-			{
-				player->arrow->SetLifetime(2.0f);
-			}
-			for (int i = 0; i < 33; i++)
-			{
-				if (player->arrow->ProjectileColliding(player->arrow, gameObjects[i]))
-				{
-					player->arrow->SetLifetime(2.0f);
-				}
-			}
-		}
-
-		if (player->arrow != nullptr && spiker->shotSpike != nullptr)
-		{
-			if (player->arrow->ProjectileColliding(player->arrow, spiker->shotSpike))
-			{
-				player->arrow->SetLifetime(2.0f);
-				spiker->shotSpike->SetLifetime(2.5f);
-			}
-		}
+		
 	}
 
 	pB->Update(deltaTime_);

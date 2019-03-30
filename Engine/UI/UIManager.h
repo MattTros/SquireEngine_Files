@@ -11,15 +11,17 @@ class UIManager {
 
 private:
 	//Init Stuff
-	ImGuiIO io;
+	
 	ImVec4 clear_color;
-	SDL_GLContext c;
+	
 
 public:
 	//This variable is for determining what state the UI is in, 0 for no UI, 1 for Main Menu, 2 for OptionsMenu (JakeCunningham)
 	int state;
 
+	ImGuiIO io;
 	SDL_Window* w;
+	SDL_GLContext c;
 
 	UIManager() {};
 	virtual ~UIManager() {};

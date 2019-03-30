@@ -20,8 +20,8 @@ void OptionsMenu::Update(const float deltaTime_) {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(w);
-	ImGui::NewFrame();	
-	
+	ImGui::NewFrame();
+		
 	//setting the size and position of our window
 	ImVec2 size = ImVec2(Engine::GetInstance()->GetScreenSize().x, Engine::GetInstance()->GetScreenSize().y);
 	ImVec2 buttonSize = ImVec2(200, 100);
@@ -35,7 +35,7 @@ void OptionsMenu::Update(const float deltaTime_) {
 	window_flags |= ImGuiWindowFlags_NoResize;
 	window_flags |= ImGuiWindowFlags_NoCollapse;
 
-	ImGui::Begin("Main Menu", false, window_flags);
+	ImGui::Begin("Options", false, window_flags);
 
 	widgetPos = ImVec2(0.0f, 23.0f);
 	ImGui::SetCursorPos(widgetPos);
@@ -43,29 +43,56 @@ void OptionsMenu::Update(const float deltaTime_) {
 		state = 1;
 	}
 
-	float f = 200.0f;
-	ImGui::SliderFloat("Audio", &f, 0.0f, 100.0f);            // Edit 1 float using a slider from 0.0f to 100.0f to set Audio
+	ImGui::Text("Audio");
 
-	ImGui::End();
+	static int audioV = 50;
+	if(ImGui::SliderInt("Sounds / Voice Volume", &audioV, 0.0f, 100.0f))            // Edit 1 int using a slider from 0.0f to 100.0f to set Audio
+		AudioManager::GetInstance()->SetAudioVolume(0, audioV);
 
-	if (firstTimeThrough) {
-		firstTimeThrough = false;
+	static int musicV = 50;
+	if (ImGui::SliderInt("Music", &musicV, 0.0f, 100.0f))            // Edit 1 float using a slider from 0.0f to 100.0f to set Audio
+		AudioManager::GetInstance()->SetMusicVolume(musicV);
+
+	ImGui::Text("Window Settings");
+	Window* window = Engine::GetInstance()->GetWindow();
+
+	static bool isFullscreen;
+	if (ImGui::Checkbox("Fullscreen", &isFullscreen)) {
+		if (isFullscreen) {
+			SDL_SetWindowFullscreen(w, SDL_WINDOW_FULLSCREEN);
+		}
+		else {
+			SDL_SetWindowFullscreen(w, 0);
+		}
 	}
 
-	//tutorial stuff
-	//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-	////ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-	////ImGui::Checkbox("Another Window", &show_another_window);
+	if (ImGui::Button("1280x720", buttonSize)) {
+		SDL_SetWindowSize(w, 1280, 720);
+		glViewport(0, 0, 1280, 720);
+		ImVec2 windowSize = ImVec2(1280, 720);
+		ImGui::SetWindowSize(windowSize);
+		window->SetHeight(720);
+		window->SetWidth(1280);
+	}
 
-	//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-	//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+	if(ImGui::Button("1600x900", buttonSize)) {
+		SDL_SetWindowSize(w, 1600, 900);
+		glViewport(0, 0, 1600, 900);
+		ImVec2 windowSize = ImVec2(1600, 900);
+		ImGui::SetWindowSize(windowSize);
+		window->SetHeight(900);
+		window->SetWidth(1600);
+	}
 
-	//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-	//	counter++;
-	//ImGui::SameLine();
-	//ImGui::Text("counter = %d", counter);
+	if(ImGui::Button("1920x1080", buttonSize)) {
+		SDL_SetWindowSize(w, 1920, 1080);
+		glViewport(0, 0, 1920, 1080);
+		ImVec2 windowSize = ImVec2(1920, 1080);
+		ImGui::SetWindowSize(windowSize);
+		window->SetHeight(1080);
+		window->SetWidth(1920);
+	}
 
-	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	//ImGui::End();
+	ImGui::End();
 
 }
