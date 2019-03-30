@@ -45,11 +45,11 @@ void OptionsMenu::Update(const float deltaTime_) {
 
 	ImGui::Text("Audio");
 
-	static int audioV = 50;
+	static int audioV = 70;
 	if(ImGui::SliderInt("Sounds / Voice Volume", &audioV, 0.0f, 100.0f))            // Edit 1 int using a slider from 0.0f to 100.0f to set Audio
 		AudioManager::GetInstance()->SetAudioVolume(0, audioV);
 
-	static int musicV = 50;
+	static int musicV = 10;
 	if (ImGui::SliderInt("Music", &musicV, 0.0f, 100.0f))            // Edit 1 float using a slider from 0.0f to 100.0f to set Audio
 		AudioManager::GetInstance()->SetMusicVolume(musicV);
 
