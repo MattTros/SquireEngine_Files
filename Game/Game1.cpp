@@ -13,16 +13,25 @@ Game1::~Game1()
 
 bool Game1::Initialize()
 {
-	///Load Audio
+	///Load Death Audio
 	AudioManager::GetInstance()->LoadSoundFXFile("introAndWalkJumpTutorial", "Death_IntroAndWalkJumpTutorial.wav");
 	AudioManager::GetInstance()->LoadSoundFXFile("exposition", "Death_Exposition.wav");
 	AudioManager::GetInstance()->LoadSoundFXFile("dropDownTutorial", "Death_DropDownTutorial.wav");
 	AudioManager::GetInstance()->LoadSoundFXFile("attackTutorial", "Death_AttackTutorial.wav");
 	AudioManager::GetInstance()->LoadSoundFXFile("dashTutorial", "Death_DashTutorial.wav");
 	AudioManager::GetInstance()->LoadSoundFXFile("outro", "Death_Outro.wav");
+	///Load SFX
+	AudioManager::GetInstance()->LoadSoundFXFile("slash", "Sword_Slash.wav");
+	AudioManager::GetInstance()->LoadSoundFXFile("hit", "Sword_Hit.wav");
+	AudioManager::GetInstance()->LoadSoundFXFile("arrow", "Arrow_Shot.wav");
+	AudioManager::GetInstance()->LoadSoundFXFile("dash", "Dash_Sound.wav");
+	AudioManager::GetInstance()->LoadSoundFXFile("death", "Death_Sound.wav");
+	AudioManager::GetInstance()->LoadSoundFXFile("playerHit", "Player_Hit.wav");
+	///Load Music
 	AudioManager::GetInstance()->LoadMusicFile("backgroundMusic", "WaywardGhouls.wav");
 
 	AudioManager::GetInstance()->SetAudioVolume(0, 70);
+	AudioManager::GetInstance()->SetAudioVolume(1, 40);
 	AudioManager::GetInstance()->SetMusicVolume(10);
 
 	///Load Scenes

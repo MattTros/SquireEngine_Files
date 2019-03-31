@@ -86,7 +86,7 @@ void Fly::Render(Camera* camera_) {
 void Fly::CollisionResponse(GameObject* other_, const float deltaTime_) {
 	//if fly touches the player or is attacked, it can fly through anything else
 	if (other_->GetBoundingBox().Intersects(&GetBoundingBox())) {
-		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "Player") {
+		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "Player" || other_->GetTag() == "FriendlyProjectile") {
 			isAttacking = true;
 			attackTimer = 0.0f;
 			gasPos = GetPosition();
@@ -101,7 +101,8 @@ void Fly::CollisionResponse(GameObject* other_, const float deltaTime_) {
 			}
 		}
 
-		if (other_->GetTag() == "AttackBox") {
+		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "FriendlyProjectile") {
+			AudioManager::GetInstance()->PlaySoundFX("hit", 0, 1);
 			SetHealth(GetHealth() - 25.0f);
 		}
 	}

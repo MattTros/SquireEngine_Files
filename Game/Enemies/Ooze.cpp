@@ -68,6 +68,7 @@ void Ooze::CollisionResponse(GameObject* other_, const float deltaTime_) {
 
 		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "FriendlyProjectile"){
 			if (!wfs.active) {
+				AudioManager::GetInstance()->PlaySoundFX("hit", 0, 1);
 				SetHealth(GetHealth() - 25);
 				wfs.active = true;
 				if (player->GetPosition().x - GetPosition().x > 0.0f)

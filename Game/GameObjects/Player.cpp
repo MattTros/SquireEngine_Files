@@ -142,6 +142,7 @@ void Player::Jump()
 
 void Player::Dash()
 {
+	AudioManager::GetInstance()->PlaySoundFX("dash", 0, 1);
 	isDashing = true;
 	iFrames = true;
 	if (GetSpeed() == 1.0f)
@@ -189,6 +190,7 @@ void Player::LightAttack(float zAxisRotation_)
 {
 	if (!isAttacking)
 	{
+		AudioManager::GetInstance()->PlaySoundFX("slash", 0, 1);
 		attackBox->SetPosition(glm::vec3(attackBox->GetPosition().x + (zAxisRotation_ * (GetBoundingBox().minVert.x - GetBoundingBox().maxVert.x)), attackBox->GetPosition().y, this->GetPosition().z));
 		isAttacking = true;
 		attackTimer.active = true;
@@ -205,6 +207,7 @@ void Player::Shoot()
 {
 	if (!arrowShooting)
 	{
+		AudioManager::GetInstance()->PlaySoundFX("arrow", 0, 1);
 		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("toonShader"));
 		arrow = new Projectile(arrowModel, GetPosition(), false, 5.0f, 1.0f);
 		arrow->SetTag("FriendlyProjectile");
@@ -243,12 +246,15 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			{
 			case 2:
 				UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("playerHit", 0, 1);
 				break;
 			case 1:
 				UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("playerHit", 0, 1);
 				break;
 			case 0:
 				UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("death", 0, 1);
 				isDead = true;
 				break;
 			}
@@ -271,12 +277,15 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			{
 			case 2:
 				UI->heart3 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("playerHit", 0, 1);
 				break;
 			case 1:
 				UI->heart2 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("playerHit", 0, 1);
 				break;
 			case 0:
 				UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
+				AudioManager::GetInstance()->PlaySoundFX("death", 0, 1);
 				isDead = true;
 				break;
 			}

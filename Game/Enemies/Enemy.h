@@ -2,6 +2,7 @@
 #define ENEMY_H
 
 #include "../GameObjects/Entity.h"
+#include "../../Engine/FX/AudioManager.h"
 
 class Enemy : public Entity {
 public:

@@ -21,6 +21,8 @@ public:
 	float a = 0.0f; //! Value a (needed to find y)
 	float y = 0.0f; //! Final y value at point x
 	glm::vec2 vertex = glm::vec2(); //! Vertex, set to default glm::vec2()
+
+	Projectile* shotSpike;
 private:
 	//private methods
 	void Patrol(const float deltaTime_);
@@ -29,7 +31,7 @@ private:
 
 	void Attack();
 	float Parabola(float x_);
-	Projectile* shotSpike;
+	
 	Model* spike;
 	//player object that gets passed into the constructor
 	Entity* player;
