@@ -85,6 +85,7 @@ void Player::Movement(float deltaTime_)
 	{
 		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && canGoLeft)
 		{
+			shootingDirection = -1;
 			if (!GetGravity())
 				SetSpeed(-1.0f);
 			else
@@ -101,6 +102,7 @@ void Player::Movement(float deltaTime_)
 		}
 		else if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && canGoRight)
 		{
+			shootingDirection = 1;
 			if (!GetGravity())
 				SetSpeed(1.0f);
 			else
@@ -211,7 +213,7 @@ void Player::Shoot()
 		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("toonShader"));
 		arrow = new Projectile(arrowModel, GetPosition(), false, 5.0f, 1.0f);
 		arrow->SetTag("FriendlyProjectile");
-		arrow->SetDirection(GetSpeed());
+		arrow->SetDirection(shootingDirection);
 		arrow->SetRotation(glm::vec3(arrow->GetRotation().x, arrow->GetDirection(), arrow->GetRotation().z));
 		arrowShooting = true;
 	}

@@ -55,6 +55,7 @@ private:
 	bool isFacingRight = true;
 	bool iFrames = false;
 	bool isAttacking = false;
+	int shootingDirection = 1;
 	float jumpForce;
 	float gravityScale = 3.0f;
 	float dashForce = 5.0f;
