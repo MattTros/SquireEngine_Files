@@ -25,6 +25,7 @@ void ParallaxingBackground::Initialize()
 	bMid = new GameObject(backgroundMid);
 	bMidTwo = new GameObject(backgroundMidTwo);
 	bBack = new GameObject(backgroundBack);
+	bBackImage = new GameObject(backgroundBack);
 
 	//! Manipulate foreground (darker plane)
 	bFront->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
@@ -74,15 +75,24 @@ void ParallaxingBackground::Initialize()
 
 	//! Manipulate the background (image, doesn't move):
 	bBack->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
-	bBack->SetAngle(-1.575f);
+	bBack->SetAngle(1.575f);
 	bBack->SetPosition(glm::vec3(0.0f, 0.0f, -1.1f));
 	bBack->SetScale(glm::vec3(3.0f));
+
+	
+	bBackImage->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	bBackImage->SetScale(glm::vec3(6.0f, 3.1f, 1.0f));
+	bBackImage->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	bBackImage->SetAngle(6.25f);
 }
 	 
 void ParallaxingBackground::Update(float deltaTime_)
 {
+	//! Update background image and back (for making the paralaxing parts work)
 	cameraPos = Camera::GetInstance()->GetPosition();
 	bBack->SetPosition(cameraPos);
+	bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, -1.1f));
+
 	//! Set centerpoint for background image:
 	backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
 	bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.3f, bFront->GetPosition().z));
@@ -214,5 +224,5 @@ void ParallaxingBackground::Render(Camera* camera_)
 	backgroundFrontTwo->Render(camera_);
 	backgroundMid->Render(camera_);
 	backgroundMidTwo->Render(camera_);
-	backgroundBack->Render(camera_);
+	bBackImage->GetModel()->Render(camera_);
 }

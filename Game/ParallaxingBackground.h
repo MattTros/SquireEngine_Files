@@ -18,10 +18,11 @@ public:
 	glm::vec3 cameraPos = glm::vec3();
 
 	GameObject* bFront;
-	GameObject * bFrontTwo;
+	GameObject* bFrontTwo;
 	GameObject* bMid;
 	GameObject* bMidTwo;
-	GameObject * bBack;
+	GameObject* bBack;
+	GameObject* bBackImage;
 
 private:
 	Model* backgroundFront = new Model("FrontRocks.obj", "FrontRocks.mtl", BASE_SHADER);
