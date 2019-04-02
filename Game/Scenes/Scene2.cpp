@@ -120,6 +120,7 @@ void Scene2::Update(const float deltaTime_)
 		if (player->arrow != nullptr)
 			ooze->CollisionResponse(player->arrow, deltaTime_);
 		if (ooze->GetHealth() <= 0) {
+			SpawnHealthPickup(ooze->GetPosition());
 			ooze->~Ooze();
 			ooze = nullptr;
 		}
@@ -135,6 +136,7 @@ void Scene2::Update(const float deltaTime_)
 		if (player->arrow != nullptr)
 			spiker->CollisionResponse(player->arrow, deltaTime_);
 		if (spiker->GetHealth() <= 0) {
+			SpawnHealthPickup(spiker->GetPosition());
 			spiker->~Spiker();
 			spiker = nullptr;
 		}
@@ -148,6 +150,7 @@ void Scene2::Update(const float deltaTime_)
 		if (player->arrow != nullptr)
 			fly->CollisionResponse(player->arrow, deltaTime_);
 		if (fly->GetHealth() <= 0) {
+			SpawnHealthPickup(fly->GetPosition());
 			fly->~Fly();
 			fly = nullptr;
 		}
@@ -173,9 +176,24 @@ void Scene2::Update(const float deltaTime_)
 		{
 			SceneManager::GetInstance()->SetScene(SceneManager::GetInstance()->GetSceneIndex());
 		}
+		if (pickup != nullptr)
+		{
+			player->PlayerCollision(pickup, deltaTime_);
+		}
 		player->PlayerCollision(swordTutorial, deltaTime_);
 		player->PlayerCollision(dashTutorial, deltaTime_);
 		player->PlayerCollision(arrowTutorial, deltaTime_);
+	}
+
+	if (pickup != nullptr)
+	{
+		pickup->OnHit(player);
+		pickup->SetAngle(pickup->GetAngle() + deltaTime_);
+		if (pickup->isHit)
+		{
+			pickup->~Pickup(); 
+			pickup = nullptr;
+		}
 	}
 
 	pB->Update(deltaTime_);
@@ -206,4 +224,13 @@ void Scene2::Render()
 	end->Render(Camera::GetInstance());
 
 	player->Render(Camera::GetInstance());
+
+	if(pickup != nullptr)
+		pickup->GetModel()->Render(Camera::GetInstance());
+}
+
+void Scene2::SpawnHealthPickup(glm::vec3 spawnPos_)
+{
+	Model* potion = new Model("HealthPotion.obj", "HealthPotion.mtl", BASE_SHADER);
+	pickup = new Pickup(potion, spawnPos_);
 }

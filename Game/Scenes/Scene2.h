@@ -16,6 +16,7 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/Flag.h"
 #include "../GameObjects/TutorialCollider.h"
+#include "../GameObjects/Pickup.h"
 
 class SceneManager;
 
@@ -27,6 +28,8 @@ public:
 	bool Initialize();
 	void Update(const float deltaTime_);
 	void Render();
+
+	void SpawnHealthPickup(glm::vec3 spawnPos_);
 private:
 	//Platform stuff
 	GameObject* gameObjects[33];
@@ -43,6 +46,9 @@ private:
 	///Finish Flag
 	Flag* end;
 	WaitForSeconds initTimer;
+
+	///Health Pickup
+	Pickup* pickup;
 
 	//Tutorial
 	TutorialCollider* swordTutorial;
