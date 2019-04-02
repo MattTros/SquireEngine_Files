@@ -17,7 +17,7 @@ bool Scene1::Initialize()
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
 	//! Create background images:
-	pB = new ParallaxingBackground();
+	pB = new ParallaxingBackground(player);
 	pB->Initialize();
 
 	///Level Layout Start
@@ -55,15 +55,14 @@ bool Scene1::Initialize()
 	gameObjects[27] = new Platform(brick, glm::vec3(15.0f, -9.0f, 0.0f), false);
 	gameObjects[28] = new Platform(brick, glm::vec3(15.0f, -10.0f, 0.0f), false);
 	gameObjects[29] = new Platform(brick, glm::vec3(15.0f, -11.0f, 0.0f), false);
-	gameObjects[30] = new Platform(brick, glm::vec3(13.0f, -11.0f, 0.0f), false); 
-	gameObjects[31] = new Platform(brick, glm::vec3(11.0f, -11.0f, 0.0f), false); 
-	gameObjects[32] = new Platform(brick, glm::vec3(9.0f, -11.0f, 0.0f), false); 
+	gameObjects[30] = new Platform(brick, glm::vec3(13.0f, -11.0f, 0.0f), false);
+	gameObjects[31] = new Platform(brick, glm::vec3(11.0f, -11.0f, 0.0f), false);
+	gameObjects[32] = new Platform(brick, glm::vec3(9.0f, -11.0f, 0.0f), false);
 	gameObjects[33] = new Platform(brick, glm::vec3(7.0f, -11.0f, 0.0f), false);
 	gameObjects[34] = new Platform(brick, glm::vec3(7.0f, -10.0f, 0.0f), false);
 	gameObjects[35] = new Platform(brick, glm::vec3(7.0f, -9.0f, 0.0f), false);
 	gameObjects[36] = new Platform(brick, glm::vec3(11.0f, -9.0f, 0.0f), false); ///Final Jump puzzle
 	gameObjects[37] = new Platform(brick, glm::vec3(5.0f, -9.0f, 0.0f), false);
-
 	gameObjects[38] = new Spike(spike, glm::vec3(13.0f, -10.5f, 0.0f), false); //Spike
 	gameObjects[39] = new Spike(spike, glm::vec3(11.0f, -10.5f, 0.0f), false); //Spike
 	gameObjects[40] = new Spike(spike, glm::vec3(9.0f, -10.5, 0.0f), false); //Spike

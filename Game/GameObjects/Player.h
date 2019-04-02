@@ -40,7 +40,6 @@ public:
 	//collision bools
 	bool canGoRight;
 	bool canGoLeft;
-
 private:
 	//UI variables
 	UIManager* UI;

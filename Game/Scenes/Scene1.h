@@ -9,7 +9,6 @@
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
 #include "../GameObjects/DropThroughPlatform.h"
-#include "../GameObjects/Spike.h"
 #include "../GameObjects/Entity.h"
 #include "../Enemies/Ooze.h"
 #include "../Enemies/Fly.h"
@@ -18,6 +17,7 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/TutorialCollider.h"
 #include "../GameObjects/Flag.h"
+#include "../GameObjects/Spike.h"
 
 class SceneManager;
 

@@ -79,7 +79,7 @@ bool Scene2::Initialize()
 	dashTutorial = new TutorialCollider("Dash", glm::vec3(20.0f, -1.0f, 0.0f));
 	arrowTutorial = new TutorialCollider("Arrow", glm::vec3(32.0f, -1.0f, 0.0f));
 
-	pB = new ParallaxingBackground();
+	pB = new ParallaxingBackground(player);
 	pB->Initialize();
 
 	initTimer = WaitForSeconds();
