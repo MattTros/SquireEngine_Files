@@ -27,6 +27,7 @@ public:
 	void PlayMusic(std::string musicName_, int loops_ = -1);
 	void PauseMusic();
 	void ResumeMusic();
+	void StopAudioChannel(int channel_);
 private:
 	AudioManager();
 	~AudioManager();

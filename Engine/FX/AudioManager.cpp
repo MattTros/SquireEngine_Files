@@ -100,3 +100,8 @@ void AudioManager::ResumeMusic()
 	}
 }
 
+void AudioManager::StopAudioChannel(int channel_)
+{
+	Mix_HaltChannel(channel_);
+}
+
