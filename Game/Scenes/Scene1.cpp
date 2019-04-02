@@ -16,10 +16,6 @@ bool Scene1::Initialize()
 
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
-	//! Create background images:
-	pB = new ParallaxingBackground(player);
-	pB->Initialize();
-
 	///Level Layout Start
 	Model* platform = new Model("Platform.obj", "Platform.mtl", BASE_SHADER);
 	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
@@ -76,6 +72,10 @@ bool Scene1::Initialize()
 	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
 	GameObject* sword = new GameObject(swordModel);
 	player = new Player(playerModel, sword, glm::vec3(0.0f, -1.0f, 0.0f));
+
+	//! Create background images:
+	pB = new ParallaxingBackground(player);
+	pB->Initialize();
 
 	AudioManager::GetInstance()->PlaySoundFX("introAndWalkJumpTutorial");
 
