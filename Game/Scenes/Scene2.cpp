@@ -169,6 +169,10 @@ void Scene2::Update(const float deltaTime_)
 			if (spiker->shotSpike != nullptr)
 				player->PlayerCollision(spiker->shotSpike, deltaTime_);
 		}
+		if (player->GetPosition().y < -7)
+		{
+			SceneManager::GetInstance()->SetScene(SceneManager::GetInstance()->GetSceneIndex());
+		}
 		player->PlayerCollision(swordTutorial, deltaTime_);
 		player->PlayerCollision(dashTutorial, deltaTime_);
 		player->PlayerCollision(arrowTutorial, deltaTime_);

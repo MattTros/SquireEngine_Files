@@ -128,6 +128,10 @@ void Scene1::Update(const float deltaTime_)
 				}
 			}
 		}
+		if (player->GetPosition().y < -11)
+		{
+			SceneManager::GetInstance()->SetScene(SceneManager::GetInstance()->GetSceneIndex());
+		}
 	}
 
 	if (end != nullptr)
