@@ -23,6 +23,7 @@ bool Scene1::Initialize()
 	///Level Layout Start
 	Model* platform = new Model("Platform.obj", "Platform.mtl", BASE_SHADER);
 	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
+	Model* spike = new Model("Spike.obj", "Spike.mtl", BASE_SHADER);
 
 	gameObjects[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false); //Movement tutorial here
 	gameObjects[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
@@ -54,14 +55,18 @@ bool Scene1::Initialize()
 	gameObjects[27] = new Platform(brick, glm::vec3(15.0f, -9.0f, 0.0f), false);
 	gameObjects[28] = new Platform(brick, glm::vec3(15.0f, -10.0f, 0.0f), false);
 	gameObjects[29] = new Platform(brick, glm::vec3(15.0f, -11.0f, 0.0f), false);
-	gameObjects[30] = new Platform(brick, glm::vec3(13.0f, -11.0f, 0.0f), false);
-	gameObjects[31] = new Platform(brick, glm::vec3(11.0f, -11.0f, 0.0f), false);
-	gameObjects[32] = new Platform(brick, glm::vec3(9.0f, -11.0f, 0.0f), false);
+	gameObjects[30] = new Platform(brick, glm::vec3(13.0f, -11.0f, 0.0f), false); 
+	gameObjects[31] = new Platform(brick, glm::vec3(11.0f, -11.0f, 0.0f), false); 
+	gameObjects[32] = new Platform(brick, glm::vec3(9.0f, -11.0f, 0.0f), false); 
 	gameObjects[33] = new Platform(brick, glm::vec3(7.0f, -11.0f, 0.0f), false);
 	gameObjects[34] = new Platform(brick, glm::vec3(7.0f, -10.0f, 0.0f), false);
 	gameObjects[35] = new Platform(brick, glm::vec3(7.0f, -9.0f, 0.0f), false);
 	gameObjects[36] = new Platform(brick, glm::vec3(11.0f, -9.0f, 0.0f), false); ///Final Jump puzzle
 	gameObjects[37] = new Platform(brick, glm::vec3(5.0f, -9.0f, 0.0f), false);
+
+	gameObjects[38] = new Spike(spike, glm::vec3(13.0f, -10.5f, 0.0f), false); //Spike
+	gameObjects[39] = new Spike(spike, glm::vec3(11.0f, -10.5f, 0.0f), false); //Spike
+	gameObjects[40] = new Spike(spike, glm::vec3(9.0f, -10.5, 0.0f), false); //Spike
 	///Level Layout End
 
 	Model* hitBox = new Model("AttackBox.obj", "AttackBox.mtl", BASE_SHADER);
@@ -105,13 +110,13 @@ void Scene1::Update(const float deltaTime_)
 	if (pB != nullptr)
 		pB->Update(deltaTime_);
 
-	for (int i = 0; i < 38; i++) {
+	for (int i = 0; i < 41; i++) {
 		gameObjects[i]->Update(deltaTime_);
 	}
 
 	if (player != nullptr) {
 		player->Update(deltaTime_);
-		for (int i = 0; i < 38; i++) {
+		for (int i = 0; i < 41; i++) {
 			player->PlayerCollision(gameObjects[i], deltaTime_);
 		}
 		player->PlayerCollision(movementTutorial, deltaTime_);
@@ -120,7 +125,7 @@ void Scene1::Update(const float deltaTime_)
 		player->PlayerCollision(expositionCollider, deltaTime_);
 		if (player->arrow != nullptr)
 		{
-			for (int i = 0; i < 38; i++)
+			for (int i = 0; i < 41; i++)
 			{
 				if (player->arrow->ProjectileColliding(player->arrow, gameObjects[i]))
 				{
@@ -149,6 +154,7 @@ void Scene1::Render()
 
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[15]->GetModel()->Render(Camera::GetInstance());
+	gameObjects[38]->GetModel()->Render(Camera::GetInstance());
 
 	pB->Render(Camera::GetInstance());
 

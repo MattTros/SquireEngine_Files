@@ -42,6 +42,7 @@ Player::Player(Model* model_, GameObject* sword_, glm::vec3 position_) : Entity(
 	attackBox->SetTag("AttackBox");
 	sword->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
 	sword->SetAngle(1.0f);
+	sword->SetScale(glm::vec3(1.0f, 0.75f, 1.0f));
 	attackTimer = WaitForSeconds();
 	attackTimer.active = false;
 	attackTimer.waitTime = 0.5f;
@@ -78,14 +79,13 @@ Player::~Player()
 void Player::Movement(float deltaTime_)
 {
 	fountain->SetOrigin(this->GetPosition());
-	sword->SetPosition(this->GetPosition());
+	sword->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, this->GetPosition().z + 0.35f));
 	attackBox->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, this->GetPosition().z - 10.0f));
 	Camera::GetInstance()->SetPosition(glm::vec3(this->GetPosition().x, this->GetPosition().y, Camera::GetInstance()->GetPosition().z));
 	if (!isDead)
 	{
 		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && canGoLeft)
 		{
-			shootingDirection = -1;
 			if (!GetGravity())
 				SetSpeed(-1.0f);
 			else
@@ -102,7 +102,6 @@ void Player::Movement(float deltaTime_)
 		}
 		else if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && canGoRight)
 		{
-			shootingDirection = 1;
 			if (!GetGravity())
 				SetSpeed(1.0f);
 			else
@@ -213,7 +212,7 @@ void Player::Shoot()
 		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("toonShader"));
 		arrow = new Projectile(arrowModel, GetPosition(), false, 5.0f, 1.0f);
 		arrow->SetTag("FriendlyProjectile");
-		arrow->SetDirection(shootingDirection);
+		arrow->SetDirection(GetSpeed());
 		arrow->SetRotation(glm::vec3(arrow->GetRotation().x, arrow->GetDirection(), arrow->GetRotation().z));
 		arrowShooting = true;
 	}
@@ -240,7 +239,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 		else
 			UI->SetTag("");
 
-		if (other_->GetTag() == "Gas" && !iFrames) {
+		if ((other_->GetTag() == "Gas" && !iFrames) || (other_->GetTag() == "Spike" && !iFrames)) {
 			//Fly gas response
 			//damage the player
 			SetHealth(GetHealth() - 1);

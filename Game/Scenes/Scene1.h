@@ -9,6 +9,7 @@
 #include "../GameObjects/Platform.h"
 #include "../GameObjects/MovingPlatform.h"
 #include "../GameObjects/DropThroughPlatform.h"
+#include "../GameObjects/Spike.h"
 #include "../GameObjects/Entity.h"
 #include "../Enemies/Ooze.h"
 #include "../Enemies/Fly.h"
@@ -38,7 +39,7 @@ private:
 	ParallaxingBackground* pB;
 
 	//Platform stuff
-	GameObject* gameObjects[38];
+	GameObject* gameObjects[41];
 
 	//Player stuff
 	Player* player;

@@ -141,19 +141,6 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 
 			currentPlatform = other_;
 		}
-
-		if (other_->GetTag() == "Spike") {
-			//deal 10 damage, wait 2 seconds, and deal 10 damage again
-			if (!spikeWFS->active) {
-				health -= 10;
-				spikeWFS->active = true;
-			}
-			spikeWFS->waitTime = 2.0f;
-			spikeWFS->seconds += deltaTime_;
-			if (spikeWFS->seconds > spikeWFS->waitTime) {
-				spikeWFS->seconds = 0.0f;
-			}
-		}
 	}
 }
 
