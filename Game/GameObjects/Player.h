@@ -37,6 +37,10 @@ public:
 
 	Projectile* arrow;
 
+	//collision bools
+	bool canGoRight;
+	bool canGoLeft;
+
 private:
 	//UI variables
 	UIManager* UI;
@@ -69,10 +73,6 @@ private:
 	WaitForSeconds attackTimer;
 	WaitForSeconds knockbackTimer;
 	WaitForSeconds deathTimer;
-
-	//collision bools
-	bool canGoRight;
-	bool canGoLeft;
 };
 
 
