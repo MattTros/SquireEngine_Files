@@ -2,7 +2,7 @@
 
 
 
-ParallaxingBackground::ParallaxingBackground()
+ParallaxingBackground::ParallaxingBackground(Player* player_)
 {
 	//! Set defaults for these:
 	frontCenterOne = 0.0f;
@@ -10,6 +10,8 @@ ParallaxingBackground::ParallaxingBackground()
 	midCenterOne = 0.0f;
 	midCenterTwo = 0.0f;
 	backCenter = 0.0f;
+
+	player = player_;
 }
 
 
@@ -30,7 +32,7 @@ void ParallaxingBackground::Initialize()
 	//! Manipulate foreground (darker plane)
 	bFront->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
 	bFront->SetPosition(glm::vec3(-0.5f, -2.0f, -1.0f));
-	bFront->SetScale(glm::vec3(3.0f, 2.0f, 2.0f));
+	bFront->SetScale(glm::vec3(3.0f, 2.5f, 2.0f));
 	bFront->SetAngle(1.575f);
 
 	//! Make the added-on ground have all the same characteristics of the layer it's copying:
@@ -53,7 +55,7 @@ void ParallaxingBackground::Initialize()
 	//! Manipulate the midground (lighter plane):
 	bMid->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
 	bMid->SetAngle(1.575f);
-	bMid->SetScale(glm::vec3(3.0f, 2.0f, 2.0f));
+	bMid->SetScale(glm::vec3(3.0f, 2.5f, 2.0f));
 	bMid->SetPosition(glm::vec3(-0.5f, -1.75f, -1.01f));
 
 	//! Make the added-on ground have all the same characteristics of the layer it's copying:
@@ -81,9 +83,9 @@ void ParallaxingBackground::Initialize()
 
 	
 	bBackImage->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	bBackImage->SetScale(glm::vec3(6.0f, 3.1f, 1.0f));
+	bBackImage->SetScale(glm::vec3(7.0f, 5.5f, 1.0f));
 	bBackImage->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
-	bBackImage->SetAngle(6.25f);
+	bBackImage->SetAngle(0.0f);
 }
 	 
 void ParallaxingBackground::Update(float deltaTime_)
@@ -91,17 +93,19 @@ void ParallaxingBackground::Update(float deltaTime_)
 	//! Update background image and back (for making the paralaxing parts work)
 	cameraPos = Camera::GetInstance()->GetPosition();
 	bBack->SetPosition(cameraPos);
-	bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, -1.1f));
+	bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, -2.1f));
 
 	//! Set centerpoint for background image:
 	backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
-	bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.3f, bFront->GetPosition().z));
-	bMid->SetPosition(glm::vec3(bMid->GetPosition().x, cameraPos.y - 1.05f, bMid->GetPosition().z));
-	bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x, cameraPos.y - 1.3f, bFrontTwo->GetPosition().z));
-	bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x, cameraPos.y - 1.05f, bMidTwo->GetPosition().z));
+
+	//! Move the parallaxing part up and down with camera
+	bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.50f, bFront->GetPosition().z));
+	bMid->SetPosition(glm::vec3(bMid->GetPosition().x, cameraPos.y - 1.25f, bMid->GetPosition().z));
+	bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x, cameraPos.y - 1.50f, bFrontTwo->GetPosition().z));
+	bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x, cameraPos.y - 1.25f, bMidTwo->GetPosition().z));
 
 	//! Keyboard controls:
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
+	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && player->canGoLeft)
 	{
 		//! Player moving left, background move right:
 		movingRight = true;
@@ -112,7 +116,7 @@ void ParallaxingBackground::Update(float deltaTime_)
 		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 	}
 
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D))
+	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && player->canGoRight)
 	{
 		//! Player moving right, background move left:
 		movingLeft = true;

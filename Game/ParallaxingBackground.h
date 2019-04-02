@@ -4,12 +4,14 @@
 #define BASE_SHADER Shader::GetInstance()->GetShader("baseShader")
 
 #include "../../GameEngine/Engine/Core/Engine.h"
+#include "GameObjects/Player.h"
+
 class Engine;
 
 class ParallaxingBackground
 {
 public:
-	ParallaxingBackground();
+	ParallaxingBackground(Player* player_);
 	~ParallaxingBackground();
 
 	void Initialize();
@@ -23,6 +25,8 @@ public:
 	GameObject* bMidTwo;
 	GameObject* bBack;
 	GameObject* bBackImage;
+
+	Player* player;
 
 private:
 	Model* backgroundFront = new Model("FrontRocks.obj", "FrontRocks.mtl", BASE_SHADER);
