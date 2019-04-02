@@ -39,7 +39,7 @@ bool Game1::Initialize()
 	SceneManager::GetInstance()->AddScene(new Scene1, 1);
 	SceneManager::GetInstance()->AddScene(new Scene2, 2);
 	AudioManager::GetInstance()->PlayMusic("backgroundMusic");
-	SceneManager::GetInstance()->SetScene(0);
+	SceneManager::GetInstance()->SetScene(2);
 	return true;
 }
 
@@ -47,7 +47,23 @@ void Game1::Update(const float deltaTime_)
 {
 	SceneManager::GetInstance()->Update(deltaTime_);
 	if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_ESCAPE))
+	{
+		if (SaveManager::GetInstance()->CheckExists("save1"))
+		{
+			Save saveData = Save();
+			saveData.name = "save1";
+			saveData.info = std::to_string(SceneManager::GetInstance()->GetSceneIndex());
+			SaveManager::GetInstance()->WriteTo(saveData);
+		}
+		else
+		{
+			Save saveData = Save();
+			saveData.name = "save1";
+			saveData.info = std::to_string(SceneManager::GetInstance()->GetSceneIndex());
+			SaveManager::GetInstance()->CreateSave("save1", saveData);
+		}
 		SceneManager::GetInstance()->SetScene(0);
+	}
 }
 
 void Game1::Render()
