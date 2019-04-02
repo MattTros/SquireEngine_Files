@@ -4,10 +4,11 @@
 //Class by Jake G. Cunningham
 #include "Enemy.h"
 #include "../../Engine/Graphics/ParticleSystem.h"
+#include "../GameObjects/Player.h"
 
 class Fly : public Enemy {
 public:
-	Fly(Model* model_, glm::vec3 position_, Entity* player_);
+	Fly(Model* model_, glm::vec3 position_, Player* player_);
 	~Fly();
 
 	void Update(const float deltaTime_);
@@ -23,7 +24,7 @@ private:
 	void Knockback(const float deltaTime_);
 
 	//player object that gets passed into the constructor
-	Entity* player;
+	Player* player;
 
 	//temp physics variable
 	glm::vec3 position;

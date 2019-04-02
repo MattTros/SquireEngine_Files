@@ -1,6 +1,6 @@
 #include "Fly.h"
 
-Fly::Fly(Model* model_, glm::vec3 position_, Entity* player_) : Enemy(model_, position_, false) {
+Fly::Fly(Model* model_, glm::vec3 position_, Player* player_) : Enemy(model_, position_, false) {
 	SetHealth(100);
 	state = 0;
 	player = player_;
@@ -101,9 +101,11 @@ void Fly::CollisionResponse(GameObject* other_, const float deltaTime_) {
 			}
 		}
 
-		if (other_->GetTag() == "AttackBox" || other_->GetTag() == "FriendlyProjectile") {
+		if (other_->GetTag() == "AttackBox" || (other_->GetTag() == "FriendlyProjectile" && player->arrow->canDamage)) {
 			AudioManager::GetInstance()->PlaySoundFX("hit", 0, 1);
 			SetHealth(GetHealth() - 25.0f);
+			if (other_->GetTag() == "FriendlyProjectile")
+				player->arrow->canDamage = false;
 		}
 	}
 }

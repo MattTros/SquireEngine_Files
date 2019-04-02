@@ -16,6 +16,8 @@ public:
 	void SetDirection(float direction_);
 	void Update(float deltaTime_);
 	void Render(Camera* camera_);
+
+	bool canDamage = true;
 private:
 	float lifetime;
 	float currentLifetime;
