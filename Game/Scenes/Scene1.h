@@ -39,7 +39,7 @@ private:
 	ParallaxingBackground* pB;
 
 	//Platform stuff
-	GameObject* gameObjects[41];
+	GameObject* gameObjects[44];
 
 	//Player stuff
 	Player* player;

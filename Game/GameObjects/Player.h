@@ -66,6 +66,7 @@ private:
 	bool dashingLeft;
 	bool hittingWall = false;
 	bool isDead;
+	float speed = 1.5f;
 	WaitForSeconds dashTimer;
 	WaitForSeconds dashCooldown;
 	WaitForSeconds jumpCooldown;

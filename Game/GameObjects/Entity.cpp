@@ -107,7 +107,7 @@ void Entity::DefaultCollision(GameObject* other_, const float deltaTime_) {
 			}
 
 
-			if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_S) && GetTag() == "Player")
+			if ((KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_S) || KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_DOWN)) && GetTag() == "Player")
 			{
 				dropThroughTimer.active = true;
 				SetGravity(true);

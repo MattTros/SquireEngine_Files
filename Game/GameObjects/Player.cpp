@@ -19,7 +19,7 @@ Player::Player(Model* model_, GameObject* sword_, glm::vec3 position_) : Entity(
 	///Player Acceleration
 	SetAcceleration(glm::vec3(0.0f, -9.8f * gravityScale, 0.0f));
 	SetVelocity(glm::vec3(0.0f));
-	jumpForce = 1.0f;
+	jumpForce = 2.0f;
 	///Dash Cooldown Initialization
 	dashCooldown = WaitForSeconds();
 	dashCooldown.active = false;
@@ -33,7 +33,7 @@ Player::Player(Model* model_, GameObject* sword_, glm::vec3 position_) : Entity(
 	///Jump Cooldown Initialization
 	jumpCooldown = WaitForSeconds();
 	jumpCooldown.active = false;
-	jumpCooldown.waitTime = 1.5f;
+	jumpCooldown.waitTime = 0.75f;
 	jumpCooldown.seconds = 0.0f;
 	///Sword Inititalization
 	Model* box = new Model("AttackBox.obj", "AttackBox.mtl", Shader::GetInstance()->GetShader("baseShader"));
@@ -92,7 +92,7 @@ void Player::Movement(float deltaTime_)
 			else
 				SetSpeed(-1.0f);
 			if (!isDashing)
-				SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
+				SetVelocity(glm::vec3(GetSpeed() * speed, GetVelocity().y, GetVelocity().z));
 			if (isFacingRight)
 			{
 				SetAngle(-1.575);
@@ -109,7 +109,7 @@ void Player::Movement(float deltaTime_)
 			else
 				SetSpeed(1.0f);
 			if (!isDashing)
-				SetVelocity(glm::vec3(GetSpeed(), GetVelocity().y, GetVelocity().z));
+				SetVelocity(glm::vec3(GetSpeed() * speed, GetVelocity().y, GetVelocity().z));
 			if (!isFacingRight)
 			{
 				SetAngle(1.575);
@@ -175,11 +175,11 @@ void Player::Combat(float deltaTime_)
 		{
 			HeavyAttack();
 		}
-		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_RIGHT))
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_RIGHT) || MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::right))
 		{
 			LightAttack(-1.0f);
 		}
-		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_LEFT))
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_LEFT) || MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::left))
 		{
 			LightAttack(1.0f);
 		}
@@ -273,6 +273,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			case 0:
 				UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
 				AudioManager::GetInstance()->PlaySoundFX("death", 0, 1);
+				AudioManager::GetInstance()->StopAudioChannel(0);
 				isDead = true;
 				break;
 			}
@@ -304,6 +305,7 @@ void Player::PlayerCollision(GameObject* other_, float deltaTime_)
 			case 0:
 				UI->heart1 = TextureHandler::GetInstance()->GetTexture("brokenHeart");
 				AudioManager::GetInstance()->PlaySoundFX("death", 0, 1);
+				AudioManager::GetInstance()->StopAudioChannel(0);
 				isDead = true;
 				break;
 			}

@@ -11,10 +11,12 @@ Scene1::~Scene1() {
 bool Scene1::Initialize()
 {
 
-	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.15f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
 
 	CollisionHandler::GetInstance()->Initialize(100.0f);
+
+	AudioManager::GetInstance()->StopAudioChannel(0);
 
 	///Level Layout Start
 	Model* platform = new Model("Platform.obj", "Platform.mtl", BASE_SHADER);
@@ -27,11 +29,11 @@ bool Scene1::Initialize()
 	gameObjects[3] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false);
 	gameObjects[4] = new Platform(brick, glm::vec3(6.0f, -2.0f, 0.0f), false); //Jump tutorial here
 	gameObjects[5] = new Platform(brick, glm::vec3(10.0f, -2.0f, 0.0f), false); ///First jump puzzle
-	gameObjects[6] = new Platform(brick, glm::vec3(7.0f, -3.0f, 0.0f), false);
-	gameObjects[7] = new Platform(brick, glm::vec3(8.0f, -4.0f, 0.0f), false);
-	gameObjects[8] = new Platform(brick, glm::vec3(10.0f, -4.0f, 0.0f), false);
-	gameObjects[9] = new Platform(brick, glm::vec3(12.0f, -4.0f, 0.0f), false);
-	gameObjects[10] = new Platform(brick, glm::vec3(14.0f, -4.0f, 0.0f), false);
+	gameObjects[6] = new Platform(brick, glm::vec3(6.0f, -3.0f, 0.0f), false);
+	gameObjects[7] = new Platform(brick, glm::vec3(7.0f, -4.0f, 0.0f), false);
+	gameObjects[8] = new Platform(brick, glm::vec3(9.0f, -4.0f, 0.0f), false);
+	gameObjects[9] = new Platform(brick, glm::vec3(11.0f, -4.0f, 0.0f), false);
+	gameObjects[10] = new Platform(brick, glm::vec3(13.0f, -4.0f, 0.0f), false);
 	gameObjects[11] = new Platform(brick, glm::vec3(14.0f, -3.0f, 0.0f), false);
 	gameObjects[12] = new Platform(brick, glm::vec3(14.0f, -2.0f, 0.0f), false);
 	gameObjects[13] = new Platform(brick, glm::vec3(16.0f, -2.0f, 0.0f), false);
@@ -40,6 +42,7 @@ bool Scene1::Initialize()
 	gameObjects[16] = new Platform(brick, glm::vec3(22.0f, -2.0f, 0.0f), false);
 	gameObjects[17] = new Platform(brick, glm::vec3(22.0f, -1.0f, 0.0f), false);
 	gameObjects[18] = new Platform(brick, glm::vec3(22.0f, 0.0f, 0.0f), false);
+	gameObjects[41] = new Platform(brick, glm::vec3(22.0f, 1.0f, 0.0f), false);
 	gameObjects[19] = new Platform(brick, glm::vec3(22.0f, -3.0f, 0.0f), false);
 	gameObjects[20] = new Platform(brick, glm::vec3(22.0f, -4.0f, 0.0f), false);
 	gameObjects[21] = new Platform(brick, glm::vec3(22.0f, -5.0f, 0.0f), false);
@@ -62,6 +65,13 @@ bool Scene1::Initialize()
 	gameObjects[38] = new Spike(spike, glm::vec3(13.0f, -10.5f, 0.0f), false); //Spike
 	gameObjects[39] = new Spike(spike, glm::vec3(11.0f, -10.5f, 0.0f), false); //Spike
 	gameObjects[40] = new Spike(spike, glm::vec3(9.0f, -10.5, 0.0f), false); //Spike
+	gameObjects[42] = new Spike(spike, glm::vec3(21.0f, 0.0f, 0.0f), false); //Spike
+	gameObjects[43] = new Spike(spike, glm::vec3(21.0f, 1.0f, 0.0f), false); //Spike
+
+	gameObjects[42]->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	gameObjects[42]->SetAngle(1.575);
+	gameObjects[43]->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
+	gameObjects[43]->SetAngle(1.575);
 	///Level Layout End
 
 	Model* hitBox = new Model("AttackBox.obj", "AttackBox.mtl", BASE_SHADER);
@@ -109,13 +119,13 @@ void Scene1::Update(const float deltaTime_)
 	if (pB != nullptr)
 		pB->Update(deltaTime_);
 
-	for (int i = 0; i < 41; i++) {
+	for (int i = 0; i < 44; i++) {
 		gameObjects[i]->Update(deltaTime_);
 	}
 
 	if (player != nullptr) {
 		player->Update(deltaTime_);
-		for (int i = 0; i < 41; i++) {
+		for (int i = 0; i < 44; i++) {
 			player->PlayerCollision(gameObjects[i], deltaTime_);
 		}
 		player->PlayerCollision(movementTutorial, deltaTime_);
@@ -124,7 +134,7 @@ void Scene1::Update(const float deltaTime_)
 		player->PlayerCollision(expositionCollider, deltaTime_);
 		if (player->arrow != nullptr)
 		{
-			for (int i = 0; i < 41; i++)
+			for (int i = 0; i < 44; i++)
 			{
 				if (player->arrow->ProjectileColliding(player->arrow, gameObjects[i]))
 				{

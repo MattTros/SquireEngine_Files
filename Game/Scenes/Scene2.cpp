@@ -10,8 +10,10 @@ Scene2::~Scene2() {
 
 bool Scene2::Initialize()
 {
-	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.15f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
+
+	AudioManager::GetInstance()->StopAudioChannel(0);
 
 	//AudioManager::GetInstance()->LoadSoundFXFile("laserFX", "Laser.wav");
 
@@ -78,6 +80,9 @@ bool Scene2::Initialize()
 	swordTutorial = new TutorialCollider("SwordAttack", glm::vec3(4.0f, -1.0f, 0.0f));
 	dashTutorial = new TutorialCollider("Dash", glm::vec3(20.0f, -1.0f, 0.0f));
 	arrowTutorial = new TutorialCollider("Arrow", glm::vec3(32.0f, -1.0f, 0.0f));
+
+	Model* potion = new Model("HealthPotion.obj", "HealthPotion.mtl", BASE_SHADER);
+	pickup = new Pickup(potion, glm::vec3(0.0f, 0.0f, -10.0f));
 
 	pB = new ParallaxingBackground(player);
 	pB->Initialize();
@@ -191,8 +196,8 @@ void Scene2::Update(const float deltaTime_)
 		pickup->SetAngle(pickup->GetAngle() + deltaTime_);
 		if (pickup->isHit)
 		{
-			pickup->~Pickup(); 
-			pickup = nullptr;
+			pickup->SetPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+			pickup->isHit = false;
 		}
 	}
 
@@ -231,6 +236,5 @@ void Scene2::Render()
 
 void Scene2::SpawnHealthPickup(glm::vec3 spawnPos_)
 {
-	Model* potion = new Model("HealthPotion.obj", "HealthPotion.mtl", BASE_SHADER);
-	pickup = new Pickup(potion, spawnPos_);
+	pickup->SetPosition(spawnPos_);
 }
