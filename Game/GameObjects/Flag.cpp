@@ -13,14 +13,14 @@ Flag::Flag(Model* model_, glm::vec3 position_, int sceneIndex_) : GameObject(mod
 	fire->CreateSystem(blue, blue2, 20, glm::vec3(0.4f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.5f, 0.75f);
 	fire->SetOrigin(glm::vec3(position_.x, position_.y - 0.5f, position_.z));
 	fire->SetRotationSpeed(3.0f);
-	fire->SetRadius(0.15f);
+	fire->SetRadius(glm::vec3(0.15f));
 	fire->StartSystem();
 
 	smoke = new ParticleSystem();
 	smoke->CreateSystem(smokeModel, 10, glm::vec3(0.15f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), 1.0f, 1.25f);
 	smoke->SetOrigin(glm::vec3(position_.x, position_.y - 0.5f, position_.z));
 	smoke->SetRotationSpeed(3.0f);
-	smoke->SetRadius(0.1f);
+	smoke->SetRadius(glm::vec3(0.1f));
 	smoke->StartSystem();
 
 	Model* pit = new Model("FirePit.obj", "FirePit.mtl", Shader::GetInstance()->GetShader("baseShader"));

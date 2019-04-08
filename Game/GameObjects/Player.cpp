@@ -12,7 +12,7 @@ Player::Player(Model* model_, GameObject* sword_, glm::vec3 position_) : Entity(
 	particle->GetMesh(0)->transparency = 0.3f;
 	fountain = new ParticleSystem();
 	fountain->CreateSystem(particle, 20, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 2.0f);
-	fountain->SetRadius(0.25f);
+	fountain->SetRadius(glm::vec3(0.25f));
 	fountain->SetOrigin(this->GetPosition());
 	fountain->SetRotationSpeed(5.0f);
 	fountain->StartSystem();

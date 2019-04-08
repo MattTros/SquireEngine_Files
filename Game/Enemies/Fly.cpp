@@ -23,7 +23,7 @@ Fly::Fly(Model* model_, glm::vec3 position_, Player* player_) : Enemy(model_, po
 	particle->GetMesh(0)->transparency = 0.3f;
 	fountain = new ParticleSystem();
 	fountain->CreateSystem(particle, 20, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, 0.4f);
-	fountain->SetRadius(0.5f);
+	fountain->SetRadius(glm::vec3(0.5f));
 	fountain->SetOrigin(attackBox->GetPosition());
 	fountain->SetRotationSpeed(5.0f);
 	fountain->StartSystem();
