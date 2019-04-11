@@ -23,8 +23,37 @@ bool DemoScene::Initialize()
 	AudioManager::GetInstance()->StopAudioChannel(0);
 
 	//Initialization Area
-	Model* model = new Model("Apple.obj", "Apple.mtl", BASE_SHADER);
-	testOBJ = new GameObject(model, glm::vec3(10.0f));
+	///OBJ Loader
+	Model* model = new Model("Apple.obj", "", BASE_SHADER);
+	gameOBJ = new GameObject(model, glm::vec3(10.0f));
+	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
+	gameOBJ->SetScale(glm::vec3(0.5f));
+	///Particle Fountain
+	Model* blue = new Model("RedFire.obj", "RedFire.mtl", BASE_SHADER);
+	Model* blue2 = new Model("OrangeFire.obj", "OrangeFire.mtl", BASE_SHADER);
+	particleFountain = new ParticleSystem();
+	particleFountain->CreateSystem(blue, blue2, 30, glm::vec3(0.25), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), 0.5f, 1.0f);
+	particleFountain->SetRadius(glm::vec3(0.0f));
+	particleFountain->SetOrigin(glm::vec3(0.0f));
+	particleFountain->SetRotationSpeed(5.0f);
+	///Player & Platforms
+	Model* knight = new Model("SoulKnight.obj", "SoulKnight.mtl", BASE_SHADER);
+	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
+	GameObject* sword = new GameObject(swordModel);
+	player = new Player(knight, sword, glm::vec3(0.0f));
+	player->SetGravity(false);
+
+	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
+	blocks[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false);
+	blocks[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
+	blocks[2] = new Platform(brick, glm::vec3(-2.0f, -2.0f, 0.0f), false);
+	blocks[3] = new Platform(brick, glm::vec3(-4.0f, -2.0f, 0.0f), false);
+	blocks[4] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false);
+	blocks[5] = new Platform(brick, glm::vec3(4.0f, -1.0f, 0.0f), false);
+	blocks[6] = new Platform(brick, glm::vec3(4.0f, 0.0f, 0.0f), false);
+	blocks[7] = new Platform(brick, glm::vec3(-4.0f, 0.0f, 0.0f), false);
+	blocks[8] = new Platform(brick, glm::vec3(-4.0f, -1.0f, 0.0f), false);
 	//End of Initialization Area
 
 	ChangeState();
@@ -53,17 +82,19 @@ void DemoScene::Render()
 	{
 	case 0:
 		//Audio Manager
-		testOBJ->GetModel()->Render(Camera::GetInstance());
+		///Nothing to Render
 		break;
 	case 1:
 		//OBJ loader
-		testOBJ->GetModel()->Render(Camera::GetInstance());
+		gameOBJ->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 2:
 		//Materials
+		gameOBJ->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 3:
 		//Input managers
+		gameOBJ->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 4:
 		//Lighting
@@ -88,12 +119,15 @@ void DemoScene::Render()
 		break;
 	case 11:
 		//Particles
+		particleFountain->Render(Camera::GetInstance());
 		break;
 	case 12:
 		//Parallaxing Background
 		break;
 	case 13:
 		//Player
+		player->Render(Camera::GetInstance());
+		blocks[0]->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 14:
 		//AI & Enemies
@@ -188,17 +222,31 @@ void DemoScene::UpdateState(float deltaTime_)
 	{
 	case 0:
 		//Audio Manager
-		testOBJ->Update(deltaTime_);
+		///Nothing to Update
 		break;
 	case 1:
 		//OBJ loader
-		testOBJ->Update(deltaTime_);
+		gameOBJ->Update(deltaTime_);
 		break;
 	case 2:
 		//Materials
+		gameOBJ->Update(deltaTime_);
 		break;
 	case 3:
 		//Input managers
+		gameOBJ->Update(deltaTime_);
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A))
+			gameOBJ->SetPosition(glm::vec3(gameOBJ->GetPosition().x - deltaTime_ * 3.0f, gameOBJ->GetPosition().y, gameOBJ->GetPosition().z));
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D))
+			gameOBJ->SetPosition(glm::vec3(gameOBJ->GetPosition().x + deltaTime_ * 3.0f, gameOBJ->GetPosition().y, gameOBJ->GetPosition().z));
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_W))
+			gameOBJ->SetPosition(glm::vec3(gameOBJ->GetPosition().x, gameOBJ->GetPosition().y + deltaTime_ * 3.0f, gameOBJ->GetPosition().z));
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_S))
+			gameOBJ->SetPosition(glm::vec3(gameOBJ->GetPosition().x, gameOBJ->GetPosition().y - deltaTime_ * 3.0f, gameOBJ->GetPosition().z));
+		if (MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::left))
+			gameOBJ->SetAngle(gameOBJ->GetAngle() - deltaTime_ * 3.0f);
+		if (MouseInputManager::GetInstance()->MouseButtonDown(MouseInputManager::right))
+			gameOBJ->SetAngle(gameOBJ->GetAngle() + deltaTime_ * 3.0f);
 		break;
 	case 4:
 		//Lighting
@@ -223,12 +271,21 @@ void DemoScene::UpdateState(float deltaTime_)
 		break;
 	case 11:
 		//Particles
+		particleFountain->Update(deltaTime_);
 		break;
 	case 12:
 		//Parallaxing Background
 		break;
 	case 13:
 		//Player
+		if (player != nullptr)
+		{
+			player->Update(deltaTime_);
+			for (GameObject* g : blocks)
+				player->PlayerCollision(g, deltaTime_);
+		}
+		for (GameObject* g : blocks)
+			g->Update(deltaTime_);
 		break;
 	case 14:
 		//AI & Enemies
@@ -244,22 +301,31 @@ void DemoScene::UpdateState(float deltaTime_)
 
 void DemoScene::State_AudioManager()
 {
-	testOBJ->SetPosition(glm::vec3(0.0f));
+	AudioManager::GetInstance()->PlaySoundFX("death");
 }
 
 void DemoScene::State_OBJLoader()
 {
-	testOBJ->SetPosition(glm::vec3(1.0f));
+	Model* model = new Model("Apple.obj", "", BASE_SHADER);
+	gameOBJ = new GameObject(model);
+	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
+	gameOBJ->SetScale(glm::vec3(0.5f));
 }
 
 void DemoScene::State_Materials()
 {
-
+	gameOBJ = nullptr;
+	Model* model = new Model("Apple.obj", "Apple.mtl", BASE_SHADER);
+	gameOBJ = new GameObject(model);
+	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
+	gameOBJ->SetScale(glm::vec3(0.5f));
 }
 
 void DemoScene::State_InputManagers()
 {
-
+	///Nothing to Initialize
 }
 
 void DemoScene::State_Lighting()
@@ -299,7 +365,7 @@ void DemoScene::State_Options()
 
 void DemoScene::State_Particles()
 {
-
+	particleFountain->StartSystem();
 }
 
 void DemoScene::State_ParallaxingBackground()
@@ -309,7 +375,8 @@ void DemoScene::State_ParallaxingBackground()
 
 void DemoScene::State_Player()
 {
-
+	player->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
+	player->SetGravity(true);
 }
 
 void DemoScene::State_AIEnemies()

@@ -39,26 +39,29 @@ private:
 	int state = 0;
 	int finalState = 17;
 
-	void State_AudioManager();
-	void State_OBJLoader();
-	void State_Materials();
-	void State_InputManagers();
-	void State_Lighting();
-	void State_Shader();
-	void State_Physics();
-	void State_Collision();
-	void State_UI();
-	void State_Textures();
-	void State_Options();
-	void State_Particles();
-	void State_ParallaxingBackground();
-	void State_Player();
-	void State_AIEnemies();
-	void State_Combat();
-	void State_IFrames();
+	void State_AudioManager();				 //Incomplete
+	void State_OBJLoader();					 //Complete
+	void State_Materials();					 //Complete
+	void State_InputManagers();				 //Complete
+	void State_Lighting();					 //Incomplete
+	void State_Shader();					 //Incomplete
+	void State_Physics();					 //Incomplete
+	void State_Collision();					 //Incomplete
+	void State_UI();						 //Incomplete
+	void State_Textures();					 //Incomplete
+	void State_Options();					 //Incomplete
+	void State_Particles();					 //Complete
+	void State_ParallaxingBackground();      //Incomplete
+	void State_Player();                     //Complete
+	void State_AIEnemies();					 //Incomplete
+	void State_Combat();					 //Incomplete
+	void State_IFrames();					 //Incomplete
 private:
 	//Objects
-	GameObject* testOBJ;																																				
+	GameObject* gameOBJ;
+	ParticleSystem* particleFountain;
+	Player* player;
+	GameObject* blocks[9];
 };
 
 #endif // !DEMOSCENE_H
