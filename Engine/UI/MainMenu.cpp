@@ -76,6 +76,12 @@ void MainMenu::Update(const float deltaTime_) {
 		SDL_Quit(); Engine::GetInstance()->ExitGame();
 	}
 
+	widgetPos = ImVec2(size.x - buttonSize.x - 20, size.y - buttonSize.y - 20);
+	ImGui::SetCursorPos(widgetPos);
+	if (ImGui::ImageButton((void*)(intptr_t)demoImg, buttonSize)) {                            // This button will load the demo
+		SceneManager::GetInstance()->SetScene(3);
+	}
+
 	ImGui::End();
 
 }

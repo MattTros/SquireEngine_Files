@@ -34,6 +34,7 @@ public:
 	GLuint loadGameImg;
 	GLuint optionsImg;
 	GLuint quitImg;
+	GLuint demoImg;
 	GLuint titleImg;
 
 	inline bool Initialize(SDL_Window* window_, SDL_GLContext context) {
@@ -50,12 +51,14 @@ public:
 		TextureHandler::GetInstance()->CreateTexture("loadGame", texturePath + "LoadGameButton.png");
 		TextureHandler::GetInstance()->CreateTexture("options", texturePath + "OptionsButton.png");
 		TextureHandler::GetInstance()->CreateTexture("quit", texturePath + "QuitButton.png");
+		TextureHandler::GetInstance()->CreateTexture("demo", texturePath + "DemoButton.png");
 		TextureHandler::GetInstance()->CreateTexture("title", texturePath + "Title.png");
 
 		newGameImg = TextureHandler::GetInstance()->GetTexture("newGame");
 		loadGameImg = TextureHandler::GetInstance()->GetTexture("loadGame");
 		optionsImg = TextureHandler::GetInstance()->GetTexture("options");
 		quitImg = TextureHandler::GetInstance()->GetTexture("quit");
+		demoImg = TextureHandler::GetInstance()->GetTexture("demo");
 		titleImg = TextureHandler::GetInstance()->GetTexture("title");
 
 		heart1 = TextureHandler::GetInstance()->GetTexture("heart");
