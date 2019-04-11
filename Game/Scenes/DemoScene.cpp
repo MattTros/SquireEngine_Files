@@ -40,20 +40,31 @@ bool DemoScene::Initialize()
 	particleFountain->SetRotationSpeed(5.0f);
 	///Platforms
 	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
+	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 	blocks[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false);
 	blocks[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
 	blocks[2] = new Platform(brick, glm::vec3(-2.0f, -2.0f, 0.0f), false);
 	blocks[3] = new Platform(brick, glm::vec3(-4.0f, -2.0f, 0.0f), false);
 	blocks[4] = new Platform(brick, glm::vec3(4.0f, -2.0f, 0.0f), false);
-	blocks[5] = new Platform(brick, glm::vec3(4.0f, -1.0f, 0.0f), false);
+	blocks[5] = new Wall(brick, glm::vec3(4.0f, -1.0f, 0.0f), false);
 	blocks[6] = new Platform(brick, glm::vec3(4.0f, 0.0f, 0.0f), false);
 	blocks[7] = new Platform(brick, glm::vec3(-4.0f, 0.0f, 0.0f), false);
-	blocks[8] = new Platform(brick, glm::vec3(-4.0f, -1.0f, 0.0f), false);
+	blocks[8] = new Wall(brick, glm::vec3(-4.0f, -1.0f, 0.0f), false);
 	///Enemy
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
 	ooze = new Ooze(oozeModel, glm::vec3(0.0f, -1.0f, 0.0f), false, nullptr);
+
+	//Physics and collision
+	p1 = new Platform(brick2, glm::vec3(-4.0f, 0.0f, 0.0f), false);
+	p2 = new Platform(brick2, glm::vec3(-9.0f, 0.0f, 0.0f), false);
+	p3 = new Platform(brick2, glm::vec3(-9.0f, 0.0f, 0.0f), false);
+
 	//End of Initialization Area
 
+	//UI stuff
+	UI = new DemoUI();
+	window = Engine::GetInstance()->Engine::GetWindow();
+	UI->Initialize(window->GetWindow(), window->GetContext());
 	ChangeState();
 
 	return true;
@@ -68,10 +79,12 @@ void DemoScene::Update(float deltaTime_)
 			state++;
 		else
 			state = 0;
+		UI->demoState = state;
 		ChangeState();
 		timer = 0.0f;
 	}
 	UpdateState(deltaTime_);
+	UI->Update(deltaTime_);
 }
 
 void DemoScene::Render()
@@ -102,19 +115,26 @@ void DemoScene::Render()
 		//Shader
 		break;
 	case 6:
-		//Physics
+		//Physics //Jake G. Cunningham
+		p1->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 7:
-		//Collision
+		//Collision //Jake G. Cunningham
+		p3->GetModel()->Render(Camera::GetInstance());
+		p2->GetModel()->Render(Camera::GetInstance());
+		p3->OnCollision(p2);
 		break;
 	case 8:
 		//UI
+		//Done in DemoUI.cpp
 		break;
 	case 9:
 		//Textures
+		//Done in DemoUI.cpp
 		break;
 	case 10:
 		//Options
+		//Done in DemoUI.cpp
 		break;
 	case 11:
 		//Particles
@@ -124,9 +144,10 @@ void DemoScene::Render()
 		//Parallaxing Background
 		break;
 	case 13:
-		//AI & Enemies
+		//AI & Enemies // Jake G. Cunningham
 		break;
 	}
+	UI->Render();
 }
 
 void DemoScene::ChangeState()
@@ -233,18 +254,24 @@ void DemoScene::UpdateState(float deltaTime_)
 		break;
 	case 6:
 		//Physics
+		p1->Update(deltaTime_);
 		break;
 	case 7:
 		//Collision
+		p3->Update(deltaTime_);
+		p2->Update(deltaTime_);
 		break;
 	case 8:
 		//UI
+		//Done in DumoUI.cpp
 		break;
 	case 9:
 		//Textures
+		//Done in DumoUI.cpp
 		break;
 	case 10:
 		//Options
+		//Done in DumoUI.cpp
 		break;
 	case 11:
 		//Particles
@@ -304,17 +331,31 @@ void DemoScene::State_Shader()
 
 void DemoScene::State_Physics()
 {
+	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 
+	p1->~Platform();
+	p1 = new Platform(brick2, glm::vec3(0.0f, 1.0f, 0.0f), true);
 }
 
 void DemoScene::State_Collision()
 {
+	p1->GetModel()->~Model();
+	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 
+	p1->isGravity = false;
+
+	p2->~Platform();
+	p3->~Platform();
+
+	p2 = new Platform(brick2, glm::vec3(0.0f, -2.0f, 0.0f), false); 
+	p3 = new Platform(brick2, glm::vec3(0.0f, 1.0f, 0.0f), true);
+	p3->isGravity = true;
 }
 
 void DemoScene::State_UI()
 {
-
+	p3->GetModel()->~Model();
+	p3->isGravity = false;
 }
 
 void DemoScene::State_Textures()

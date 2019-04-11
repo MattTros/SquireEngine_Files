@@ -18,6 +18,7 @@
 #include "../GameObjects/TutorialCollider.h"
 #include "../GameObjects/Flag.h"
 #include "../GameObjects/Spike.h"
+#include "../../Engine/UI/DemoUI.h"
 
 class DemoScene : public SceneInterface
 {
@@ -32,12 +33,11 @@ public:
 	void ChangeState();
 	void UpdateState(float deltaTime_);
 
-	void UpdateUI(const float deltaTime_);
 private:
 	float timer = 0.0f;
 	float stateTime = 5.0f;
 	int state = 0;
-	int finalState = 14;
+	int finalState = 13;
 
 	void State_AudioManager();				 //Incomplete
 	void State_OBJLoader();					 //Complete
@@ -47,19 +47,26 @@ private:
 	void State_Shader();					 //Incomplete
 	void State_Physics();					 //Incomplete
 	void State_Collision();					 //Incomplete
-	void State_UI();						 //Incomplete
-	void State_Textures();					 //Incomplete
-	void State_Options();					 //Incomplete
+	void State_UI();						 //Complete
+	void State_Textures();					 //Complete
+	void State_Options();					 //Complete
 	void State_Particles();					 //Complete
 	void State_ParallaxingBackground();      //Incomplete
 	void State_AIEnemies();					 //Incomplete
 private:
+	//UI stuff
+	DemoUI* UI;
+	Window* window;
+
 	//Objects
 	GameObject* gameOBJ;
 	LightSource* light;
 	ParticleSystem* particleFountain;
 	GameObject* blocks[9];
 	Ooze* ooze;
+	Platform *p1;
+	Platform *p2;
+	Platform *p3;
 };
 
 #endif // !DEMOSCENE_H

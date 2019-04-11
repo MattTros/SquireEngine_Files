@@ -38,8 +38,9 @@ bool Game1::Initialize()
 	SceneManager::GetInstance()->AddScene(new UIScene, 0);
 	SceneManager::GetInstance()->AddScene(new Scene1, 1);
 	SceneManager::GetInstance()->AddScene(new Scene2, 2);
+	SceneManager::GetInstance()->AddScene(new DemoScene, 3);
 	AudioManager::GetInstance()->PlayMusic("backgroundMusic");
-	SceneManager::GetInstance()->SetScene(0);
+	SceneManager::GetInstance()->SetScene(3);
 	return true;
 }
 

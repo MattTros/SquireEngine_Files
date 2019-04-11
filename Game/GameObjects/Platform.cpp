@@ -19,7 +19,7 @@ Platform::Platform(Model* model_, glm::vec3 position_, bool isGravity_) : GameOb
 	//default things
 	isGravity = isGravity_;
 	velocity = glm::vec3(0);
-	position = glm::vec3(0);
+	position = position_;
 	acceleration = glm::vec3(0.0f, -9.8f, 0.0f);
 	//properly rotate the brick obj
 	SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -35,7 +35,7 @@ void Platform::Update(const float deltaTime_)
 {
 	//if gravity, apply it, else do nothing
 	if (isGravity) {
-		velocity += (velocity * deltaTime_) + (0.5f * acceleration * (deltaTime_ * deltaTime_));
+		velocity += (velocity * deltaTime_) + (0.5f * acceleration * 4.0f * (deltaTime_ * deltaTime_));
 		position += velocity * deltaTime_;
 		SetPosition(position);
 	}
@@ -51,4 +51,8 @@ void Platform::OnCollision(GameObject* other_) {
 		isGravity = false;
 	}
 
+}
+
+void Platform::SetVelocity(glm::vec3 velocity_) {
+	velocity = velocity_;
 }

@@ -12,6 +12,7 @@
 #include "Scenes/UIScene.h"
 #include "Scenes/Scene1.h"
 #include "Scenes/Scene2.h"
+#include "Scenes/DemoScene.h"
 
 class Game1 : public GameInterface
 {
