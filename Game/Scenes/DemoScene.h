@@ -37,7 +37,7 @@ private:
 	float timer = 0.0f;
 	float stateTime = 5.0f;
 	int state = 0;
-	int finalState = 17;
+	int finalState = 14;
 
 	void State_AudioManager();				 //Incomplete
 	void State_OBJLoader();					 //Complete
@@ -52,16 +52,14 @@ private:
 	void State_Options();					 //Incomplete
 	void State_Particles();					 //Complete
 	void State_ParallaxingBackground();      //Incomplete
-	void State_Player();                     //Complete
 	void State_AIEnemies();					 //Incomplete
-	void State_Combat();					 //Incomplete
-	void State_IFrames();					 //Incomplete
 private:
 	//Objects
 	GameObject* gameOBJ;
+	LightSource* light;
 	ParticleSystem* particleFountain;
-	Player* player;
 	GameObject* blocks[9];
+	Ooze* ooze;
 };
 
 #endif // !DEMOSCENE_H

@@ -18,17 +18,18 @@ bool DemoScene::Initialize()
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.15f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
 
+	light = Camera::GetInstance()->GetLightSources().at(0);
+
 	CollisionHandler::GetInstance()->Initialize(100.0f);
 
 	AudioManager::GetInstance()->StopAudioChannel(0);
 
 	//Initialization Area
 	///OBJ Loader
-	Model* model = new Model("Apple.obj", "", BASE_SHADER);
+	Model* model = new Model("KnightSword.obj", "", BASE_SHADER);
 	gameOBJ = new GameObject(model, glm::vec3(10.0f));
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
-	gameOBJ->SetScale(glm::vec3(0.5f));
 	///Particle Fountain
 	Model* blue = new Model("RedFire.obj", "RedFire.mtl", BASE_SHADER);
 	Model* blue2 = new Model("OrangeFire.obj", "OrangeFire.mtl", BASE_SHADER);
@@ -37,13 +38,7 @@ bool DemoScene::Initialize()
 	particleFountain->SetRadius(glm::vec3(0.0f));
 	particleFountain->SetOrigin(glm::vec3(0.0f));
 	particleFountain->SetRotationSpeed(5.0f);
-	///Player & Platforms
-	Model* knight = new Model("SoulKnight.obj", "SoulKnight.mtl", BASE_SHADER);
-	Model* swordModel = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
-	GameObject* sword = new GameObject(swordModel);
-	player = new Player(knight, sword, glm::vec3(0.0f));
-	player->SetGravity(false);
-
+	///Platforms
 	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 	blocks[0] = new Platform(brick, glm::vec3(0.0f, -2.0f, 0.0f), false);
 	blocks[1] = new Platform(brick, glm::vec3(2.0f, -2.0f, 0.0f), false);
@@ -54,6 +49,9 @@ bool DemoScene::Initialize()
 	blocks[6] = new Platform(brick, glm::vec3(4.0f, 0.0f, 0.0f), false);
 	blocks[7] = new Platform(brick, glm::vec3(-4.0f, 0.0f, 0.0f), false);
 	blocks[8] = new Platform(brick, glm::vec3(-4.0f, -1.0f, 0.0f), false);
+	///Enemy
+	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
+	ooze = new Ooze(oozeModel, glm::vec3(0.0f, -1.0f, 0.0f), false, nullptr);
 	//End of Initialization Area
 
 	ChangeState();
@@ -98,6 +96,7 @@ void DemoScene::Render()
 		break;
 	case 4:
 		//Lighting
+		gameOBJ->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 5:
 		//Shader
@@ -125,18 +124,7 @@ void DemoScene::Render()
 		//Parallaxing Background
 		break;
 	case 13:
-		//Player
-		player->Render(Camera::GetInstance());
-		blocks[0]->GetModel()->Render(Camera::GetInstance());
-		break;
-	case 14:
 		//AI & Enemies
-		break;
-	case 15:
-		//Combat
-		break;
-	case 16:
-		//IFrames
 		break;
 	}
 }
@@ -198,20 +186,8 @@ void DemoScene::ChangeState()
 		State_ParallaxingBackground();
 		break;
 	case 13:
-		//Player
-		State_Player();
-		break;
-	case 14:
 		//AI & Enemies
 		State_AIEnemies();
-		break;
-	case 15:
-		//Combat
-		State_Combat();
-		break;
-	case 16:
-		//IFrames
-		State_IFrames();
 		break;
 	}
 }
@@ -250,6 +226,7 @@ void DemoScene::UpdateState(float deltaTime_)
 		break;
 	case 4:
 		//Lighting
+		gameOBJ->Update(deltaTime_);
 		break;
 	case 5:
 		//Shader
@@ -277,24 +254,13 @@ void DemoScene::UpdateState(float deltaTime_)
 		//Parallaxing Background
 		break;
 	case 13:
-		//Player
-		if (player != nullptr)
-		{
-			player->Update(deltaTime_);
-			for (GameObject* g : blocks)
-				player->PlayerCollision(g, deltaTime_);
-		}
-		for (GameObject* g : blocks)
-			g->Update(deltaTime_);
-		break;
-	case 14:
 		//AI & Enemies
-		break;
-	case 15:
-		//Combat
-		break;
-	case 16:
-		//IFrames
+		if (ooze != nullptr) {
+			ooze->Update(deltaTime_);
+			for (GameObject* g : blocks) {
+				ooze->CollisionResponse(g, deltaTime_);
+			}
+		}
 		break;
 	}
 }
@@ -306,21 +272,19 @@ void DemoScene::State_AudioManager()
 
 void DemoScene::State_OBJLoader()
 {
-	Model* model = new Model("Apple.obj", "", BASE_SHADER);
+	Model* model = new Model("KnightSword.obj", "", BASE_SHADER);
 	gameOBJ = new GameObject(model);
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
-	gameOBJ->SetScale(glm::vec3(0.5f));
 }
 
 void DemoScene::State_Materials()
 {
 	gameOBJ = nullptr;
-	Model* model = new Model("Apple.obj", "Apple.mtl", BASE_SHADER);
+	Model* model = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
 	gameOBJ = new GameObject(model);
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
-	gameOBJ->SetScale(glm::vec3(0.5f));
 }
 
 void DemoScene::State_InputManagers()
@@ -330,7 +294,7 @@ void DemoScene::State_InputManagers()
 
 void DemoScene::State_Lighting()
 {
-
+	
 }
 
 void DemoScene::State_Shader()
@@ -373,23 +337,7 @@ void DemoScene::State_ParallaxingBackground()
 
 }
 
-void DemoScene::State_Player()
-{
-	player->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	player->SetGravity(true);
-}
-
 void DemoScene::State_AIEnemies()
-{
-
-}
-
-void DemoScene::State_Combat()
-{
-
-}
-
-void DemoScene::State_IFrames()
 {
 
 }
