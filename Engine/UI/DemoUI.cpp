@@ -46,21 +46,23 @@ void DemoUI::Update(const float deltaTime_) {
 	static int musicV = 10;
 	Window* window = Engine::GetInstance()->GetWindow();
 
+	ImVec2 titleSize = ImVec2(600, 200);
+
 	//Sets the text for which state we are in, and shows the UI stuff when needed
 	switch (demoState)
 	{
 	case 0:
-		//Audio Manager
-		ImGui::Text("Audio Manager");
-		///Nothing to Render
+		widgetPos = ImVec2(size.x / 2 - (titleSize.x / 2), 100);
+		ImGui::SetCursorPos(widgetPos);
+		ImGui::Image((void*)(intptr_t)titleImg, titleSize);
 		break;
 	case 1:
-		//OBJ loader
-		ImGui::Text("Obj Loader");
+		//Audio Manager
+		ImGui::Text("Audio Manager");
 		break;
 	case 2:
-		//Materials
-		ImGui::Text("Materials");
+		//OBJ loader
+		ImGui::Text("Obj Loader");
 		break;
 	case 3:
 		//Input managers

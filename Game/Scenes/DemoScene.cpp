@@ -26,7 +26,7 @@ bool DemoScene::Initialize()
 
 	//Initialization Area
 	///OBJ Loader
-	Model* model = new Model("KnightSword.obj", "", BASE_SHADER);
+	Model* model = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
 	gameOBJ = new GameObject(model, glm::vec3(10.0f));
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
@@ -38,6 +38,13 @@ bool DemoScene::Initialize()
 	particleFountain->SetRadius(glm::vec3(0.0f));
 	particleFountain->SetOrigin(glm::vec3(0.0f));
 	particleFountain->SetRotationSpeed(5.0f);
+	///Particles to show transparency
+	transOne = new Model("RedFire.obj", "RedFire.mtl", TRANS_SHADER);
+	shaderFountain = new ParticleSystem();
+	shaderFountain->CreateSystem(transOne, 1, glm::vec3(1.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 1.0f, 1.0f);
+	shaderFountain->SetRadius(glm::vec3(0.0f));
+	shaderFountain->SetOrigin(glm::vec3(0.0f));
+	shaderFountain->SetRotationSpeed(5.0f);
 	///Platforms
 	Model* brick = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
@@ -50,6 +57,10 @@ bool DemoScene::Initialize()
 	blocks[6] = new Platform(brick, glm::vec3(4.0f, 0.0f, 0.0f), false);
 	blocks[7] = new Platform(brick, glm::vec3(-4.0f, 0.0f, 0.0f), false);
 	blocks[8] = new Wall(brick, glm::vec3(-4.0f, -1.0f, 0.0f), false);
+	colourChange = 0.0f;
+	///Parallax background
+	parallax = new ParallaxingBackground(nullptr);
+	parallax->Initialize();
 	///Enemy
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
 	ooze = new Ooze(oozeModel, glm::vec3(0.0f, -1.0f, 0.0f), false, nullptr);
@@ -92,15 +103,14 @@ void DemoScene::Render()
 	switch (state)
 	{
 	case 0:
+		//Title
+		break;
+	case 1:
 		//Audio Manager
 		///Nothing to Render
 		break;
-	case 1:
-		//OBJ loader
-		gameOBJ->GetModel()->Render(Camera::GetInstance());
-		break;
 	case 2:
-		//Materials
+		//OBJ loader
 		gameOBJ->GetModel()->Render(Camera::GetInstance());
 		break;
 	case 3:
@@ -113,6 +123,7 @@ void DemoScene::Render()
 		break;
 	case 5:
 		//Shader
+		shaderFountain->Render(Camera::GetInstance());
 		break;
 	case 6:
 		//Physics //Jake G. Cunningham
@@ -142,6 +153,7 @@ void DemoScene::Render()
 		break;
 	case 12:
 		//Parallaxing Background
+		parallax->Render(Camera::GetInstance());
 		break;
 	case 13:
 		//AI & Enemies // Jake G. Cunningham
@@ -155,16 +167,16 @@ void DemoScene::ChangeState()
 	switch (state)
 	{
 	case 0:
+		//Title
+		State_Title();
+		break;
+	case 1:
 		//Audio Manager
 		State_AudioManager();
 		break;
-	case 1:
+	case 2:
 		//OBJ loader
 		State_OBJLoader();
-		break;
-	case 2:
-		//Materials
-		State_Materials();
 		break;
 	case 3:
 		//Input managers
@@ -218,15 +230,14 @@ void DemoScene::UpdateState(float deltaTime_)
 	switch (state)
 	{
 	case 0:
+		//Title
+		break;
+	case 1:
 		//Audio Manager
 		///Nothing to Update
 		break;
-	case 1:
-		//OBJ loader
-		gameOBJ->Update(deltaTime_);
-		break;
 	case 2:
-		//Materials
+		//OBJ loader
 		gameOBJ->Update(deltaTime_);
 		break;
 	case 3:
@@ -248,9 +259,23 @@ void DemoScene::UpdateState(float deltaTime_)
 	case 4:
 		//Lighting
 		gameOBJ->Update(deltaTime_);
+		colourChange += deltaTime_;
+		Camera::GetInstance()->GetLightSources().at(0)->SetLightColor
+		(
+			glm::vec3
+			(
+				abs(sin(colourChange * 1.25f)),
+				abs(cos(colourChange * 1.5f)),
+				abs(sin(colourChange * 1.75f))
+			)
+		);
 		break;
 	case 5:
 		//Shader
+		colourChange += deltaTime_;
+		transOne->GetMesh(0)->transparency = abs(sin(colourChange));
+
+		shaderFountain->Update(deltaTime_);
 		break;
 	case 6:
 		//Physics
@@ -279,6 +304,7 @@ void DemoScene::UpdateState(float deltaTime_)
 		break;
 	case 12:
 		//Parallaxing Background
+		parallax->Update(deltaTime_);
 		break;
 	case 13:
 		//AI & Enemies
@@ -292,6 +318,11 @@ void DemoScene::UpdateState(float deltaTime_)
 	}
 }
 
+void DemoScene::State_Title()
+{
+	
+}
+
 void DemoScene::State_AudioManager()
 {
 	AudioManager::GetInstance()->PlaySoundFX("death");
@@ -299,19 +330,9 @@ void DemoScene::State_AudioManager()
 
 void DemoScene::State_OBJLoader()
 {
-	Model* model = new Model("KnightSword.obj", "", BASE_SHADER);
-	gameOBJ = new GameObject(model);
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
-}
-
-void DemoScene::State_Materials()
-{
-	gameOBJ = nullptr;
-	Model* model = new Model("KnightSword.obj", "KnightSword.mtl", BASE_SHADER);
-	gameOBJ = new GameObject(model);
-	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
-	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
+	gameOBJ->SetAngle(0.0f);
 }
 
 void DemoScene::State_InputManagers()
@@ -321,12 +342,15 @@ void DemoScene::State_InputManagers()
 
 void DemoScene::State_Lighting()
 {
-	
+	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
+	gameOBJ->SetAngle(0.0f);
 }
 
 void DemoScene::State_Shader()
 {
-
+	Camera::GetInstance()->GetLightSources().at(0)->SetLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+	shaderFountain->StartSystem();
 }
 
 void DemoScene::State_Physics()
@@ -375,7 +399,7 @@ void DemoScene::State_Particles()
 
 void DemoScene::State_ParallaxingBackground()
 {
-
+	
 }
 
 void DemoScene::State_AIEnemies()

@@ -2,6 +2,7 @@
 #define DEMOSCENE_H
 
 #define BASE_SHADER Shader::GetInstance()->GetShader("baseShader")
+#define TRANS_SHADER Shader::GetInstance()->GetShader("alphaShader")
 
 #include "SceneManager.h"
 #include <glm/gtx/string_cast.hpp>
@@ -39,14 +40,14 @@ private:
 	int state = 0;
 	int finalState = 13;
 
+	void State_Title();
 	void State_AudioManager();				 //Incomplete
 	void State_OBJLoader();					 //Complete
-	void State_Materials();					 //Complete
 	void State_InputManagers();				 //Complete
 	void State_Lighting();					 //Incomplete
 	void State_Shader();					 //Incomplete
-	void State_Physics();					 //Incomplete
-	void State_Collision();					 //Incomplete
+	void State_Physics();					 //Complete
+	void State_Collision();					 //Complete
 	void State_UI();						 //Complete
 	void State_Textures();					 //Complete
 	void State_Options();					 //Complete
@@ -67,6 +68,10 @@ private:
 	Platform *p1;
 	Platform *p2;
 	Platform *p3;
+	ParticleSystem* shaderFountain;
+	Model* transOne;
+	ParallaxingBackground* parallax;
+	float colourChange;
 };
 
 #endif // !DEMOSCENE_H
