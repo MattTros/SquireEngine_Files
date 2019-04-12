@@ -5,6 +5,7 @@
 
 #include "../../GameEngine/Engine/Core/Engine.h"
 #include "GameObjects/Player.h"
+#include "Scenes/SceneManager.h"
 
 class Engine;
 

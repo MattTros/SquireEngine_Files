@@ -27,7 +27,7 @@ void ParallaxingBackground::Initialize()
 	bMid = new GameObject(backgroundMid);
 	bMidTwo = new GameObject(backgroundMidTwo);
 	bBack = new GameObject(backgroundBack);
-	bBackImage = new GameObject(backgroundBack);
+	bBackImage = new GameObject(backgroundBack);	
 
 	//! Manipulate foreground (darker plane)
 	bFront->SetRotation(glm::vec3(1.0f, 0.0f, 0.0f));
@@ -86,47 +86,91 @@ void ParallaxingBackground::Initialize()
 	bBackImage->SetScale(glm::vec3(7.0f, 5.5f, 1.0f));
 	bBackImage->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
 	bBackImage->SetAngle(0.0f);
+
+	if (SceneManager::GetInstance()->GetSceneIndex() == 3)
+	{
+		//! Demo scene, move things to different positions:
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x, bFront->GetPosition().y, -8.0f));
+		bFrontTwo->SetPosition
+		(
+			glm::vec3
+			(
+				//! Make the x position of the add-on at the right edge of the layer it's following:
+				bFront->GetPosition().x +
+				bFront->GetModel()->GetBoundingBox().maxVert.x *
+				bFront->GetScale().x * 2.0,
+				bFront->GetPosition().y,
+				bFront->GetPosition().z
+			)
+		);
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x, bMid->GetPosition().y, -8.01f));
+		bMidTwo->SetPosition
+		(
+			glm::vec3
+			(
+				//! Make the x position of the add-on at the right edge of the layer it's following:
+				bMid->GetPosition().x +
+				bMid->GetModel()->GetBoundingBox().maxVert.x *
+				bMid->GetScale().x * 2.0,
+				bMid->GetPosition().y,
+				bMid->GetPosition().z
+			)
+		);
+		bBackImage->SetPosition(glm::vec3(bFront->GetPosition().x, bFront->GetPosition().y, -8.01f));
+	}
 }
 	 
 void ParallaxingBackground::Update(float deltaTime_)
 {
-	//! Update background image and back (for making the paralaxing parts work)
-	cameraPos = Camera::GetInstance()->GetPosition();
-	bBack->SetPosition(cameraPos);
-	bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, -2.1f));
-
-	//! Set centerpoint for background image:
-	backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
-
-	//! Move the parallaxing part up and down with camera
-	bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.50f, bFront->GetPosition().z));
-	bMid->SetPosition(glm::vec3(bMid->GetPosition().x, cameraPos.y - 1.25f, bMid->GetPosition().z));
-	bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x, cameraPos.y - 1.50f, bFrontTwo->GetPosition().z));
-	bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x, cameraPos.y - 1.25f, bMidTwo->GetPosition().z));
-
-	//! Keyboard controls:
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && player->canGoLeft)
+	if (SceneManager::GetInstance()->GetSceneIndex() != 3)
 	{
-		//! Player moving left, background move right:
+		//! Update background image and back (for making the paralaxing parts work)
+		cameraPos = Camera::GetInstance()->GetPosition();
+		bBack->SetPosition(cameraPos);
+		bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, cameraPos.z - 2.1f));
+
+		//! Set centerpoint for background image:
+		backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
+
+		//! Move the parallaxing part up and down with camera
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x, cameraPos.y - 1.50f, bFront->GetPosition().z));
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x, cameraPos.y - 1.25f, bMid->GetPosition().z));
+		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x, cameraPos.y - 1.50f, bFrontTwo->GetPosition().z));
+		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x, cameraPos.y - 1.25f, bMidTwo->GetPosition().z));
+
+		//! Keyboard controls:
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_A) && player->canGoLeft)
+		{
+			//! Player moving left, background move right:
+			movingRight = true;
+
+			bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+			bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
+			bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+			bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
+		}
+
+		if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && player->canGoRight)
+		{
+			//! Player moving right, background move left:
+			movingLeft = true;
+
+			bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (-deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+			bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (-deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
+			bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (-deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+			bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (-deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
+		}
+	}
+
+	if (SceneManager::GetInstance()->GetSceneIndex() == 3)
+	{
 		movingRight = true;
 
-		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
-		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
-		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
-		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ * 5.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ * 2.5f), bMid->GetPosition().y, bMid->GetPosition().z));
+		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ * 5.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ * 2.5f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 	}
-
-	if (KeyboardInputManager::GetInstance()->KeyDown(SDL_SCANCODE_D) && player->canGoRight)
-	{
-		//! Player moving right, background move left:
-		movingLeft = true;
-
-		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (-deltaTime_ / 2.0f), bFront->GetPosition().y, bFront->GetPosition().z));
-		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (-deltaTime_ / 4.0f), bMid->GetPosition().y, bMid->GetPosition().z));
-		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (-deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
-		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (-deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
-	}
-
 
 	//! Update centerpoints of all the objects:
 	frontCenterOne = bFront->GetPosition().x +
