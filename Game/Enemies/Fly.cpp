@@ -59,6 +59,7 @@ void Fly::Update(const float deltaTime_) {
 	}
 
 	//State machine, 0 = Patrol state. 1 = Chase the player state.
+	
 	attackBox->Update(deltaTime_);
 	if (!knockedBack) {
 		switch (state) {
@@ -73,6 +74,7 @@ void Fly::Update(const float deltaTime_) {
 	else {
 		Knockback(deltaTime_);
 	}
+	
 }
 
 void Fly::Render(Camera* camera_) {
@@ -123,9 +125,11 @@ void Fly::Patrol(const float deltaTime_) {
 	SetPosition(position);
 
 	//check to see if chasing
-	float distance = glm::length(player->GetPosition() - position);
-	if (distance <= 5.0f) {
-		state = 1;
+	if (player != nullptr) {
+		float distance = glm::length(player->GetPosition() - position);
+		if (distance <= 5.0f) {
+			state = 1;
+		}
 	}
 
 }

@@ -66,7 +66,7 @@ void DemoUI::Update(const float deltaTime_) {
 		break;
 	case 3:
 		//Input managers
-		ImGui::Text("Input Manager");
+		ImGui::Text("Input Managers");
 		break;
 	case 4:
 		//Lighting

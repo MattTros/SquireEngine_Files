@@ -64,13 +64,16 @@ private:
 	LightSource* light;
 	ParticleSystem* particleFountain;
 	GameObject* blocks[9];
-	Ooze* ooze;
 	Platform *p1;
 	Platform *p2;
 	Platform *p3;
 	ParticleSystem* shaderFountain;
 	Model* transOne;
 	ParallaxingBackground* parallax;
+	Fly* fly;
+	Ooze* ooze;
+	Ooze* ooze2;
+	Spiker* spiker;
 	float colourChange;
 };
 

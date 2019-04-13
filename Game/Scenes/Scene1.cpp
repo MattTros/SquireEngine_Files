@@ -160,7 +160,6 @@ void Scene1::Update(const float deltaTime_)
 void Scene1::Render()
 {
 	//SceneGraph::GetInstance()->Render(Camera::GetInstance());
-
 	gameObjects[0]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[15]->GetModel()->Render(Camera::GetInstance());
 	gameObjects[38]->GetModel()->Render(Camera::GetInstance());

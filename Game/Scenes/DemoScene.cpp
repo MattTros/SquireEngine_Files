@@ -63,7 +63,13 @@ bool DemoScene::Initialize()
 	parallax->Initialize();
 	///Enemy
 	Model* oozeModel = new Model("Ooze.obj", "Ooze.mtl", BASE_SHADER);
-	ooze = new Ooze(oozeModel, glm::vec3(0.0f, -1.0f, 0.0f), false, nullptr);
+	Model* flyModel = new Model("DeathFly.obj", "DeathFly.mtl", BASE_SHADER);
+	Model* spikerModel = new Model("Spiker.obj", "Spiker.mtl", BASE_SHADER);
+
+	ooze2 = new Ooze(oozeModel, glm::vec3(10.0f, -13.0f, 10.0f), true, ooze);
+	ooze = new Ooze(oozeModel, glm::vec3(1.0f, -1.1f, 0.0f), true, ooze2);
+	fly = new Fly(flyModel, glm::vec3(0.0f, -0.1f, 0.0f), nullptr);
+	spiker = new Spiker(spikerModel, glm::vec3(-1.0f, -1.1f, 0.0f), ooze2);
 
 	//Physics and collision
 	p1 = new Platform(brick2, glm::vec3(-4.0f, 0.0f, 0.0f), false);
@@ -157,6 +163,10 @@ void DemoScene::Render()
 		break;
 	case 13:
 		//AI & Enemies // Jake G. Cunningham
+		ooze->Render(Camera::GetInstance());
+		spiker->Render(Camera::GetInstance());
+		fly->Render(Camera::GetInstance());
+		blocks[0]->GetModel()->Render(Camera::GetInstance());
 		break;
 	}
 	UI->Render();
@@ -310,8 +320,12 @@ void DemoScene::UpdateState(float deltaTime_)
 		//AI & Enemies
 		if (ooze != nullptr) {
 			ooze->Update(deltaTime_);
+			fly->Update(deltaTime_);
+			spiker->Update(deltaTime_);
 			for (GameObject* g : blocks) {
 				ooze->CollisionResponse(g, deltaTime_);
+				fly->CollisionResponse(g, deltaTime_);
+				spiker->CollisionResponse(g, deltaTime_);
 			}
 		}
 		break;
@@ -320,16 +334,18 @@ void DemoScene::UpdateState(float deltaTime_)
 
 void DemoScene::State_Title()
 {
-	
+	AudioManager::GetInstance()->PlaySoundFX("demoIntro");
 }
 
 void DemoScene::State_AudioManager()
 {
-	AudioManager::GetInstance()->PlaySoundFX("death");
+	AudioManager::GetInstance()->PlaySoundFX("demoAudio");
+	AudioManager::GetInstance()->PlaySoundFX("death", 0, 1);
 }
 
 void DemoScene::State_OBJLoader()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoOBJLoader");
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
 	gameOBJ->SetAngle(0.0f);
@@ -337,11 +353,12 @@ void DemoScene::State_OBJLoader()
 
 void DemoScene::State_InputManagers()
 {
-	///Nothing to Initialize
+	AudioManager::GetInstance()->PlaySoundFX("demoInput");
 }
 
 void DemoScene::State_Lighting()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoLighting");
 	gameOBJ->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
 	gameOBJ->SetPosition(glm::vec3(0.0f, -0.5f, -1.0f));
 	gameOBJ->SetAngle(0.0f);
@@ -349,12 +366,14 @@ void DemoScene::State_Lighting()
 
 void DemoScene::State_Shader()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoShader");
 	Camera::GetInstance()->GetLightSources().at(0)->SetLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 	shaderFountain->StartSystem();
 }
 
 void DemoScene::State_Physics()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoPhysics");
 	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 
 	p1->~Platform();
@@ -363,6 +382,7 @@ void DemoScene::State_Physics()
 
 void DemoScene::State_Collision()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoCollision");
 	p1->GetModel()->~Model();
 	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 
@@ -378,31 +398,36 @@ void DemoScene::State_Collision()
 
 void DemoScene::State_UI()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoUI");
 	p3->GetModel()->~Model();
 	p3->isGravity = false;
 }
 
 void DemoScene::State_Textures()
 {
-
+	AudioManager::GetInstance()->PlaySoundFX("demoTextures");
 }
 
 void DemoScene::State_Options()
 {
-
+	AudioManager::GetInstance()->PlaySoundFX("demoOptions");
 }
 
 void DemoScene::State_Particles()
 {
+	AudioManager::GetInstance()->PlaySoundFX("demoParticles");
 	particleFountain->StartSystem();
 }
 
 void DemoScene::State_ParallaxingBackground()
 {
-	
+	AudioManager::GetInstance()->PlaySoundFX("demoParallaxingBG");
 }
 
 void DemoScene::State_AIEnemies()
 {
-
+	AudioManager::GetInstance()->PlaySoundFX("demoAI");
+	ooze->SetPosition(glm::vec3(1.0f, -1.1f, 0.0f));
+	fly->SetPosition(glm::vec3(0.0f, -0.1f, 0.0f));
+	spiker->SetPosition(glm::vec3(-1.0f, -1.1f, 0.0f));
 }

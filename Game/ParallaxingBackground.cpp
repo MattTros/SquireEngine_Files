@@ -82,7 +82,7 @@ void ParallaxingBackground::Initialize()
 	bBack->SetScale(glm::vec3(3.0f));
 
 	
-	bBackImage->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	bBackImage->SetPosition(glm::vec3(0.0f, 0.0f, -2.1f));
 	bBackImage->SetScale(glm::vec3(7.0f, 5.5f, 1.0f));
 	bBackImage->SetRotation(glm::vec3(0.0f, 0.0f, 1.0f));
 	bBackImage->SetAngle(0.0f);
@@ -116,18 +116,27 @@ void ParallaxingBackground::Initialize()
 				bMid->GetPosition().z
 			)
 		);
-		bBackImage->SetPosition(glm::vec3(bFront->GetPosition().x, bFront->GetPosition().y, -8.01f));
+		bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, -8.01f));
 	}
 }
 	 
 void ParallaxingBackground::Update(float deltaTime_)
 {
-	if (SceneManager::GetInstance()->GetSceneIndex() != 3)
+	if (SceneManager::GetInstance()->GetSceneIndex() == 3)
+	{
+		movingRight = true;
+
+		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ * 5.0f), bFront->GetPosition().y, bFront->GetPosition().z));
+		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ * 2.5f), bMid->GetPosition().y, bMid->GetPosition().z));
+		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ * 5.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
+		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ * 2.5f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
+	}
+	else
 	{
 		//! Update background image and back (for making the paralaxing parts work)
 		cameraPos = Camera::GetInstance()->GetPosition();
 		bBack->SetPosition(cameraPos);
-		bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, cameraPos.z - 2.1f));
+		bBackImage->SetPosition(glm::vec3(cameraPos.x, cameraPos.y + 0.8f, cameraPos.z - 5.0f));
 
 		//! Set centerpoint for background image:
 		backCenter = bBack->GetPosition().x + (bBack->GetModel()->GetBoundingBox().maxVert.x / 2);
@@ -160,16 +169,6 @@ void ParallaxingBackground::Update(float deltaTime_)
 			bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (-deltaTime_ / 2.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
 			bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (-deltaTime_ / 4.0f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 		}
-	}
-
-	if (SceneManager::GetInstance()->GetSceneIndex() == 3)
-	{
-		movingRight = true;
-
-		bFront->SetPosition(glm::vec3(bFront->GetPosition().x + (deltaTime_ * 5.0f), bFront->GetPosition().y, bFront->GetPosition().z));
-		bMid->SetPosition(glm::vec3(bMid->GetPosition().x + (deltaTime_ * 2.5f), bMid->GetPosition().y, bMid->GetPosition().z));
-		bFrontTwo->SetPosition(glm::vec3(bFrontTwo->GetPosition().x + (deltaTime_ * 5.0f), bFrontTwo->GetPosition().y, bFrontTwo->GetPosition().z));
-		bMidTwo->SetPosition(glm::vec3(bMidTwo->GetPosition().x + (deltaTime_ * 2.5f), bMidTwo->GetPosition().y, bMidTwo->GetPosition().z));
 	}
 
 	//! Update centerpoints of all the objects:
@@ -268,9 +267,9 @@ void ParallaxingBackground::MoveLeft(GameObject* objA_, GameObject* objB_)
 
 void ParallaxingBackground::Render(Camera* camera_)
 {
-	backgroundFront->Render(camera_);
-	backgroundFrontTwo->Render(camera_);
+	bBackImage->GetModel()->Render(camera_);
 	backgroundMid->Render(camera_);
 	backgroundMidTwo->Render(camera_);
-	bBackImage->GetModel()->Render(camera_);
+	backgroundFront->Render(camera_);
+	backgroundFrontTwo->Render(camera_);	
 }
