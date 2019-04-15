@@ -57,6 +57,7 @@ bool Game1::Initialize()
 	SceneManager::GetInstance()->AddScene(new DemoScene, 3);
 	AudioManager::GetInstance()->PlayMusic("backgroundMusic");
 	SceneManager::GetInstance()->SetScene(0);
+
 	return true;
 }
 

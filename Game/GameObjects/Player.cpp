@@ -95,7 +95,9 @@ void Player::Movement(float deltaTime_)
 				SetVelocity(glm::vec3(GetSpeed() * speed, GetVelocity().y, GetVelocity().z));
 			if (isFacingRight)
 			{
-				SetAngle(-1.575);
+				turningLeft = true;
+				turningRight = false;
+				//SetAngle(-1.575);
 				isFacingRight = false;
 			}
 			if (canGoRight == false)
@@ -112,7 +114,9 @@ void Player::Movement(float deltaTime_)
 				SetVelocity(glm::vec3(GetSpeed() * speed, GetVelocity().y, GetVelocity().z));
 			if (!isFacingRight)
 			{
-				SetAngle(1.575);
+				turningRight = true;
+				turningLeft = false;
+				//SetAngle(1.575);
 				isFacingRight = true;
 			}
 			if (canGoLeft == false)
@@ -467,6 +471,24 @@ void Player::Update(float deltaTime_)
 		if (deathTimer.seconds >= deathTimer.waitTime)
 		{
 			SceneManager::GetInstance()->SetScene(SceneManager::GetInstance()->GetSceneIndex());
+		}
+	}
+	if (turningLeft)
+	{
+		SetAngle(GetAngle() - (deltaTime_ * 10));
+		if (GetAngle() <= -1.575)
+		{
+			SetAngle(-1.575);
+			turningLeft = false;
+		}
+	}
+	if (turningRight)
+	{
+		SetAngle(GetAngle() + (deltaTime_ * 10));
+		if (GetAngle() >= 1.575)
+		{
+			SetAngle(glm::radians(90.0f));
+			turningRight = false;
 		}
 	}
 

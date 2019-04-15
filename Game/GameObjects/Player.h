@@ -56,6 +56,8 @@ private:
 
 	bool isDashing = false;
 	bool isFacingRight = true;
+	bool turningRight = false;
+	bool turningLeft = false;
 	bool iFrames = false;
 	bool isAttacking = false;
 	int shootingDirection = 1;

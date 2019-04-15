@@ -39,6 +39,7 @@ bool Scene1::Initialize()
 	gameObjects[13] = new Platform(brick, glm::vec3(16.0f, -2.0f, 0.0f), false);
 	gameObjects[14] = new Platform(brick, glm::vec3(18.0f, -2.0f, 0.0f), false);
 	gameObjects[15] = new DropThroughPlatform(platform, glm::vec3(20.0f, -2.0f, 0.0f), false); ///Drop through platform
+	gameObjects[15]->SetScale(glm::vec3(1.0f, 0.5f, 1.0f));
 	gameObjects[16] = new Platform(brick, glm::vec3(22.0f, -2.0f, 0.0f), false);
 	gameObjects[17] = new Platform(brick, glm::vec3(22.0f, -1.0f, 0.0f), false);
 	gameObjects[18] = new Platform(brick, glm::vec3(22.0f, 0.0f, 0.0f), false);
