@@ -29,9 +29,6 @@ public:
 	bool Initialize();
 	void Update(const float deltaTime_);
 	void Render();
-
-	//UI state machine and update
-	void UpdateUI(const float deltaTime_);
 private:
 	ParticleSystem* particleFountain;
 

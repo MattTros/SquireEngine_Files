@@ -33,7 +33,6 @@ public:
 
 	void ChangeState();
 	void UpdateState(float deltaTime_);
-
 private:
 	float timer = 0.0f;
 	float stateTime = 5.0f;
