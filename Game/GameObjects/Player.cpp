@@ -215,7 +215,7 @@ void Player::Shoot()
 	if (!arrowShooting)
 	{
 		AudioManager::GetInstance()->PlaySoundFX("arrow", 0, 1);
-		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("toonShader"));
+		arrowModel = new Model("ProjectileSpike.obj", "ProjectileSpike.mtl", Shader::GetInstance()->GetShader("projShader"));
 		arrow = new Projectile(arrowModel, GetPosition(), false, 5.0f, 1.0f);
 		arrow->SetTag("FriendlyProjectile");
 		arrow->SetDirection(shootingDirection);

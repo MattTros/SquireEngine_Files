@@ -64,8 +64,11 @@ bool Game1::Initialize()
 void Game1::Update(const float deltaTime_)
 {
 	SceneManager::GetInstance()->Update(deltaTime_);
-	if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_ESCAPE))
+	if (KeyboardInputManager::GetInstance()->KeyPressed(SDL_SCANCODE_ESCAPE) && SceneManager::GetInstance()->GetSceneIndex() != 0)
 	{
+		if(SceneManager::GetInstance()->GetSceneIndex() == 3)
+			AudioManager::GetInstance()->PlayMusic("backgroundMusic", -1);
+		Camera::GetInstance()->GetLightSources().at(0)->SetLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
 		AudioManager::GetInstance()->StopAudioChannel(0);
 		AudioManager::GetInstance()->StopAudioChannel(1);
 		if (SaveManager::GetInstance()->CheckExists("save1"))

@@ -19,7 +19,7 @@ Fly::Fly(Model* model_, glm::vec3 position_, Player* player_) : Enemy(model_, po
 	attackTimer = 0.0f;
 	gasPos = glm::vec3();
 	//Particle variables
-	particle = new Model("GasBubble.obj", "GasBubble.mtl", Shader::GetInstance()->GetShader("alphaShader"));
+	particle = new Model("GasBubble.obj", "GasBubble.mtl", Shader::GetInstance()->GetShader("toonShader"));
 	particle->GetMesh(0)->transparency = 0.3f;
 	fountain = new ParticleSystem();
 	fountain->CreateSystem(particle, 20, glm::vec3(0.5f), glm::vec3(1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), 0.2f, 0.4f);

@@ -10,7 +10,7 @@ Scene1::~Scene1() {
 
 bool Scene1::Initialize()
 {
-
+	
 	Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.15f));
 	Camera::GetInstance()->AddLightSource(new LightSource(glm::vec3(0.0f, 0.0f, 2.0f), 0.7f, 0.7f, glm::vec3(1.0f, 1.0f, 1.0f)));
 

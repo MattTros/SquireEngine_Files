@@ -37,7 +37,7 @@ void main()
 	//! color gradient:
 
 	//! Outside
-	if (dot(viewDir, Normal) < 0.90f)
+	if (dot(viewDir, Normal) < 0.5f)
 	{ 
 		//! Darker:
 		color = vec4(0.0f, 0.0f, 0.0f, 0.75f);
@@ -46,6 +46,6 @@ void main()
 	else
 	{
 		//! Dark:
-		color = vec4(1.0f, 0.0f, 0.0f, 0.6f);
+		color = vec4(0.0f, 1.0f, 1.0f, 1.0f);
 	}
 }

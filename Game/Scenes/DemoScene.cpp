@@ -373,6 +373,7 @@ void DemoScene::State_Shader()
 
 void DemoScene::State_Physics()
 {
+	shaderFountain->StopSystem();
 	AudioManager::GetInstance()->PlaySoundFX("demoPhysics");
 	Model* brick2 = new Model("Brick.obj", "Brick.mtl", BASE_SHADER);
 
@@ -421,6 +422,7 @@ void DemoScene::State_Particles()
 
 void DemoScene::State_ParallaxingBackground()
 {
+	particleFountain->StopSystem();
 	AudioManager::GetInstance()->PlaySoundFX("demoParallaxingBG");
 }
 
